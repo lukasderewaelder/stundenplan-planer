@@ -1,0 +1,6 @@
+# echte Schuldaten (Personendaten) nie committen
+bench/daten/privat/
+
+# lokale Werkzeuge
+node_modules/
+*.log

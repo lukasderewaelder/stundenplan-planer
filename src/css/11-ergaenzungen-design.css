@@ -1,0 +1,71 @@
+/* ===================== ERGÄNZUNGEN ZUM DESIGN-SYSTEM ===================== */
+/* Einstellungen */
+.einstellungen { display: grid; gap: var(--a5); min-width: min(440px, 80vw); }
+.einstellungen h3 { margin: 0 0 var(--a2); }
+.einstellungen p { margin: var(--a1) 0 0; }
+.segment { display: inline-flex; border: 1px solid var(--line-stark); border-radius: var(--r1); overflow: hidden; }
+.segment label { display: flex; align-items: center; min-height: 34px; padding: 0 14px; cursor: pointer; border-right: 1px solid var(--line-stark); color: var(--text-2); transition: background-color var(--tempo), color var(--tempo); }
+.segment label:last-child { border-right: 0; }
+.segment label:hover { background: var(--grau); }
+.segment input { position: absolute; opacity: 0; pointer-events: none; }
+.segment label:has(input:checked) { background: var(--accent-weak); color: var(--accent-d); font-weight: 600; }
+.segment label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* Hilfe-Symbol neben Spaltentiteln und Feldern */
+/* Hilfe: ⓘ-Symbol mit Popover (Klick, Enter oder Tastaturfokus) */
+.hilfesym { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin: -3px 0 -3px 2px; border-radius: 50%; color: var(--muted); cursor: pointer; vertical-align: middle; transition: background-color var(--tempo), color var(--tempo); -webkit-tap-highlight-color: transparent; }
+.hilfesym::after { content: ''; position: absolute; inset: -8px; } /* größere Trefferfläche */
+.hilfesym .icon { width: 15px; height: 15px; vertical-align: 0; }
+.hilfesym:hover, .hilfesym[aria-expanded="true"] { color: var(--accent-d); background: var(--accent-weak); }
+.hilfepop { position: fixed; z-index: 95; width: max-content; max-width: min(380px, calc(100vw - 16px)); max-height: 70vh; overflow: auto; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: var(--r2); box-shadow: var(--sh-2); padding: 10px 14px; font-size: 13px; font-weight: 400; line-height: 1.5; text-align: left; white-space: normal; letter-spacing: 0; text-transform: none; }
+.hilfepop p { margin: 0 0 6px; }
+.hilfepop p:last-child { margin-bottom: 0; }
+.hilfepop .technik { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line2); color: var(--muted); font-size: var(--f-xs); }
+.hilfepop .technik code { font-family: var(--mono); color: var(--text-2); background: var(--grau); padding: 0 5px; border-radius: 4px; }
+/* Banner: Meldungen mit Handlungsbedarf am Seitenanfang, bis sie geschlossen werden */
+#banner { display: grid; gap: var(--a2); margin-bottom: var(--a4); }
+.banner { display: flex; align-items: center; gap: var(--a3); padding: 10px 10px 10px 14px; border-radius: var(--r2); border: 1px solid var(--accent-rand); border-left-width: 4px; background: var(--accent-weak); color: var(--accent-text); box-shadow: var(--sh-1); }
+.banner .bsym { flex: none; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; background: var(--panel); }
+.banner .btext { flex: 1 1 auto; min-width: 0; font-weight: 500; }
+.banner .btn { flex: none; background: var(--panel); }
+.banner .btn.icon { background: none; color: inherit; }
+.banner.ok { background: var(--ok-bg); border-color: var(--ok-rand); border-left-color: var(--ok); color: var(--ok-text); }
+.banner.warn { background: var(--warn-bg); border-color: var(--warn-rand); border-left-color: var(--a-gelb); color: var(--warn-text); }
+.banner.err { background: var(--err-bg); border-color: var(--err-rand); border-left-color: var(--err); color: var(--err-text); }
+@media (max-width: 700px) { .banner { flex-wrap: wrap; } .banner .btext { flex-basis: calc(100% - 80px); } }
+/* Seitenkopf: „Mehr erfahren“ */
+.seitenkopf details.mehr { margin-top: 2px; max-width: 92ch; }
+.seitenkopf details.mehr > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; color: var(--accent); font-size: var(--f-xs); font-weight: 600; list-style: none; padding: 2px 0; border-radius: 4px; }
+.seitenkopf details.mehr > summary::-webkit-details-marker { display: none; }
+.seitenkopf details.mehr > summary::after { content: ''; width: 6px; height: 6px; border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--tempo); }
+.seitenkopf details.mehr[open] > summary::after { transform: translateY(1px) rotate(-135deg); }
+.seitenkopf details.mehr > summary:hover { color: var(--accent-d); text-decoration: underline; }
+.seitenkopf details.mehr > p { margin: 2px 0 0; color: var(--muted); }
+/* Markierungen an Kacheln und Einsätzen */
+.kachel .schloss .icon, .tl-d .fx .icon { width: 12px; height: 12px; vertical-align: 0; stroke-width: 2; }
+.kachel .hand .icon, .pmarke .icon { width: 11px; height: 11px; vertical-align: -1px; stroke-width: 2; }
+.kachel .schloss { color: var(--text-2); }
+/* Fach- und Aufsichtsfarben auf dunklem Grund: Kacheln leicht getönt mit aufgehelltem Farbbalken, Einsätze der Aufsichts-Timeline kräftiger */
+@supports (background: color-mix(in srgb, red 10%, blue)) {
+  @media screen and (prefers-color-scheme: dark) {
+    :root:not([data-theme="hell"]) .kachel[style*="--fach"] { background: color-mix(in srgb, var(--fach) 16%, var(--panel)); border-color: color-mix(in srgb, var(--fach) 34%, var(--line)); border-left-color: color-mix(in srgb, var(--fach) 62%, #fff); }
+    :root:not([data-theme="hell"]) .tl-d[style*="--fach"] { background: color-mix(in srgb, var(--fach) 30%, var(--panel)) !important; border-color: color-mix(in srgb, var(--fach) 45%, var(--panel)); border-left-color: color-mix(in srgb, var(--fach) 70%, #fff) !important; }
+  }
+  @media screen {
+    :root[data-theme="dunkel"] .kachel[style*="--fach"] { background: color-mix(in srgb, var(--fach) 16%, var(--panel)); border-color: color-mix(in srgb, var(--fach) 34%, var(--line)); border-left-color: color-mix(in srgb, var(--fach) 62%, #fff); }
+    :root[data-theme="dunkel"] .tl-d[style*="--fach"] { background: color-mix(in srgb, var(--fach) 30%, var(--panel)) !important; border-color: color-mix(in srgb, var(--fach) 45%, var(--panel)); border-left-color: color-mix(in srgb, var(--fach) 70%, #fff) !important; }
+  }
+}
+/* Druckvorschau: wie ein Blatt Papier, auch im dunklen Schema */
+@media screen { #inhalt .druckseite { background: #fff; color: #000; padding: 10px 12px; border-radius: 4px; } }
+/* Bewegung nur, wenn erwünscht */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+/* Druck: immer hell, ohne Schatten der Oberfläche */
+@media print { body { background: #fff; color: #000; } .tipp, .hilfepop, .skiplink { display: none !important; } } /* .druckmess bleibt messbar: der Messcontainer lebt nur während des Ausmessens */
+
+/* Icons in den kleinen Knöpfen der Stundentafel und der Fächer-Spalte */
+.teilknopf { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; }
+.teilknopf .icon { width: 14px; height: 14px; }
+.teilmarke .icon { color: var(--lila); }
+.fachknopf .stift .icon { color: var(--muted); }
+.lueckemarke { color: var(--accent-d); }
+

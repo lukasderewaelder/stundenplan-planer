@@ -1,0 +1,87 @@
+/* ===================== TOUCH, GRÖSSEN, RESPONSIVE ===================== */
+/* Skip-Link: erscheint beim ersten Tab */
+.skiplink { position: fixed; left: 8px; top: -60px; z-index: 200; padding: 10px 16px; background: var(--primaer-bg); color: var(--primaer-text); border-radius: var(--r1); font-weight: 600; text-decoration: none; transition: top var(--tempo); }
+.skiplink:focus { top: 8px; outline: 2px solid var(--panel); outline-offset: 2px; }
+#inhalt:focus { outline: none; }
+/* Mindest-Trefferfläche 36 px: Knöpfe sind mindestens 36 px hoch; kleine Knöpfe behalten ihr Aussehen und bekommen eine unsichtbar vergrößerte Trefferfläche */
+.btn { min-height: 36px; }
+.btn.icon { min-width: 36px; }
+.btn.klein, .tagknopf, .teilknopf, .pchip, .md-zeile > input[type=checkbox] { position: relative; }
+.btn.klein::after, .tagknopf::after, .teilknopf::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 36px; transform: translateY(-50%); }
+.btn.icon.klein::after { left: 50%; right: auto; width: 36px; transform: translate(-50%, -50%); }
+.tagknopf { width: 30px; height: 26px; }
+#nav button { min-height: 38px; }
+.menue button { min-height: 36px; }
+.reiterknopf { min-height: 36px; }
+/* Finger und Stift: 44 px */
+@media (pointer: coarse) {
+  .btn { min-height: 44px; padding-left: 16px; padding-right: 16px; }
+  .btn.icon { min-width: 44px; }
+  .btn.klein { min-height: 40px; }
+  .btn.icon.klein { min-width: 40px; }
+  .btn.klein::after, .tagknopf::after, .teilknopf::after { height: 44px; }
+  .btn.icon.klein::after { width: 44px; }
+  input[type=text], input[type=number], input[type=time], input[type=search], select { min-height: 44px; font-size: 16px; }
+  input[type=checkbox], input[type=radio] { width: 22px; height: 22px; }
+  .tagknopf { width: 40px; height: 40px; font-size: 13px; }
+  .teilknopf { min-width: 40px; height: 40px; }
+  #nav button { min-height: 46px; }
+  .menue button { min-height: 44px; }
+  .reiterknopf, .sl-tab { min-height: 44px; }
+  .segment label, .segment button, .segment.klein label, .segment.klein button { min-height: 44px; }
+  .fachknopf { min-height: 44px; }
+  .stdchip::after { height: 44px; }
+  .hilfesym { width: 28px; height: 28px; }
+  .hilfesym::after { inset: -8px; }
+  .btn.icon.hilfesym { min-height: 44px; }
+  .pchip { padding: 9px 12px; }
+  .md-zeile > .md-wahl { min-height: 52px; }
+  .vliste li { padding-top: 10px; padding-bottom: 10px; }
+  .res .resknopf { padding-top: 9px; padding-bottom: 9px; }
+  .statuschip { min-height: 44px; }
+  .palzeile { min-height: 46px; }
+}
+/* Navigation: unter 900 px als Schublade mit ☰ */
+#kNav { display: none; }
+#navschleier { display: none; }
+@media (max-width: 899px) {
+  #kNav { display: inline-flex; margin-left: -6px; }
+  #app, #app.nav-fest { grid-template-columns: 0 minmax(0, 1fr); --nav-b: 0px; }
+  #nav { position: fixed; z-index: 40; left: 0; top: var(--kopf-h); bottom: 0; width: min(300px, 86vw); transform: translateX(-104%); visibility: hidden; box-shadow: var(--sh-3); transition: transform 180ms ease, visibility 0s linear 180ms; }
+  #app.nav-drawer #nav { transform: none; visibility: visible; transition: transform 180ms ease, visibility 0s; }
+  #app.nav-drawer #navschleier { display: block; position: fixed; z-index: 39; inset: var(--kopf-h) 0 0 0; background: var(--schleier); }
+  /* in der Schublade immer mit Beschriftung */
+  #app #nav .ntext { display: block !important; }
+  #app #nav .gruppe { color: var(--muted) !important; margin-left: 12px !important; margin-right: 12px !important; }
+  #app #nav .gruppe::after { display: none !important; }
+  #app #nav .zahl { position: static !important; margin-left: auto !important; }
+  #app #nav .zahl .badge { font-size: 11px !important; padding: 0 6px !important; line-height: inherit !important; }
+  #app #nav .nfuss { display: flex !important; }
+  #nav .navpin { display: none; }
+  #inhalt { padding-left: var(--a4); padding-right: var(--a4); }
+  #kopf { grid-template-columns: minmax(0, 1fr) auto auto; gap: var(--a2); padding-left: 10px; padding-right: 10px; }
+  #kopf .logo { display: none; }
+  #kopf .krechts { gap: 6px; }
+  .tabelle-werkzeuge input[type=search] { width: 160px; }
+}
+@media (max-width: 620px) { #kopf .kmitte { display: none; } #kBerechnen { padding-left: 10px; padding-right: 10px; } }
+/* Editor: unter 1100 px ist die Seitenleiste ein Blatt am unteren Rand */
+@media (max-width: 1099px) {
+  .editor, .editor.parallel { grid-template-columns: minmax(0, 1fr); }
+  .editor { padding-bottom: 56px; }
+  .editor .seitenleiste, .editor.parallel .seitenleiste { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; top: auto; max-height: 58vh; border-radius: var(--r3) var(--r3) 0 0; border: 1px solid var(--line); border-bottom: 0; box-shadow: 0 -10px 32px rgba(15, 22, 45, .22); }
+  .editor .sl-panel, .editor.parallel .sl-panel { max-height: none; }
+  .seitenleiste .sl-tabs { padding-top: 8px; }
+  .seitenleiste .sl-tabs::before { content: ''; position: absolute; left: 50%; top: 4px; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line-stark); }
+  .seitenleiste .sl-zu { display: inline-flex; }
+  .seitenleiste.zu .sl-panel { display: none; }
+  .seitenleiste.zu .sl-zu .icon { transform: rotate(180deg); }
+  .seitenleiste.zu .sl-tab.aktiv { color: var(--muted); border-bottom-color: transparent; }
+  .ablagedock { bottom: 50px; }
+  .plangrid { min-width: 520px; }
+  /* beim Ziehen gibt das Blatt den Plan und die Ablage frei */
+  .seitenleiste { transition: transform 160ms ease; }
+  body.am-ziehen .seitenleiste { transform: translateY(calc(100% - 46px)); pointer-events: none; }
+}
+@media (max-width: 1099px) and (min-width: 900px) { .editor .seitenleiste, .editor.parallel .seitenleiste { left: var(--nav-links, 60px); } #app.nav-fest .editor .seitenleiste { left: 284px; } }
+@media (max-width: 700px) { .editor-werkzeuge .pkopf select { max-width: 150px; } .startgrid { gap: var(--a3); } }

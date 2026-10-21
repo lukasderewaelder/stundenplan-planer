@@ -1,0 +1,42 @@
+/* ===================== BUTTONS & FELDER =====================
+   Hierarchie: .primaer (gefüllt) · Standard = sekundär (Rahmen) · .ghost und .icon (ohne Rahmen) · .gefahr */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 6px 14px; border: 1px solid var(--line-stark); background: var(--panel); color: var(--text); border-radius: var(--r1); cursor: pointer; white-space: nowrap; line-height: 1.2; font-weight: 500; transition: background-color var(--tempo), border-color var(--tempo), color var(--tempo), box-shadow var(--tempo); }
+.btn:hover { background: var(--flaeche-2); border-color: var(--muted); }
+.btn:active { background: var(--grau); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primaer { background: var(--primaer-bg); color: var(--primaer-text); border-color: var(--primaer-bg); font-weight: 600; box-shadow: var(--sh-1); }
+.btn.primaer:hover { background: var(--primaer-bg-h); border-color: var(--primaer-bg-h); }
+.btn.ghost { border-color: transparent; background: none; color: var(--text-2); }
+.btn.ghost:hover { background: var(--grau); border-color: transparent; color: var(--text); }
+.btn.gefahr { color: var(--err); border-color: var(--err-rand); }
+.btn.gefahr:hover { background: var(--err-bg); border-color: var(--err); }
+.btn.klein { min-height: 28px; padding: 3px 10px; font-size: var(--f-xs); }
+.btn.icon { min-width: 34px; padding: 0 7px; border-color: transparent; background: none; color: var(--text-2); }
+.btn.icon:hover { background: var(--grau); border-color: transparent; color: var(--text); }
+.btn.icon.klein { min-width: 28px; padding: 0 5px; }
+.btn.icon.gefahr { color: var(--muted); }
+.btn.icon.gefahr:hover { background: var(--err-bg); color: var(--err); }
+.btn.aktiv, .btn.icon.aktiv { background: var(--accent-weak); border-color: var(--accent); color: var(--accent-d); }
+input[type=text], input[type=number], input[type=time], input[type=search], select, textarea { border: 1px solid var(--line-stark); border-radius: var(--r1); padding: 5px 8px; background: var(--feld); color: var(--text); min-width: 0; transition: border-color var(--tempo), box-shadow var(--tempo); }
+input[type=text]:hover, input[type=number]:hover, input[type=time]:hover, input[type=search]:hover, select:hover, textarea:hover { border-color: var(--muted); }
+input[type=text]:focus, input[type=number]:focus, input[type=time]:focus, input[type=search]:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); outline: none; }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: .85; }
+input[type=number] { width: 70px; }
+input[type=color] { width: 36px; height: 28px; padding: 0 2px; border: 1px solid var(--line-stark); border-radius: var(--r1); background: var(--feld); }
+input[type=checkbox], input[type=radio], input[type=range] { accent-color: var(--primaer-bg); }
+textarea { width: 100%; min-height: 120px; font-family: var(--mono); font-size: 12.5px; }
+label.feld { display: flex; flex-direction: column; gap: var(--a1); font-size: var(--f-xs); color: var(--muted); }
+label.feld > input, label.feld > select { color: var(--text); font-size: var(--f-s); }
+label.check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.karte { background: var(--panel); border: 1px solid var(--karte-rand); border-radius: var(--r2); padding: var(--a4) 20px; box-shadow: var(--sh-1); }
+.karte + .karte { margin-top: var(--a4); }
+.karte > h2:first-child, .karte > h3:first-child { margin-top: 0; }
+.chip { display: inline-block; padding: 1px 8px; border-radius: 10px; background: var(--grau); color: var(--text-2); font-size: var(--f-xs); margin: 1px 2px 1px 0; }
+.badge { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 10px; font-size: var(--f-xs); font-weight: 600; }
+.badge.ok { background: var(--ok-bg); color: var(--ok); }
+.badge.warn { background: var(--warn-bg); color: var(--warn); }
+.badge.err { background: var(--err-bg); color: var(--err); }
+.badge.neutral { background: var(--grau); color: var(--muted); }
+.tagknopf { width: 28px; height: 24px; border: 1px solid var(--line-stark); background: var(--feld); color: var(--text); border-radius: 4px; font-size: 11.5px; cursor: pointer; padding: 0; transition: background-color var(--tempo), border-color var(--tempo); }
+.tagknopf.an { background: var(--primaer-bg); color: var(--primaer-text); border-color: var(--primaer-bg); }
+

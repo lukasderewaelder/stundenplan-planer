@@ -1,0 +1,12 @@
+{
+  "name": "stundenplan-planer",
+  "private": true,
+  "description": "Stundenplaner: Quellcode unter src/, daraus wird die eine offline-fähige index.html gebaut",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:check": "node tools/build.mjs --check",
+    "test": "node tools/test.mjs"
+  }
+}

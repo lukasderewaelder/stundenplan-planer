@@ -1,0 +1,33 @@
+/* ===================== DRUCK ===================== */
+#druck { display: none; }
+@page { size: A4 landscape; margin: 10mm; }
+@media print {
+  html, body { height: auto; background: var(--panel); }
+  #app, #toasts, dialog, .menue, #zughinweis { display: none !important; }
+  #druck { display: block; }
+  .druckseite { page-break-after: always; break-after: page; height: 188mm; display: flex; flex-direction: column; }
+  .druckseite:last-child { page-break-after: auto; break-after: auto; }
+  .druckseite.fliessend { height: auto; page-break-after: auto; break-after: auto; break-inside: avoid; page-break-inside: avoid; margin-bottom: 9mm; }
+}
+.druckseite { font-size: 11pt; color: #000; }
+.druckseite .dk { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px; }
+.druckseite .dk .t { font-size: 18pt; font-weight: 700; }
+.druckseite .df { display: flex; justify-content: space-between; font-size: 9pt; border-top: 1px solid #000; padding-top: 3px; margin-top: auto; }
+table.druckplan { width: 100%; border-collapse: collapse; table-layout: fixed; flex: 1; }
+table.druckplan th, table.druckplan td { border: 1px solid #555; padding: 2px 4px; vertical-align: top; }
+table.druckplan th { background: #eee; font-size: 10pt; }
+table.druckplan td.zeit { width: 22mm; font-size: 8.5pt; }
+table.druckplan td.pause { background: #eee; height: 5mm; font-size: 8pt; text-align: center; color: #444; }
+table.druckplan td.voll { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.druckplan .de { border-radius: 2px; padding: 1px 3px; margin-bottom: 1px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+/* mehrere Einträge einer Zelle (A-/B-Woche, Gruppen): nebeneinander, jeder über die volle Höhe */
+table.druckplan td.mehr { height: 1px; padding: 2px; }
+table.druckplan td.mehr > .neben { display: flex; gap: 2px; height: 100%; }
+/* gleich breit, aber nie schmaler als das längste Wort – Wörter werden nur getrennt, wenn es gar nicht anders geht (ab 4 Einträgen) */
+table.druckplan td.mehr > .neben > .de { flex: 1 1 0; min-width: min-content; margin: 0; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
+table.druckplan td.mehr.n4 > .neben > .de { min-width: 0; overflow-wrap: anywhere; }
+table.druckplan td.mehr.n3 .de b { font-size: 9.5pt; }
+table.druckplan td.mehr.n3 .de .x, table.druckplan td.mehr.n3 .de .gr { font-size: 7.5pt; }
+table.druckplan .de b { font-size: 11pt; }
+table.druckplan .de .x { font-size: 8.5pt; }
+

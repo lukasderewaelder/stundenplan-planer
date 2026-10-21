@@ -1,0 +1,93 @@
+/* =====================================================================
+   DESIGN-SYSTEM
+   Alle Farben, Abstände, Radien, Schatten und Schriftgrößen stehen als Tokens in :root.
+   Dunkles Farbschema: nur auf dem Bildschirm (@media screen) – der Druck bleibt immer hell.
+   .druckseite und #druck setzen die hellen Tokens erneut, damit auch die Druckvorschau im
+   dunklen Schema wie Papier aussieht.
+   ===================================================================== */
+:root, .druckseite, #druck {
+  color-scheme: light;
+  /* Flächen */
+  --bg: #f1f3f8; --panel: #ffffff; --flaeche-2: #f6f7fa; --grau: #eceff4; --feld: #ffffff;
+  /* Text */
+  --text: #1a2030; --text-2: #39424f; --muted: #5a6474;
+  /* Linien */
+  --line: #d9dee7; --line2: #e8ebf1; --line-stark: #aab3c2;
+  /* Akzent: Königsblau */
+  --accent: #2a50c8; --accent-d: #1f3fa6; --accent-weak: #e8edfc; --accent-rand: #c6d3f7; --accent-text: #1f3270;
+  --primaer-bg: #2a50c8; --primaer-bg-h: #1f3fa6; --primaer-text: #ffffff;
+  --ring: rgba(42, 80, 200, .28);
+  /* Status */
+  --ok: #16763a; --ok-bg: #e1f4e7; --ok-bg2: #bfe6cc; --ok-rand: #b0dfc0; --ok-text: #125a2e;
+  --warn: #7d5800; --warn-bg: #fff2cc; --warn-bg2: #fbe3a0; --warn-rand: #ecd590; --warn-text: #5a4000;
+  --err: #b42f1d; --err-bg: #fce7e3; --err-bg2: #f3c6be; --err-rand: #f0bab0; --err-text: #7a2012;
+  --lila: #47309a; --lila-bg: #ece6fc; --lila-rand: #9a84dc;
+  --orange-text: #7a4a00; --orange-bg: #fff5e3; --orange-rand: #e9c98f;
+  --a-gruen: #2e9d57; --a-gelb: #e0a81e; --a-rot: #d64541;
+  --toast-bg: #1f2635; --toast-text: #ffffff;
+  --schleier: rgba(20, 28, 45, .38);
+  /* Radien */
+  --r1: 6px; --r2: 10px; --r3: 14px; --radius: 6px;
+  /* Schatten */
+  --sh-1: 0 1px 2px rgba(22, 32, 58, .07), 0 1px 1px rgba(22, 32, 58, .04);
+  --sh-2: 0 6px 20px rgba(22, 32, 58, .12), 0 1px 3px rgba(22, 32, 58, .08);
+  --sh-3: 0 22px 60px rgba(15, 22, 45, .30), 0 2px 8px rgba(15, 22, 45, .12);
+  --schatten: var(--sh-1);
+  --karte-rand: transparent;
+  /* Abstände im 4-px-Raster */
+  --a1: 4px; --a2: 8px; --a3: 12px; --a4: 16px; --a5: 24px; --a6: 32px;
+  /* Schriftstufen */
+  --f-xs: 12px; --f-s: 14px; --f-m: 16px; --f-l: 20px; --f-xl: 28px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --schrift: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --tempo: 120ms;
+  --kopf-h: 56px;
+}
+/* Dunkles Schema – zweimal dieselben Werte: einmal für „automatisch“ (System dunkel), einmal für die feste Wahl „dunkel“. */
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="hell"]) {
+    color-scheme: dark;
+    --bg: #12151b; --panel: #1b1f28; --flaeche-2: #20252f; --grau: #282e3a; --feld: #151920;
+    --text: #e7eaf0; --text-2: #c7cdd8; --muted: #9ba4b3;
+    --line: #343b49; --line2: #272d39; --line-stark: #586273;
+    --accent: #8aa6f8; --accent-d: #adc0fb; --accent-weak: #222b47; --accent-rand: #3a4880; --accent-text: #ccd7fc;
+    --primaer-bg: #3d63dc; --primaer-bg-h: #3457c8; --primaer-text: #ffffff;
+    --ring: rgba(138, 166, 248, .38);
+    --ok: #62cd8a; --ok-bg: #16301f; --ok-bg2: #1f4a2e; --ok-rand: #27573c; --ok-text: #a8e4bd;
+    --warn: #e7bf55; --warn-bg: #33290f; --warn-bg2: #4a3a12; --warn-rand: #5e4c19; --warn-text: #f1d892;
+    --err: #f18d7e; --err-bg: #3a1c18; --err-bg2: #5a2620; --err-rand: #6d3028; --err-text: #f8bcb2;
+    --lila: #b9a8f4; --lila-bg: #29234a; --lila-rand: #5d4da6;
+    --orange-text: #f0c47e; --orange-bg: #31260f; --orange-rand: #6d5422;
+    --a-gruen: #3cb96b; --a-gelb: #e6b530; --a-rot: #e5594f;
+    --toast-bg: #313a4d; --toast-text: #ffffff;
+    --schleier: rgba(0, 0, 0, .6);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .4);
+    --sh-2: 0 8px 24px rgba(0, 0, 0, .5), 0 1px 3px rgba(0, 0, 0, .4);
+    --sh-3: 0 24px 64px rgba(0, 0, 0, .65), 0 2px 8px rgba(0, 0, 0, .4);
+    --karte-rand: var(--line2);
+  }
+}
+@media screen {
+  :root[data-theme="dunkel"] {
+    color-scheme: dark;
+    --bg: #12151b; --panel: #1b1f28; --flaeche-2: #20252f; --grau: #282e3a; --feld: #151920;
+    --text: #e7eaf0; --text-2: #c7cdd8; --muted: #9ba4b3;
+    --line: #343b49; --line2: #272d39; --line-stark: #586273;
+    --accent: #8aa6f8; --accent-d: #adc0fb; --accent-weak: #222b47; --accent-rand: #3a4880; --accent-text: #ccd7fc;
+    --primaer-bg: #3d63dc; --primaer-bg-h: #3457c8; --primaer-text: #ffffff;
+    --ring: rgba(138, 166, 248, .38);
+    --ok: #62cd8a; --ok-bg: #16301f; --ok-bg2: #1f4a2e; --ok-rand: #27573c; --ok-text: #a8e4bd;
+    --warn: #e7bf55; --warn-bg: #33290f; --warn-bg2: #4a3a12; --warn-rand: #5e4c19; --warn-text: #f1d892;
+    --err: #f18d7e; --err-bg: #3a1c18; --err-bg2: #5a2620; --err-rand: #6d3028; --err-text: #f8bcb2;
+    --lila: #b9a8f4; --lila-bg: #29234a; --lila-rand: #5d4da6;
+    --orange-text: #f0c47e; --orange-bg: #31260f; --orange-rand: #6d5422;
+    --a-gruen: #3cb96b; --a-gelb: #e6b530; --a-rot: #e5594f;
+    --toast-bg: #313a4d; --toast-text: #ffffff;
+    --schleier: rgba(0, 0, 0, .6);
+    --sh-1: 0 1px 2px rgba(0, 0, 0, .4);
+    --sh-2: 0 8px 24px rgba(0, 0, 0, .5), 0 1px 3px rgba(0, 0, 0, .4);
+    --sh-3: 0 24px 64px rgba(0, 0, 0, .65), 0 2px 8px rgba(0, 0, 0, .4);
+    --karte-rand: var(--line2);
+  }
+}
+

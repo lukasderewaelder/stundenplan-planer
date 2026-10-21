@@ -1,0 +1,19 @@
+/* ===================== BEFEHLSPALETTE (Strg+K) ===================== */
+dialog.palette-dlg { width: min(640px, 94vw); margin-top: 12vh; overflow: hidden; }
+dialog.palette-dlg .dkopf { padding: 12px 16px; gap: var(--a3); border-bottom: 1px solid var(--line2); color: var(--muted); }
+dialog.palette-dlg .dkopf input { flex: 1 1 auto; border: 0; background: none; font-size: var(--f-m); font-weight: 400; padding: 6px 0; color: var(--text); box-shadow: none; }
+dialog.palette-dlg .dkopf input:focus { outline: none; box-shadow: none; }
+dialog.palette-dlg .dinhalt { padding: 6px; max-height: min(52vh, 440px); }
+dialog.palette-dlg .dfuss { justify-content: flex-start; gap: var(--a4); padding: 8px 16px; font-size: var(--f-xs); color: var(--muted); background: var(--flaeche-2); }
+dialog.palette-dlg .dfuss span { display: inline-flex; align-items: center; gap: 3px; }
+.pliste { list-style: none; margin: 0; padding: 0; }
+.palzeile { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: var(--a2); align-items: center; min-height: 40px; padding: 4px 10px; border-radius: var(--r1); cursor: pointer; }
+.palzeile.aktiv { background: var(--accent-weak); color: var(--accent-text); }
+.palzeile .psym { display: flex; justify-content: center; color: var(--muted); }
+.palzeile.aktiv .psym { color: var(--accent-d); }
+.palzeile .ptext { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.palzeile .punter { font-weight: 400; color: var(--muted); font-size: var(--f-xs); margin-left: var(--a2); }
+.palzeile .part { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 9px; padding: 0 7px; background: var(--panel); }
+.pleer { padding: 16px; }
+@media (max-width: 700px) { dialog.palette-dlg .dfuss span:last-child { display: none; } }
+

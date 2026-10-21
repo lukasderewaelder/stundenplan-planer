@@ -1,0 +1,15 @@
+/* ===================== LEERE ZUSTÄNDE ===================== */
+.leerzustand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--a2); padding: var(--a6) var(--a4); color: var(--text-2); }
+.leerzustand .lzsym { width: 52px; height: 52px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--accent-weak); color: var(--accent-d); }
+.leerzustand .lzsym .icon { width: 26px; height: 26px; vertical-align: 0; }
+.leerzustand strong { font-size: var(--f-m); color: var(--text); }
+.leerzustand p { margin: 2px 0 0; max-width: 56ch; color: var(--muted); }
+.leerzustand .lzknoepfe { display: flex; flex-wrap: wrap; gap: var(--a2); justify-content: center; margin-top: var(--a2); }
+.leerzustand.klein { flex-direction: row; text-align: left; padding: var(--a3) var(--a4); gap: var(--a3); align-items: center; }
+.leerzustand.klein .lzsym { width: 36px; height: 36px; flex: none; }
+.leerzustand.klein .lzsym .icon { width: 18px; height: 18px; }
+.leerzustand.klein .lztext { flex: 1 1 240px; min-width: 0; }
+.leerzustand.klein strong { font-size: var(--f-s); }
+.leerzustand.klein .lzknoepfe { margin: 0; justify-content: flex-start; }
+table.tab tbody tr.leerzeile:hover td { background: none; }
+

@@ -1,0 +1,188 @@
+/* ===================== PLAN-EDITOR ===================== */
+.editor { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 14px; align-items: start; }
+.editor.parallel { grid-template-columns: minmax(0, 1fr); }
+.editor-haupt { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.plaene { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: start; }
+.editor.parallel .plaene { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.editor.parallel .plangrid { grid-template-columns: 52px repeat(var(--tage), minmax(58px, 1fr)) !important; }
+.planbox { overflow-x: auto; }
+.editor-werkzeuge { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.editor-werkzeuge .pkopf { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-width: 0; }
+.planbox { background: var(--panel); border: 1px solid var(--karte-rand); border-radius: var(--r2); padding: 8px; min-width: 0; box-shadow: var(--sh-1); }
+.planbox .pkopf { display: flex; gap: 6px; align-items: center; margin-bottom: 6px; flex-wrap: wrap; }
+.plangrid { display: grid; position: relative; }
+.plangrid .kz { background: var(--flaeche-2); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); color: var(--text-2); }
+.plangrid .zeitzelle { font-size: 11px; color: var(--muted); padding: 2px 6px; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid var(--line2); line-height: 1.2; }
+.plangrid .zeitzelle b { color: var(--text); font-size: 12.5px; }
+.plangrid .zelle { border-left: 1px solid var(--line2); border-bottom: 1px solid var(--line2); position: relative; }
+.plangrid .zelle.pause, .plangrid .zeitzelle.pause { background: var(--grau); }
+.plangrid .zelle.hohl { background: repeating-linear-gradient(-45deg, var(--panel), var(--panel) 5px, var(--warn-bg2) 5px, var(--warn-bg2) 7px); }
+.plangrid .zelle.gesperrt { background: repeating-linear-gradient(45deg, var(--flaeche-2), var(--flaeche-2) 6px, var(--err-bg) 6px, var(--err-bg) 8px); }
+.plangrid .zelle.ziel-ok { background: var(--ok-bg); }
+.plangrid .zelle.ziel-weich { background: var(--warn-bg); }
+.plangrid .zelle.ziel-hart { background: var(--err-bg); }
+.plangrid .zelle.ziel-ok::after, .plangrid .zelle.ziel-weich::after, .plangrid .zelle.ziel-hart::after { position: absolute; right: 4px; bottom: 2px; font-size: 11px; font-weight: 700; }
+.plangrid .zelle.ziel-ok::after { content: "✓"; color: var(--ok); }
+.plangrid .zelle.ziel-weich::after { content: "~"; color: var(--warn); }
+.plangrid .zelle.ziel-hart::after { content: "✕"; color: var(--err); }
+.plangrid .zelle.drueber { outline: 2px solid var(--accent); outline-offset: -2px; }
+.plangrid .zelle.blitz { animation: blitz 1.2s ease-out 1; }
+@keyframes blitz { 0% { box-shadow: inset 0 0 0 3px var(--a-gelb); } 100% { box-shadow: inset 0 0 0 3px transparent; } }
+.tagspalte { position: relative; pointer-events: none; }
+/* Kachel: (fast) weißer Grund, 4 px Farbbalken des Fachs links, dunkler Text. Status immer mit Symbol UND Muster, nie nur über Farbe. */
+.kachel { position: absolute; pointer-events: auto; border-radius: 5px; padding: 3px 6px 3px 7px; font-size: 12px; line-height: 1.25; overflow: hidden; cursor: grab; border: 1px solid var(--line); border-left: 4px solid var(--fach, var(--line-stark)); background: var(--panel); color: var(--text); box-shadow: 0 1px 1px rgba(22, 32, 58, .05); transition: box-shadow var(--tempo), border-color var(--tempo); }
+@supports (background: color-mix(in srgb, red 10%, blue)) { .kachel { background: color-mix(in srgb, var(--fach, transparent) 7%, var(--panel)); border-color: color-mix(in srgb, var(--fach, var(--line)) 22%, var(--line)); border-left-color: var(--fach, var(--line-stark)); } }
+.kachel:hover { box-shadow: var(--sh-2); z-index: 2; }
+.kachel .f { font-weight: 700; font-size: 13px; line-height: 16.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kachel .l, .kachel .r { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kachel .l { line-height: 15px; }
+.kachel .r, .kachel .rk { color: var(--muted); font-size: 11px; }
+.kachel .r { line-height: 14px; }
+.kachel .kmarken { position: absolute; right: 3px; top: 2px; display: flex; gap: 2px; align-items: center; padding-left: 4px; background: inherit; border-radius: 3px; }
+.kachel .kmarken .icon { width: 12px; height: 12px; vertical-align: 0; stroke-width: 2; display: block; }
+.kachel .kwarn { color: var(--err); }
+.gtak { position: absolute; z-index: 2; pointer-events: auto; border-radius: 6px; border: 1px dashed color-mix(in srgb, var(--gta, #2f8f6b) 70%, transparent); border-left: 4px solid var(--gta, #2f8f6b); background: color-mix(in srgb, var(--gta, #2f8f6b) 16%, var(--panel)); padding: 2px 5px; font-size: 12px; overflow: hidden; cursor: pointer; }
+.gtak .f { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gtak .l { color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gtak.konflikt { border-color: var(--err-rand); }
+.gtak:focus-visible { outline: 2px solid var(--accent); }
+/* GTA-Planer */
+.gta-layout { display: grid; grid-template-columns: minmax(230px, 290px) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 960px) { .gta-layout { grid-template-columns: 1fr; } }
+.gta-links .karte + .karte { margin-top: 12px; }
+.gta-personen { display: flex; flex-direction: column; gap: 4px; max-height: 340px; overflow: auto; }
+.gta-person { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 8px; align-items: baseline; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); cursor: grab; touch-action: none; user-select: none; }
+.gta-person.an { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-weak); }
+.gta-person .gta-pname { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gta-person .gta-frei { font-size: 12px; font-weight: 600; color: var(--ok); white-space: nowrap; }
+.gta-person .gta-balken { grid-column: 1 / -1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.gta-person .gta-balken i { display: block; height: 100%; background: var(--ok); }
+.gta-liste { display: flex; flex-direction: column; gap: 5px; }
+.gta-karte { border: 1px solid var(--line); border-left: 4px solid var(--gta, #2f8f6b); border-radius: 6px; padding: 4px 8px; background: var(--panel); cursor: grab; touch-action: none; user-select: none; }
+.gta-karte.offen { border-style: dashed; border-left-style: solid; }
+.gta-karte.gewaehlt, .gta-block.gewaehlt { box-shadow: 0 0 0 2px var(--accent); }
+.gta-karte.konflikt, .gta-block.konflikt { border-color: var(--err-rand); }
+.gta-karte .gta-k2 { font-size: 12px; color: var(--muted); }
+.gta-ablage.drop { outline: 2px dashed var(--accent); outline-offset: 2px; }
+[data-gta].drop { box-shadow: 0 0 0 2px var(--ok); }
+.gta-raster { display: grid; grid-template-columns: 64px repeat(var(--tage), minmax(90px, 1fr)); overflow-x: auto; }
+.gta-ecke, .gta-kopf { position: sticky; top: 0; background: var(--panel); z-index: 3; padding: 4px; font-weight: 600; text-align: center; border-bottom: 1px solid var(--line); }
+.gta-achse { position: relative; grid-column: 1; }
+.gta-zl { position: absolute; left: 0; right: 4px; font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1px; overflow: hidden; }
+.gta-zl b { display: inline-block; min-width: 1.8em; color: var(--text); }
+.gta-zl.pause { font-style: italic; }
+.gta-tag { position: relative; border-left: 1px solid var(--line); }
+.gta-band { position: absolute; left: 0; right: 0; border-top: 1px solid var(--line); }
+.gta-band.pause { background: var(--flaeche-2); }
+.gta-belegt { position: absolute; left: 2px; right: 2px; background: repeating-linear-gradient(-45deg, rgba(180,47,29,.10), rgba(180,47,29,.10) 4px, rgba(180,47,29,.02) 4px, rgba(180,47,29,.02) 8px); border: 1px solid rgba(180,47,29,.25); border-radius: 3px; font-size: 10px; color: var(--muted); overflow: hidden; pointer-events: auto; }
+.gta-belegt.sperre { background: repeating-linear-gradient(45deg, rgba(0,0,0,.08), rgba(0,0,0,.08) 3px, transparent 3px, transparent 6px); border-color: var(--line); }
+.gta-belegt span { padding: 0 3px; white-space: nowrap; }
+.gta-block { position: absolute; z-index: 2; background: color-mix(in srgb, var(--gta, #2f8f6b) 22%, var(--panel)); border: 1px solid color-mix(in srgb, var(--gta, #2f8f6b) 60%, transparent); border-left: 4px solid var(--gta, #2f8f6b); border-radius: 4px; padding: 1px 4px; font-size: 12px; overflow: hidden; cursor: grab; touch-action: none; user-select: none; }
+.gta-block .gta-b2 { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gta-block.zieht, .gta-karte.zieht, .gta-person.zieht { opacity: .45; }
+.gta-vorschau { position: absolute; left: 2px; right: 2px; z-index: 4; border-radius: 4px; pointer-events: none; }
+.gta-vorschau.ok { background: rgba(46,140,80,.25); border: 2px solid var(--ok); }
+.gta-vorschau.hart { background: rgba(180,47,29,.18); border: 2px dashed var(--err); }
+.gta-geist { position: fixed; z-index: 1000; pointer-events: none; background: var(--panel); border: 1px solid var(--accent); border-radius: 6px; padding: 3px 8px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.gta-dialog h3 { margin: 12px 0 6px; font-size: 14px; }
+.gta-perswahl { max-height: 230px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+.gta-pzeile { display: grid; grid-template-columns: auto auto 1fr auto; gap: 6px; align-items: center; padding: 2px 4px; border-radius: 4px; cursor: pointer; }
+.gta-pzeile:hover { background: var(--flaeche-2); }
+.gta-pzeile .gta-pname { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gta-pzeile .gta-pst { font-size: 12px; white-space: nowrap; }
+.gta-pzeile.frei .gta-pst { color: var(--ok); }
+.gta-pzeile.belegt .gta-pst { color: var(--err); }
+.gta-status { margin-top: 10px; }
+.tl-b.art-gta { background: #e1f3ea; }
+.tl-b.klickbar { cursor: pointer; }
+.tl-b.klickbar:hover, .tl-b.klickbar:focus-visible { box-shadow: inset 0 0 0 1px var(--accent); }
+.tl-kopf.extern { background: color-mix(in srgb, #2f8f6b 10%, var(--panel)); }
+.tl-kopf.extern .n b { font-style: italic; }
+.tl-spalte.extern { background-color: color-mix(in srgb, #2f8f6b 4%, transparent); }
+.druckseite table.druckliste.woche.gtaplan th:first-child { width: auto; }
+.druckseite .gta-dz { border-left-width: 4px; background: #f2f8f5; padding: 2px 4px; margin: 2px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.kachel .kakz, .akzmarke { display: inline-flex; align-items: center; justify-content: center; width: 13px; height: 13px; border-radius: 50%; background: var(--err); color: #fff; font-weight: 800; font-size: 10px; line-height: 1; flex: none; }
+.akzmarke { margin-right: 4px; vertical-align: 1px; }
+.kachel.akzeptiert { box-shadow: inset 0 0 0 2px var(--err-rand); }
+.pchip.offen.akz { border-color: var(--err-rand); color: var(--text); }
+.ampelzeile .sym.akz { background: var(--err); color: #fff; border-radius: 50%; width: 1.2em; height: 1.2em; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
+ul.akzliste li { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+ul.akzliste li > span:not(.akzmarke) { flex: 1 1 260px; }
+ul.akzliste .akzknopf { padding: 1px 8px; }
+.kachel .knn { color: var(--err); }
+.kachel.co { font-style: italic; }
+.kachel.ausgewaehlt { box-shadow: 0 0 0 2px var(--accent); z-index: 3; }
+/* fixiert: Schloss + gepunkteter Streifen rechts */
+.kachel.fest::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 4px; background: repeating-linear-gradient(0deg, var(--text-2) 0 2px, transparent 2px 5px); opacity: .45; }
+/* ohne Lehrkraft: Personen-Symbol + gestrichelter Rahmen */
+.kachel.ohnelk { outline: 2px dashed var(--err); outline-offset: -2px; }
+.kachel.ohnelk .l { color: var(--err); font-weight: 700; }
+/* Konflikt: Warnsymbol + schraffierter Streifen rechts + doppelter Rahmen */
+.kachel.konflikt { outline: 3px double var(--err); outline-offset: -3px; }
+.kachel.konflikt::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background: repeating-linear-gradient(-45deg, var(--err) 0 2px, transparent 2px 5px); opacity: .8; }
+/* Dichte: kompakt · normal · groß */
+.dichte-kompakt .kachel { font-size: 11.5px; padding-top: 2px; padding-bottom: 2px; }
+.dichte-kompakt .kachel .f { font-size: 12px; line-height: 15px; }
+.dichte-kompakt .kachel .l { line-height: 14px; }
+.dichte-kompakt .kachel .r { line-height: 13px; }
+.dichte-gross .kachel { font-size: 13.5px; padding: 5px 8px 5px 9px; }
+.dichte-gross .kachel .f { font-size: 15px; line-height: 19px; }
+.dichte-gross .kachel .l { line-height: 17px; }
+.dichte-gross .kachel .r, .dichte-gross .kachel .rk { font-size: 12.5px; }
+.dichte-gross .kachel .r { line-height: 15.5px; }
+.dichte-gross .plangrid .zeitzelle { font-size: 12px; }
+.dichte-gross .plangrid .zeitzelle b { font-size: 14px; }
+.kachel.blitz { animation: blitzk 1.4s ease-out 1; }
+@keyframes blitzk { 0%, 40% { box-shadow: 0 0 0 4px var(--a-gelb); } 100% { box-shadow: 0 0 0 0 transparent; } }
+.kachel.gezogen { opacity: .35; }
+.plangrid.ziehen .kachel { pointer-events: none; opacity: .55; }
+/* Seitenleiste des Editors: eine Karte mit drei Reitern (Details · Probleme · Zuordnen); bleibt beim Scrollen stehen */
+.seitenleiste { position: sticky; top: 0; display: flex; flex-direction: column; max-height: calc(100vh - var(--kopf-h) - 24px); background: var(--panel); border: 1px solid var(--karte-rand); border-radius: var(--r2); box-shadow: var(--sh-1); min-width: 0; }
+.sl-tabs { display: flex; gap: 2px; padding: 6px 6px 0; border-bottom: 1px solid var(--line2); flex: none; }
+.sl-tab { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 6px 8px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer; border-radius: var(--r1) var(--r1) 0 0; white-space: nowrap; transition: color var(--tempo), background-color var(--tempo), border-color var(--tempo); }
+.sl-tab:hover { color: var(--text); background: var(--flaeche-2); }
+.sl-tab.aktiv { color: var(--accent-d); border-bottom-color: var(--accent); }
+.sl-tab .badge { padding: 0 6px; font-size: 11px; }
+.sl-zu { display: none; align-self: center; }
+.sl-panel { overflow: auto; padding: 12px; min-height: 0; flex: 1 1 auto; }
+.seitenleiste .karte { padding: 0; background: none; border: 0; box-shadow: none; border-radius: 0; }
+.seitenleiste h3 { margin: 0 0 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.probleme .pstand { display: flex; align-items: center; gap: var(--a2); flex-wrap: wrap; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--line2); }
+.probleme .pstand button.badge { border: 0; cursor: pointer; font: inherit; font-size: var(--f-xs); font-weight: 600; }
+.probleme .pstrafe { margin-left: auto; color: var(--muted); font-size: var(--f-xs); }
+.probleme .pstrafe b { color: var(--text); font-size: var(--f-s); }
+.probleme .vliste { max-height: none; }
+.editor.parallel .seitenleiste { position: static; max-height: none; }
+.editor.parallel .sl-panel { max-height: 420px; }
+.ressourcen h4 { margin: 8px 0 3px; font-size: 13px; }
+.ressourcen .reskopf { padding: 4px 0 6px; border-bottom: 1px solid var(--line2); margin-bottom: 4px; }
+.ressourcen .resband { margin: 6px 0; padding: 6px 8px; }
+.resliste { list-style: none; margin: 0 0 4px; padding: 0; max-height: 230px; overflow: auto; }
+.res .resknopf { display: grid; grid-template-columns: 16px 1fr auto; gap: 0 6px; width: 100%; text-align: left; border: 0; background: none; padding: 3px 4px; border-radius: 5px; cursor: pointer; color: var(--text); font-size: 12.5px; }
+.res .resknopf:hover:not(:disabled) { background: var(--accent-weak); }
+.res .resknopf:disabled { cursor: default; opacity: 1; color: var(--text); }
+.res .rsym { font-weight: 700; }
+.res.ok .rsym { color: var(--ok); } .res.warn .rsym { color: var(--a-gelb); } .res.nein .rsym { color: var(--err); } .res.aktuell .rsym { color: var(--accent-d); }
+.res .rname { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.res.nein .rname { font-weight: 500; color: var(--muted); }
+.res .rrang { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.res .rgrund { grid-column: 2 / -1; font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+.res.nein .rgrund { color: var(--err-text); } .res.warn .rgrund { color: var(--warn-text); }
+.ressourcen details summary { cursor: pointer; color: var(--muted); padding: 2px 0; }
+.resabschnitt.blitz { animation: blitz 1.2s ease-out; }
+.zelle.gewaehlt { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--accent-weak); }
+/* Ablage als Dock unter dem Plan: eine Reihe, horizontal scrollbar, einklappbar; bleibt am unteren Rand sichtbar */
+.ablagedock { position: sticky; bottom: 0; z-index: 4; background: var(--panel); border: 1.5px dashed var(--line-stark); border-radius: var(--r2); padding: 6px 8px; box-shadow: 0 -4px 14px rgba(22, 32, 58, .08); }
+.ablagedock .adkopf { display: flex; align-items: center; gap: var(--a2); flex-wrap: wrap; min-height: 28px; }
+.ablagedock .adkopf label.check { margin-left: var(--a2); }
+.ablagereihe { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; padding: 6px 2px 4px; min-height: 54px; align-items: stretch; scrollbar-width: thin; }
+.ablagereihe > .muted { align-self: center; }
+.ablage.drueber { border-color: var(--accent); border-style: solid; background: var(--accent-weak); }
+.ablage .kachel { position: relative; flex: none; width: 124px; min-height: 42px; }
+@media (max-width: 900px) { .ablagedock .adtext, .ablagedock .adhin { display: none; } }
+.vliste { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; font-size: 12.5px; }
+.vliste li { padding: 5px 6px; border-bottom: 1px solid var(--line2); display: flex; gap: 6px; cursor: pointer; border-radius: 4px; }
+.vliste li:hover { background: var(--grau); }
+.vliste .sym { flex: none; font-weight: 700; }
+.vliste .sym.h { color: var(--err); } .vliste .sym.w { color: var(--warn); }
+

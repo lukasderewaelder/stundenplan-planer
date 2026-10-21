@@ -1,0 +1,55 @@
+/* ===================== BERECHNUNG ===================== */
+.fortschritt { height: 10px; background: var(--grau); border-radius: 5px; overflow: hidden; }
+.fortschritt > div { height: 100%; background: var(--accent); transition: width .2s; }
+.kennzahlen { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 12px 0; }
+.kennzahl { background: var(--flaeche-2); border-radius: 6px; padding: 8px 10px; }
+.kennzahl .w { font-size: 18px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kennzahl .n { font-size: 12px; color: var(--muted); }
+canvas.kurve { width: 100%; height: 180px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+.zwei { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 1350px) { .zwei { grid-template-columns: 1fr; } }
+.mini-plan .plangrid .kachel { font-size: 10.5px; padding: 1px 3px; cursor: default; }
+.mini-plan .plangrid .kachel .f { font-size: 11px; }
+
+/* Regeln */
+/* Regelseite: Themenkarten, je Regel Name + Erklärung · Einstellung · Verstöße */
+.regelkopf { display: flex; flex-wrap: wrap; gap: var(--a3) var(--a5); align-items: center; justify-content: space-between; }
+.regelkopf .legende { display: flex; flex-wrap: wrap; gap: var(--a2) var(--a5); color: var(--muted); font-size: var(--f-xs); }
+.regelkopf .legende > span { display: inline-flex; align-items: center; gap: var(--a2); }
+.regelthema > h2 { display: flex; align-items: center; gap: var(--a2); margin: 0 0 var(--a1); }
+.regelthema > h2 .icon { color: var(--accent); }
+.regelthema > h2 .muted { font-weight: 400; margin-left: var(--a1); }
+.regelthema > h3 { margin: var(--a4) 0 0; font-size: var(--f-xs); font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-bottom: var(--a1); border-bottom: 1px solid var(--line); }
+.regel { display: grid; grid-template-columns: minmax(0, 1fr) 290px 84px; gap: var(--a2) var(--a5); align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line2); }
+.regel:last-child { border-bottom: 0; padding-bottom: 0; }
+.regelthema.ohnezahl .regel { grid-template-columns: minmax(0, 1fr) 290px; }
+.regelthema.ohnezahl .regel .rzahl { display: none; }
+.regel .rname { display: flex; align-items: center; gap: 2px; }
+.regel .txt { font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.regel .rsteuer { display: flex; flex-direction: column; gap: var(--a2); align-items: flex-start; }
+.regel .rzusatz { margin-top: 6px; display: flex; flex-wrap: wrap; gap: var(--a2) var(--a4); align-items: center; }
+.regel .rzusatz:has(> .zeile) { display: block; }
+.regel .rfeld { display: inline-flex; align-items: center; gap: var(--a2); font-size: 13px; color: var(--text-2); }
+.regel .rfeld input { width: 62px; }
+.pflichtmarke, .wunschmarke { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 12px; font-size: var(--f-xs); font-weight: 650; white-space: nowrap; }
+.pflichtmarke { background: var(--grau); color: var(--text-2); }
+.wunschmarke { background: var(--accent-weak); color: var(--accent-text); }
+.rzahl { justify-self: end; display: inline-flex; flex-direction: column; align-items: flex-end; font-weight: 700; font-size: var(--f-m); line-height: 1.15; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.rzahl > span { font-size: 11px; font-weight: 500; color: var(--muted); }
+.rzahl.leer { color: var(--muted); font-weight: 400; }
+.rzahl.err { color: var(--err); }
+.rzahl.warn { color: var(--warn); }
+/* Regler „unwichtig … sehr wichtig“ */
+.gregler { display: flex; align-items: flex-start; gap: var(--a3); width: 100%; }
+.gregler .gskala { flex: 1 1 auto; min-width: 0; }
+.gregler input[type=range] { width: 100%; margin: 0; height: 20px; }
+.gregler .genden { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: -1px; }
+.gregler .gwert { flex: none; width: 96px; display: flex; flex-direction: column; line-height: 1.2; }
+.gregler .gwert b { font-size: var(--f-m); font-variant-numeric: tabular-nums; }
+.gregler .gwert span { font-size: 11.5px; color: var(--muted); }
+.segment.klein label { min-height: 28px; padding: 0 12px; font-size: 13px; }
+.regelmarke { display: inline-block; padding: 0 7px; border-radius: 9px; background: var(--grau); color: var(--text-2); font-size: 11.5px; font-weight: 600; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+@media (max-width: 1000px) { .regel { grid-template-columns: minmax(0, 1fr) 84px; } .regel .rsteuer { grid-column: 1 / -1; grid-row: 2; max-width: 360px; } .regelthema.ohnezahl .regel { grid-template-columns: minmax(0, 1fr); } }
+.balken { height: 14px; background: var(--grau); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.balken > div { height: 100%; background: var(--accent); }
+

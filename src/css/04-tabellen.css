@@ -1,0 +1,57 @@
+/* ===================== TABELLEN ===================== */
+.tabwrap { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: visible; }
+table.tab { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13.5px; }
+table.tab th, table.tab td { padding: 4px 6px; border-bottom: 1px solid var(--line2); text-align: left; vertical-align: middle; }
+table.tab thead th { position: sticky; top: calc(var(--pad-o) * -1); background: var(--flaeche-2); z-index: 2; font-weight: 600; font-size: 12.5px; color: var(--text-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.tab thead th.sort { cursor: pointer; user-select: none; }
+table.tab thead th.sort:hover { color: var(--accent); }
+table.tab tbody tr:hover td { background: var(--flaeche-2); }
+table.tab tbody tr.markiert td { background: var(--warn-bg); }
+table.tab tbody tr.gewaehlt td { background: var(--accent-weak); }
+.auswahlleiste { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 8px 12px; margin: 0 0 8px; background: var(--accent-weak); border: 1px solid var(--accent-rand); border-radius: 8px; position: sticky; top: calc(var(--pad-o) * -1); z-index: 4; }
+table.tab td input[type=text] { width: 100%; min-width: 80px; }
+table.tab td input[type=number] { width: 60px; }
+table.tab td .zeile.eng { flex-wrap: nowrap; }
+table.tab td.aktion { white-space: nowrap; text-align: right; width: 1%; }
+table.tab td.zahl, table.tab th.zahl { text-align: right; }
+table.tab input.fehler { border-color: var(--err); background: var(--err-bg); }
+/* Alle Übersichten: kompakter Filter + Sortierung per Tabellenkopf. Bearbeitbare Stammdatentabellen besitzen bereits eigene Werkzeuge. */
+.uebersicht-filter { display:flex; gap:6px; align-items:center; margin:6px 0; }
+.uebersicht-filter input[type=search] { width:min(320px, 100%); }
+table.tab thead th.auto-sort { cursor:pointer; user-select:none; }
+table.tab thead th.auto-sort:hover { color:var(--accent); }
+table.tab thead th.auto-sort[data-richtung="1"]::after { content:" ▲"; font-size:10px; color:var(--accent); }
+table.tab thead th.auto-sort[data-richtung="-1"]::after { content:" ▼"; font-size:10px; color:var(--accent); }
+.tabelle-werkzeuge { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.tabelle-werkzeuge input[type=search] { width: 220px; }
+
+/* Matrix (Unterrichtsverteilung, Stundentafel) */
+table.matrix { border-collapse: separate; border-spacing: 0; font-size: 12.5px; background: var(--panel); }
+table.matrix th, table.matrix td { border-right: 1px solid var(--line2); border-bottom: 1px solid var(--line2); padding: 3px 4px; text-align: center; }
+table.matrix thead th { position: sticky; top: calc(var(--pad-o) * -1); background: var(--flaeche-2); z-index: 2; }
+table.matrix th.zeilenkopf { position: sticky; left: 0; background: var(--flaeche-2); z-index: 1; text-align: left; white-space: nowrap; box-shadow: 1px 0 0 var(--line); }
+table.matrix thead th.zeilenkopf { z-index: 3; }
+table.matrix td.zelle { min-width: 74px; cursor: pointer; }
+table.matrix td.zelle:hover { background: var(--accent-weak); }
+table.matrix td.leer { color: var(--line-stark); }
+table.matrix td.fehlt { background: var(--warn-bg); }
+table.matrix input[type=number] { width: 44px; padding: 3px 4px; text-align: center; }
+table.matrix select { width: 62px; padding: 2px 2px; font-size: 12px; }
+.fachpunkt { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
+
+/* Verfügbarkeitsmatrix */
+.verf { border-collapse: separate; border-spacing: 2px; user-select: none; }
+.verf th { font-size: 12px; font-weight: 600; padding: 2px 6px; cursor: pointer; color: var(--text-2); }
+.verf th:hover { color: var(--accent); }
+.verf td { width: 44px; height: 30px; border: 1px solid var(--line); border-radius: 4px; text-align: center; cursor: pointer; font-size: 14px; font-weight: 700; }
+.verf td.v1 { background: var(--panel); color: var(--line-stark); }
+.verf td.v0 { background: var(--err-bg2); color: var(--err-text); }
+.verf td.v2 { background: var(--ok-bg2); color: var(--ok-text); }
+.verf td.vm { background: var(--warn-bg2); color: var(--warn-text); }
+.verf td.pause { background: repeating-linear-gradient(45deg, var(--grau), var(--grau) 4px, var(--flaeche-2) 4px, var(--flaeche-2) 8px); cursor: default; border-color: transparent; }
+.legende { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12.5px; align-items: center; }
+.legende span.k { display: inline-block; width: 18px; height: 16px; border-radius: 3px; border: 1px solid var(--line); vertical-align: middle; margin-right: 4px; text-align: center; font-size: 11px; font-weight: 700; line-height: 14px; }
+.miniverf { display: inline-grid; gap: 1px; vertical-align: middle; cursor: pointer; padding: 2px; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); }
+.miniverf i { width: 5px; height: 5px; display: block; background: var(--grau); }
+.miniverf i.v0 { background: var(--a-rot); } .miniverf i.v2 { background: var(--a-gruen); } .miniverf i.vm { background: var(--a-gelb); } .miniverf i.p { background: transparent; }
+

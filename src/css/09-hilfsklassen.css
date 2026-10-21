@@ -1,0 +1,11 @@
+/* ===================== KLEINE HILFSKLASSEN, TERMINZEILEN ===================== */
+.mitte { text-align: center; }
+.fehlertext { color: var(--err); }
+table.tab tfoot td { border-top: 2px solid var(--line); background: var(--grau); }
+.aufsichtzeile { font-size: 12.5px; margin-top: 8px; padding: 6px 8px; background: var(--flaeche-2); border: 1px solid var(--line2); border-radius: 6px; }
+.druckseite .aufsichtzeile { font-size: 9pt; margin-top: 3px; padding: 2px 0; background: none; border: 0; }
+/* Springer */
+table.tab.bedarf th.springer, table.tab.bedarf td.springer { background: var(--orange-bg); }
+.druckseite.fliessend .df span:last-child { font-style: italic; }
+@media screen { #inhalt .druckseite.fliessend { min-height: 0; } }
+

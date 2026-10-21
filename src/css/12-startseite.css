@@ -1,0 +1,56 @@
+/* ===================== STARTSEITE „ÜBERSICHT“ ===================== */
+.eyebrow { font-size: var(--f-xs); font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--accent); }
+.btn.gross { min-height: 44px; padding: 10px 20px; font-size: var(--f-m); border-radius: var(--r2); }
+.btn.gross .icon { margin-right: -4px; }
+.startgrid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: var(--a4); margin-bottom: var(--a4); align-items: stretch; }
+.startgrid > .karte + .karte { margin-top: 0; }
+.naechster { padding: var(--a5) 28px; border: 1px solid var(--accent-rand); background: linear-gradient(120deg, var(--accent-weak), var(--panel) 62%); display: flex; flex-direction: column; justify-content: center; gap: var(--a1); }
+.naechster h2 { font-size: var(--f-xl); line-height: 1.2; letter-spacing: -.015em; margin: 2px 0 0; font-weight: 700; }
+.naechster p { max-width: 62ch; color: var(--text-2); font-size: 15px; margin: var(--a2) 0 var(--a4); }
+.naechster.err { border-color: var(--err-rand); background: linear-gradient(120deg, var(--err-bg), var(--panel) 62%); }
+.naechster.err .eyebrow { color: var(--err); }
+.naechster.ok { border-color: var(--ok-rand); background: linear-gradient(120deg, var(--ok-bg), var(--panel) 62%); }
+.naechster.ok .eyebrow { color: var(--ok); }
+.startampel { display: flex; flex-direction: column; gap: var(--a2); }
+.startampel .sakopf { display: flex; align-items: center; gap: var(--a3); }
+.startampel h2 { margin: 0; font-size: var(--f-l); }
+.startampel p { margin: 0; }
+.ampel.gross { width: 30px; height: 30px; border-width: 0; box-shadow: 0 0 0 5px var(--grau); }
+.ampel.gross.gruen { box-shadow: 0 0 0 5px var(--ok-bg); } .ampel.gross.gelb { box-shadow: 0 0 0 5px var(--warn-bg); } .ampel.gross.rot { box-shadow: 0 0 0 5px var(--err-bg); }
+.saok { color: var(--ok); font-weight: 600; }
+.startampel .zeile { margin-top: auto; padding-top: var(--a2); }
+.fortschritt.schmal { height: 6px; border-radius: 3px; margin-bottom: var(--a2); }
+.stepper { list-style: none; margin: 0; padding: 0; }
+.stepper li + li { border-top: 1px solid var(--line2); }
+.schritt { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto 18px; gap: var(--a3); align-items: center; width: 100%; padding: 10px var(--a2); margin: 0; border: 0; background: none; text-align: left; cursor: pointer; border-radius: var(--r1); color: var(--text); transition: background-color var(--tempo); }
+.schritt:hover { background: var(--flaeche-2); }
+.schritt .snr { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; background: var(--grau); color: var(--muted); }
+.schritt .snr .icon { width: 16px; height: 16px; stroke-width: 2.4; vertical-align: 0; }
+.schritt.fertig .snr { background: var(--ok-bg); color: var(--ok); }
+.schritt.offen .snr { background: var(--panel); color: var(--accent-d); box-shadow: inset 0 0 0 2px var(--accent); }
+.schritt.offen.schwer .snr { background: var(--err-bg); color: var(--err); box-shadow: inset 0 0 0 2px var(--err); }
+.schritt .stext { display: flex; flex-direction: column; min-width: 0; }
+.schritt .stext b { font-weight: 650; }
+.schritt .sinfo { color: var(--muted); font-size: 13px; }
+.schritt .sstatus { font-size: var(--f-xs); font-weight: 650; padding: 1px 9px; border-radius: 10px; background: var(--grau); color: var(--muted); white-space: nowrap; }
+.schritt.fertig .sstatus { background: var(--ok-bg); color: var(--ok); }
+.schritt.offen .sstatus { background: var(--accent-weak); color: var(--accent-text); }
+.schritt.offen.schwer .sstatus { background: var(--err-bg); color: var(--err); }
+.schritt .spfeil { color: var(--line-stark); display: flex; }
+.schritt:hover .spfeil { color: var(--accent); }
+.startlokal { display: flex; align-items: center; gap: 6px; margin-top: var(--a4); }
+.starthero { max-width: 760px; margin: var(--a5) 0 var(--a5); }
+.starthero h1 { font-size: var(--f-xl); letter-spacing: -.02em; }
+.starthero p { font-size: var(--f-m); color: var(--text-2); margin-top: var(--a2); }
+.startwahlen { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--a4); max-width: 1040px; }
+.startwahlen > .karte + .karte { margin-top: 0; }
+.startwahl { display: flex; flex-direction: column; align-items: flex-start; gap: var(--a1); padding: var(--a5); }
+.startwahl h2 { margin: var(--a2) 0 0; }
+.startwahl p { flex: 1 1 auto; margin: 0 0 var(--a3); }
+.startwahl .swsym { width: 44px; height: 44px; border-radius: var(--r2); display: inline-flex; align-items: center; justify-content: center; background: var(--grau); color: var(--text-2); }
+.startwahl .swsym .icon { width: 22px; height: 22px; vertical-align: 0; }
+.startwahl.haupt { border-color: var(--accent-rand); }
+.startwahl.haupt .swsym { background: var(--accent-weak); color: var(--accent-d); }
+@media (max-width: 980px) { .startgrid { grid-template-columns: minmax(0, 1fr); } .naechster h2 { font-size: 24px; } }
+@media (max-width: 640px) { .schritt { grid-template-columns: 34px minmax(0, 1fr) 18px; } .schritt .sstatus { grid-column: 2; justify-self: start; } .schritt .spfeil { grid-row: 1; grid-column: 3; } }
+

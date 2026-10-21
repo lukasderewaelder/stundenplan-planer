@@ -1,0 +1,40 @@
+/* ===================== BERECHNUNGSSEITE: großer Fortschritt, Ergebnis, Technik eingeklappt ===================== */
+.rhero { padding: var(--a5) 28px; display: flex; flex-direction: column; gap: var(--a3); border: 1px solid var(--accent-rand); background: linear-gradient(120deg, var(--accent-weak), var(--panel) 60%); }
+.rhero .rkopf { display: flex; align-items: center; gap: var(--a4); }
+.rhero h2 { margin: 2px 0 0; font-size: 26px; line-height: 1.2; letter-spacing: -.015em; font-weight: 700; }
+.rhero .rprozent { margin-left: auto; font-size: 40px; font-weight: 700; letter-spacing: -.03em; color: var(--accent-d); font-variant-numeric: tabular-nums; line-height: 1; }
+.rhero .rstatus { margin: 0; font-size: 15px; color: var(--text-2); max-width: 80ch; min-height: 22px; }
+.fortschritt.gross { height: 14px; border-radius: 7px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--accent-rand); }
+.fortschritt.gross > div { border-radius: 7px; }
+.rhero .rsymbol { flex: none; width: 48px; height: 48px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--panel); }
+.rhero .rsymbol .icon { width: 26px; height: 26px; vertical-align: 0; stroke-width: 2.2; }
+.rhero.ergebnis.ok { border-color: var(--ok-rand); background: linear-gradient(120deg, var(--ok-bg), var(--panel) 60%); }
+.rhero.ergebnis.ok .eyebrow, .rhero.ergebnis.ok .rsymbol { color: var(--ok); }
+.rhero.ergebnis.warn { border-color: var(--warn-rand); background: linear-gradient(120deg, var(--warn-bg), var(--panel) 60%); }
+.rhero.ergebnis.warn .eyebrow, .rhero.ergebnis.warn .rsymbol { color: var(--warn); }
+.rhero.ergebnis.err { border-color: var(--err-rand); background: linear-gradient(120deg, var(--err-bg), var(--panel) 60%); }
+.rhero.ergebnis.err .eyebrow, .rhero.ergebnis.err .rsymbol { color: var(--err); }
+.rschritte { list-style: none; margin: var(--a1) 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--a2); }
+.rschritt { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 2px var(--a2); align-items: center; padding: 8px 10px; border-radius: var(--r1); background: var(--panel); border: 1px solid var(--line2); color: var(--muted); font-weight: 600; font-size: 13px; }
+.rschritt .rnr { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--grau); font-size: 12px; font-weight: 700; }
+.rschritt .rnr .icon { display: none; width: 14px; height: 14px; vertical-align: 0; stroke-width: 2.6; }
+.rschritt .rinfo { grid-column: 2; font-weight: 400; font-size: var(--f-xs); color: var(--muted); }
+.rschritt.aktiv { color: var(--accent-d); border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+.rschritt.aktiv .rnr { background: var(--primaer-bg); color: var(--primaer-text); animation: rpuls 1.4s ease-in-out infinite; }
+@keyframes rpuls { 0%, 100% { box-shadow: 0 0 0 0 var(--ring); } 50% { box-shadow: 0 0 0 6px transparent; } }
+.rschritt.fertig { color: var(--text); }
+.rschritt.fertig .rnr { background: var(--ok-bg); color: var(--ok); }
+.rschritt.fertig .rnr .icon { display: block; }
+.rschritt.fertig .rnr .rzahlnr { display: none; }
+.rschritt.fertig.offen .rnr { background: var(--err-bg); color: var(--err); }
+.rschritt.fertig.offen .rinfo { color: var(--err-text); }
+details.technik { padding: 0; }
+details.technik > summary { display: flex; align-items: center; gap: var(--a3); padding: 14px 20px; cursor: pointer; font-weight: 650; list-style: none; border-radius: var(--r2); }
+details.technik > summary::-webkit-details-marker { display: none; }
+details.technik > summary::before { content: ''; flex: none; width: 7px; height: 7px; border-right: 1.8px solid var(--muted); border-bottom: 1.8px solid var(--muted); transform: rotate(-45deg); transition: transform var(--tempo); }
+details.technik[open] > summary::before { transform: translateY(-2px) rotate(45deg); }
+details.technik > summary:hover { background: var(--flaeche-2); }
+details.technik > summary .muted { font-weight: 400; }
+details.technik .technikinhalt { padding: 4px 20px 20px; border-top: 1px solid var(--line2); }
+@media (max-width: 900px) { .rschritte { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rhero { padding: var(--a4); } .rhero h2 { font-size: 22px; } .rhero .rprozent { font-size: 30px; } }
+

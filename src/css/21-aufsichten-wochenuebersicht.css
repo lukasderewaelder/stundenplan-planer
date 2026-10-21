@@ -1,0 +1,52 @@
+/* ===================== AUFSICHTEN: Wochenübersicht des Bedarfs ===================== */
+.bedarfvorbereitung { margin-bottom: 12px; }
+.bedarfvorbereitung > summary { cursor: pointer; list-style-position: inside; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 36px; }
+.bedarfvorbereitung[open] > summary { margin-bottom: 6px; }
+.bv-raster { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 28px; }
+.bv-raster h3 { margin: 6px 0 8px; font-size: var(--f-m); }
+@media (min-width: 1000px) { .bv-raster { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.springerfeld { gap: 6px; padding: 2px 0; }
+.bedarflayout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: start; margin-bottom: 10px; }
+@media (min-width: 1480px) { .bedarflayout { grid-template-columns: minmax(0, 1fr) minmax(440px, 42%); } .bedarfseite { position: sticky; top: calc(var(--kopf-h) + 10px); max-height: calc(100vh - var(--kopf-h) - 20px); overflow: auto; } }
+.bedarfmatrix-karte { min-width: 0; }
+table.bedarfmatrix { border-collapse: separate; border-spacing: 0; width: 100%; font-size: var(--f-s); }
+table.bedarfmatrix th, table.bedarfmatrix td { padding: 3px 4px; vertical-align: middle; }
+table.bedarfmatrix thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; font-size: var(--f-xs); color: var(--text-2); font-weight: 600; text-align: left; border-bottom: 1px solid var(--line); }
+table.bedarfmatrix th.bm-tag { text-align: center; min-width: 76px; }
+table.bedarfmatrix th.bm-tag.aktiv { color: var(--accent-d); }
+.bm-tagknopf { width: 100%; min-height: 36px; border: 0; background: none; font: inherit; font-weight: 700; color: inherit; cursor: pointer; border-radius: var(--r1); }
+.bm-tagknopf:hover, .bm-tag.aktiv .bm-tagknopf { background: var(--accent-weak); }
+table.bedarfmatrix th.bm-name { width: 190px; min-width: 150px; text-align: left; font-weight: 400; background: var(--flaeche-2); border-right: 1px solid var(--line2); }
+table.bedarfmatrix th.bm-name b { display: block; font-size: var(--f-s); line-height: 1.25; }
+table.bedarfmatrix thead th.bm-name { background: var(--panel); border-right: 0; }
+table.bedarfmatrix td.bm-bereich { width: 150px; min-width: 110px; white-space: nowrap; }
+table.bedarfmatrix tbody.bm-gruppe tr.erste > * { border-top: 2px solid var(--line); }
+table.bedarfmatrix tbody.bm-gruppe tr:not(.erste) > td { border-top: 1px dashed var(--line2); }
+.bm-ber { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text); }
+.bm-punkt { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.bm-feld { display: grid; gap: 3px; width: 100%; min-height: 44px; padding: 4px 6px; border: 1px solid var(--line); border-left-width: 3px; border-radius: var(--r1); background: var(--panel); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: background-color var(--tempo), border-color var(--tempo); }
+.bm-feld + .bm-feld { margin-top: 3px; }
+.bm-feld:hover { background: var(--grau); }
+.bm-feld.ok { border-left-color: var(--ok); }
+.bm-feld.warn { border-left-color: var(--warn); }
+.bm-feld.err { border-left-color: var(--err); }
+.bm-feld.gewaehlt { background: var(--accent-weak); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.mt { display: flex; align-items: flex-end; gap: 1px; height: 14px; }
+.mt-s { display: block; min-width: 3px; border-radius: 2px 2px 0 0; background: var(--accent-rand); }
+.mt-s.ok { background: var(--ok); opacity: .75; } .mt-s.warn { background: var(--warn); } .mt-s.err { background: var(--err); opacity: .8; } .mt-s.neutral { background: var(--accent); opacity: .45; }
+.bm-text { display: flex; align-items: baseline; gap: 6px; font-size: 12px; line-height: 1.2; }
+.bm-soll { font-weight: 700; }
+.bm-ist { margin-left: auto; color: var(--text-2); white-space: nowrap; }
+.bm-feld.err .bm-ist { color: var(--err-text); font-weight: 700; } .bm-feld.warn .bm-ist { color: var(--warn-text); font-weight: 700; } .bm-feld.ok .bm-ist { color: var(--ok-text); }
+.bm-marke { color: var(--muted); }
+.bm-neu { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; border: 1px dashed var(--line); border-radius: var(--r1); background: none; color: var(--muted); cursor: pointer; }
+.bm-neu:hover, .bm-neu:focus-visible { border-color: var(--accent); color: var(--accent-d); background: var(--accent-weak); }
+.bm-legende { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+.bm-l { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-left: 6px; }
+.bm-l.ok { background: var(--ok); } .bm-l.warn { background: var(--warn); } .bm-l.err { background: var(--err); }
+.bedarfdetail .bd-kopf { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.bedarfdetail:focus { outline: none; }
+.bedarfdetail:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media print { .bedarfmatrix-karte .bm-neu { display: none; } }
+.bedarfvorbereitung > summary::before { content: '▸'; color: var(--muted); width: 12px; display: inline-block; }
+.bedarfvorbereitung[open] > summary::before { content: '▾'; }

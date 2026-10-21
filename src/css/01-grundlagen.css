@@ -1,0 +1,39 @@
+/* ===================== GRUNDLAGEN ===================== */
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font: var(--f-s)/1.45 var(--schrift); color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1 { font-size: var(--f-l); line-height: 1.25; margin: 0 0 var(--a1); font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: var(--f-m); line-height: 1.3; margin: var(--a5) 0 var(--a2); font-weight: 650; }
+h3 { font-size: var(--f-s); line-height: 1.35; margin: var(--a4) 0 6px; font-weight: 650; }
+p { margin: 6px 0; }
+a { color: var(--accent); }
+.linkknopf { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-align: left; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.linkknopf:hover { color: var(--accent-d); text-decoration-style: solid; }
+.badge.klickbar { cursor: pointer; }
+.badge.klickbar:hover, .badge.klickbar:focus-visible { text-decoration: underline; }
+/* Arbeitszeitnachweis je Person */
+.aznachweis-wrap .azabschnitt { margin-top: 14px; }
+.aznachweis-wrap .azabschnitt h3 { margin: 0 0 6px; }
+.aznachweis-wrap table.aznachweis { width: 100%; }
+.aznachweis-wrap table.aznachweis td.zahl, .aznachweis-wrap table.aznachweis th.zahl { white-space: nowrap; }
+.druckseite .aznachweis-wrap .azabschnitt { margin-top: 3mm; break-inside: avoid; }
+@media print { .druckseite.neueseite { break-before: page; } }
+.druckseite .aznachweis-wrap h3 { font-size: 10.5pt; margin: 0 0 1mm; }
+.druckseite .aznachweis-wrap p { font-size: 9pt; margin: 1mm 0; }
+.muted { color: var(--muted); }
+.klein { font-size: var(--f-xs); }
+.mono { font-family: var(--mono); }
+.zeile { display: flex; gap: var(--a2); align-items: center; flex-wrap: wrap; }
+.zeile.eng { gap: var(--a1); }
+.abstand { height: var(--a4); }
+.rechts { margin-left: auto; }
+.nowrap { white-space: nowrap; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+::selection { background: var(--accent-rand); }
+
+/* Icons: Inline-SVG aus dem Sprite (siehe icon() im Skript) */
+svg.icon { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; vertical-align: -4px; pointer-events: none; }
+svg.icon.k { width: 14px; height: 14px; vertical-align: -2px; stroke-width: 1.9; }
+

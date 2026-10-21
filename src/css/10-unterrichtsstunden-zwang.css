@@ -1,0 +1,303 @@
+/* ===================== Unterrichtsstunden, Zwang, Editor-Erweiterungen ===================== */
+.stdchip { position: relative; border: 1px solid var(--line); background: var(--panel); border-radius: 12px; padding: 2px 9px; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
+.stdchip.ok { background: var(--ok-bg); border-color: var(--ok-rand); color: var(--ok-text); }
+.stdchip.warn { background: var(--warn-bg); border-color: var(--warn-rand); color: var(--warn-text); }
+.stdchip.err { background: var(--err-bg); border-color: var(--err-rand); color: var(--err-text); }
+.stdchip:hover { filter: brightness(.97); }
+.stdchip::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 36px; transform: translateY(-50%); } /* größere Trefferfläche */
+select.zwang { border-color: var(--a-gelb); background: var(--warn-bg); }
+.plangrid .zelle.schluss { background: repeating-linear-gradient(45deg, var(--grau), var(--grau) 6px, var(--line) 6px, var(--line) 8px); }
+.kachel, .pchip { touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none; }
+.kachel.fest { cursor: pointer; }
+body.am-ziehen, body.am-ziehen * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.zuggeist { position: fixed !important; left: 0 !important; top: 0 !important; z-index: 9999; pointer-events: none; opacity: .92; box-shadow: 0 6px 18px rgba(20,30,50,.28); transition: none; }
+.kachel.ziel-ok { outline: 2px solid var(--a-gruen); outline-offset: -1px; }
+.kachel.ziel-weich { outline: 2px dashed var(--a-gelb); outline-offset: -1px; }
+.kachel.ziel-hart { opacity: .45; }
+.kachel.drueber { outline-width: 3px; box-shadow: 0 0 0 3px rgba(47,86,201,.25); }
+.palette { display: flex; flex-wrap: wrap; gap: 5px; max-height: 190px; overflow: auto; }
+.pchip { display: inline-block; padding: 3px 8px; border-radius: 12px; border: 1px solid var(--accent-rand); background: var(--accent-weak); font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.pchip.co { background: var(--panel); border-style: dashed; font-style: italic; }
+.pchip.raum { background: var(--orange-bg); border-color: var(--orange-rand); font-weight: 500; }
+.pchip.team { border-color: var(--a-gruen); box-shadow: inset 0 0 0 1px var(--a-gruen); }
+.palette .pgruppe { flex-basis: 100%; font-size: 11px; font-weight: 600; color: var(--muted, var(--muted)); text-transform: none; margin-top: 2px; }
+select.ausserteam { border-style: dashed; }
+.chip.cofach { background: var(--panel); border: 1px dashed var(--line-stark); font-style: italic; }
+.pchip.zuggeist { width: auto !important; height: auto !important; }
+select.wochewahl.aktiv { border-color: var(--accent); background: var(--accent-weak); font-weight: 600; }
+
+input.abgeleitet { background: var(--grau); color: var(--muted); border-style: dashed; }
+tr.pausenzeile td { background: var(--flaeche-2); }
+.plangrid .zeitzelle .pname { font-size: 9.5px; color: var(--muted); line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.plangrid .zeitzelle b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px; display: block; }
+/* Zeitraster: Uhrzeiten als Textfelder, Pausenlücken als Zwischenzeilen */
+input.zeitfeld { width: 74px; font-variant-numeric: tabular-nums; text-align: center; }
+input.zeitfeld.fehler { border-color: var(--err); background: var(--err-bg); }
+table.zeitraster tr.luecke td { background: var(--flaeche-2); padding-top: 3px; padding-bottom: 3px; border-top: 1px dashed var(--line); }
+table.zeitraster .lueckemarke { font-size: 12px; color: var(--accent-d); font-weight: 600; white-space: nowrap; }
+table.zeitraster tr.luecke input { font-size: 12.5px; padding: 3px 6px; }
+
+/* ---------- Aufsichten ---------- */
+#zughinweis { white-space: pre-line; }
+.reiter { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin: 6px 0 14px; flex-wrap: wrap; }
+.reiterknopf { border: 1px solid transparent; border-bottom: 0; background: none; padding: 7px 14px; border-radius: 6px 6px 0 0; cursor: pointer; color: var(--muted); font-weight: 600; display: inline-flex; gap: 6px; align-items: center; margin-bottom: -1px; }
+.reiterknopf:hover { color: var(--text); background: var(--grau); }
+.reiterknopf.aktiv { background: var(--panel); border-color: var(--line); color: var(--accent-d); }
+.bereichsleiste { margin: 0 0 12px; }
+.ampel { display: inline-block; width: 13px; height: 13px; border-radius: 50%; flex: none; border: 1px solid rgba(0,0,0,.25); background: var(--line-stark); }
+.ampel.gruen { background: var(--a-gruen); } .ampel.gelb { background: var(--a-gelb); } .ampel.rot { background: var(--a-rot); }
+.ampelkarte .ampel { width: 18px; height: 18px; }
+.ampelkarte.rot { border-left: 4px solid var(--a-rot); } .ampelkarte.gelb { border-left: 4px solid var(--a-gelb); } .ampelkarte.gruen { border-left: 4px solid var(--a-gruen); }
+.ampelzeile summary { cursor: pointer; display: flex; gap: 8px; align-items: baseline; padding: 2px 0; list-style: none; }
+.ampelzeile summary::-webkit-details-marker { display: none; }
+.ampelzeile ul { margin: 2px 0 6px 28px; padding: 0; }
+.ampelzeile .sym.o { color: var(--ok); font-weight: 700; } .sym.i { color: var(--muted); }
+.bereichsleiste .reiterknopf { padding: 6px 12px; font-size: 13.5px; }
+.bereichsleiste .badge { font-size: 10.5px; padding: 0 5px; }
+#inhalt.voll .bereichsleiste { margin-bottom: 8px; }
+.reiterinhalt > .karte + .karte, .reiterinhalt > .karte + .kennzahlen, .reiterinhalt > .kennzahlen + .karte { margin-top: 14px; }
+.hinweis.zeile { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.typpunkt { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.kennzahl.ok .w { color: var(--ok); } .kennzahl.warn .w { color: var(--warn); } .kennzahl.err .w { color: var(--err); }
+.klickbar { cursor: pointer; }
+.fehlertext { color: var(--err); }
+tr.gedimmt td { color: var(--muted); }
+/* Bedarf */
+table.bedarftab tbody.bedarf { border-top: 2px solid var(--line); }
+table.bedarftab td.bk { vertical-align: top; background: var(--flaeche-2); }
+table.bedarftab tr.grafikzeile td { padding: 4px 6px 10px; border-bottom: 0; }
+table.bedarftab tbody.blitz td { animation: blitz 1.4s ease-out 1; }
+.bedarfgrafik { position: relative; height: 46px; background: var(--flaeche-2); border: 1px solid var(--line2); border-radius: 4px; margin: 0 0 14px; }
+.bg-seg { position: absolute; top: 0; bottom: 0; border-right: 1px dashed var(--line); }
+.bg-soll { position: absolute; left: 0; right: 0; bottom: 0; background: var(--accent-rand); }
+.bg-ist { position: absolute; left: 30%; right: 30%; bottom: 0; background: rgba(23,128,63,.45); }
+.bg-seg.warn .bg-ist { background: rgba(212,160,0,.55); }
+.bg-seg.err .bg-ist, .bg-seg.err .bg-soll { background: rgba(184,50,31,.35); }
+.bg-min { position: absolute; left: 0; right: 0; border-top: 2px solid var(--accent-d); }
+.bg-zahl { position: absolute; top: 2px; left: 3px; font-size: 11px; font-weight: 700; color: var(--accent-text); }
+.bg-achse { position: absolute; bottom: -15px; font-size: 10.5px; color: var(--muted); }
+.bg-achse.l { left: 0; } .bg-achse.r { right: 0; }
+/* Bereiche */
+.bereichchip { background: var(--flaeche-2); border: 1px solid var(--line2); border-radius: 6px; padding: 4px 6px; }
+.gewichte { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px 14px; }
+.gewicht { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.gewicht input { width: 54px; margin-left: auto; }
+.regelliste { font-size: 12.5px; margin: 6px 0 0; padding-left: 18px; }
+.regelliste li { margin-bottom: 3px; }
+/* Timeline */
+.tl-leiste { gap: 10px; margin-bottom: 8px; }
+.tl-tagknopf { position: relative; }
+.tl-tagknopf .punkt { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-left: 3px; }
+.tl-tagknopf .punkt.err { background: var(--err); } .tl-tagknopf .punkt.warn { background: var(--a-gelb); }
+.tl-tagknopf.drueber { outline: 2px solid var(--accent); background: var(--accent-weak); }
+.tl-rahmen { display: flex; gap: 12px; align-items: flex-start; }
+.tl { --tl-stunde: var(--line); --tl-viertel: var(--grau); flex: 1 1 auto; min-width: 0; overflow: auto; max-height: calc(100vh - 230px); min-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); position: relative; }
+.tl-innen { position: relative; }
+.tl-kopfzeile { display: flex; position: sticky; top: 0; z-index: 6; background: var(--panel); border-bottom: 1px solid var(--line); }
+.tl-ecke { position: sticky; left: 0; z-index: 7; background: var(--panel); flex: none; border-right: 1px solid var(--line); font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+.tl-kopf { flex: none; padding: 4px 5px; border-right: 1px solid var(--line2); font-size: 12px; line-height: 1.25; overflow: hidden; }
+.tl-kopf .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-kopf .x { color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-kopf.ausgenommen { background: repeating-linear-gradient(135deg, var(--panel) 0 6px, var(--grau) 6px 12px); }
+.tl-kopf.co .n b { font-style: italic; }
+.tl-kopf .fs { display: inline-block; font-weight: 700; font-size: 10px; border-radius: 3px; padding: 0 3px; margin-left: 3px; color: #fff; }
+.tl-kopf .fs.f { background: var(--a-gelb); } .tl-kopf .fs.s { background: var(--lila-rand); }
+.tl-rumpf { display: flex; position: relative; }
+.tl-achse { position: sticky; left: 0; z-index: 5; background: var(--panel); flex: none; border-right: 1px solid var(--line); }
+.tl-marke { position: absolute; right: 5px; transform: translateY(-50%); font-size: 10.5px; color: var(--muted); }
+.tl-marke.voll { color: var(--text); font-weight: 600; }
+.tl-marke:first-child { transform: none; }
+.tl-marke.voll:first-child { transform: none; }
+.tl-spalte { flex: none; position: relative; border-right: 1px solid var(--line2); }
+.tl-sperre { position: absolute; left: 0; right: 0; background: repeating-linear-gradient(135deg, rgba(148,156,172,.10) 0 5px, rgba(148,156,172,.22) 5px 10px); }
+.tl-sperre.ganz span { position: sticky; top: 40px; display: block; text-align: center; font-size: 11px; color: var(--muted); padding: 8px 4px; }
+.tl-b { position: absolute; left: 2px; right: 2px; border-radius: 3px; background: var(--grau); border-left: 3px solid var(--line-stark); font-size: 10.5px; line-height: 1.2; padding: 1px 3px; overflow: hidden; color: var(--text-2); pointer-events: auto; }
+.tl-b .k { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-b .z { display: block; color: var(--muted); }
+.tl-b .ab { position: absolute; right: 2px; top: 1px; font-weight: 700; font-size: 9.5px; color: var(--accent-d); }
+.tl-b.art-co { background: var(--lila-bg); border-left-style: dashed; }
+.tl-b.art-aufgabe { background: var(--orange-bg); }
+.tl-b.art-gesperrt { background: repeating-linear-gradient(45deg, var(--err-bg) 0 4px, var(--err-bg) 4px 8px); border-left-color: var(--err-rand); color: var(--err-text); }
+.tl-d { position: absolute; border-radius: 4px; border: 1px solid rgba(0,0,0,.12); border-left: 4px solid #999; font-size: 11px; line-height: 1.2; padding: 1px 4px; overflow: hidden; cursor: grab; box-shadow: 0 1px 2px rgba(20,30,50,.12); z-index: 2; touch-action: none; -webkit-user-select: none; user-select: none; color: var(--text); }
+.tl-d:hover { box-shadow: 0 2px 6px rgba(20,30,50,.22); z-index: 3; }
+.tl-d .k { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-d .k .b { font-weight: 400; }
+.tl-d .z { font-size: 10.5px; color: var(--text-2); }
+.tl-d .rh { position: absolute; right: 3px; bottom: 1px; font-size: 9.5px; font-weight: 700; color: var(--accent-d); }
+.tl-d .fx { position: absolute; right: 2px; top: 0; font-size: 10px; }
+.tl-d.fix { cursor: default; border-style: solid; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+.tl-d.auto { border-style: solid; }
+.tl-d.konflikt { outline: 2px solid var(--err); outline-offset: -1px; }
+.tl-d.weich { outline: 1px dashed var(--a-gelb); outline-offset: -1px; }
+.tl-d.ausgewaehlt { box-shadow: 0 0 0 2px var(--accent); z-index: 4; }
+.tl-d.gezogen { opacity: .35; }
+.tl-d.rotation { opacity: .65; border-left-style: dashed; cursor: default; }
+.tl-d.blitz { animation: blitzk 1.4s ease-out 1; }
+.tl-d .griff { position: absolute; left: 0; right: 0; height: 6px; cursor: ns-resize; }
+.tl-d .griff.o { top: -1px; } .tl-d .griff.u { bottom: -1px; }
+.tl-d:hover .griff.o { border-top: 2px solid rgba(47,86,201,.55); } .tl-d:hover .griff.u { border-bottom: 2px solid rgba(47,86,201,.55); }
+.tl-geist { position: absolute; left: 3px; right: 3px; z-index: 8; border-radius: 4px; border: 2px dashed var(--ok); background: rgba(23,128,63,.12); font-size: 10.5px; font-weight: 700; padding: 1px 4px; pointer-events: none; color: var(--ok-text); }
+.tl-geist.weich { border-color: var(--a-gelb); background: rgba(212,160,0,.14); color: var(--warn-text); }
+.tl-geist.hart { border-color: var(--err); background: rgba(184,50,31,.14); color: var(--err-text); }
+.tl-seite { flex: 0 0 250px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 230px); overflow: auto; }
+.tl-seite .karte { padding: 10px 12px; }
+.tl-seite .karte + .karte { margin-top: 0; }
+.tl-seite h3 { margin: 0 0 6px; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.besetzung .bes-block { margin-bottom: 8px; }
+.besetzung .bes-titel { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+.besetzung .bes-zeile { display: flex; gap: 6px; font-size: 12px; padding: 1px 6px; border-radius: 4px; margin-bottom: 1px; }
+.besetzung .bes-zeile b { margin-left: auto; }
+.besetzung .bes-zeile .sym { width: 12px; text-align: center; font-weight: 700; }
+.besetzung .bes-zeile.ok { background: var(--ok-bg); color: var(--ok); }
+.besetzung .bes-zeile.warn { background: var(--warn-bg); color: var(--warn); }
+.besetzung .bes-zeile.err { background: var(--err-bg); color: var(--err); }
+.pchip.offen { border-left-width: 4px; background: var(--panel); border-style: dashed; font-weight: 600; }
+.pchip.offen.min { border-color: var(--err-rand); color: var(--err); }
+.pchip.offen.soll, .pchip.offen.springer { border-color: var(--warn-rand); color: var(--warn); }
+.eignung .eignungzeile { display: flex; gap: 10px; align-items: center; width: 100%; border: 0; border-bottom: 1px solid var(--line2); background: none; padding: 6px 8px; text-align: left; cursor: pointer; font: inherit; }
+.eignung .eignungzeile:hover:not(:disabled) { background: var(--accent-weak); }
+.eignung .eignungzeile:disabled { cursor: not-allowed; opacity: .75; }
+.eignung .eignungzeile .n { color: var(--muted); min-width: 120px; }
+.eignung .eignungzeile .q { margin-left: auto; font-size: 12px; text-align: right; }
+.eignung .eignungzeile.ok .q { color: var(--ok); } .eignung .eignungzeile.weich .q { color: var(--warn); } .eignung .eignungzeile.hart .q { color: var(--err); }
+.eignung .eignungzeile.aktuell { background: var(--flaeche-2); }
+.fairness { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 3px 16px; }
+.fairness .fz { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.fairness .n { width: 34px; font-weight: 600; }
+.fairness .balken { flex: 1; display: flex; height: 10px; background: var(--grau); border-radius: 3px; overflow: hidden; }
+.fairness .f, .leg.f { background: var(--a-gelb); } .fairness .s, .leg.s { background: var(--lila-rand); }
+.fairness .x { width: 64px; text-align: right; color: var(--muted); }
+.leg { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; }
+.dienstzeitknopf { max-width: 230px; overflow: hidden; text-overflow: ellipsis; }
+.profil { border: 1px solid var(--line2); border-radius: 6px; padding: 8px 10px; margin-top: 10px; background: var(--flaeche-2); }
+table.zeitprofil { margin-top: 6px; }
+/* Druck: Dienste */
+.druckseite table.druckliste { width: 100%; border-collapse: collapse; font-size: 9pt; }
+.druckseite table.druckliste th, .druckseite table.druckliste td { border: 1px solid #888; padding: 2px 4px; vertical-align: top; text-align: left; }
+.druckseite table.druckliste th { background: #eee; }
+.druckseite table.druckliste.zahlen td:not(:first-child) { text-align: right; }
+.druckseite .dz { border-left: 3px solid #999; padding-left: 3px; margin: 1px 0; font-size: 8.5pt; overflow-wrap: anywhere; }
+/* Wochenplan der Aufsichten: feste Spaltenbreiten, damit alle Tage auf die Seite passen (Einträge brechen um) */
+.druckseite table.druckliste.woche { table-layout: fixed; }
+.druckseite table.druckliste.woche th:first-child { width: 26mm; }
+.druckseite .bereichblock h3 { font-size: 11pt; margin: 8px 0 3px; }
+/* Gesamtplan je Tag (Druck/PDF): Personen × Uhrzeit. Zeilen wachsen mit dem Text – nichts wird abgeschnitten. --gps skaliert die Schrift beim Einpassen. */
+table.gp { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: calc(7.2pt * var(--gps, 1)); line-height: 1.17; color: #000; background: #fff; }
+table.gp col.gp-zc { width: 10.5mm; }
+table.gp th, table.gp td { padding: 0; vertical-align: top; text-align: left; font-weight: 400; }
+table.gp thead th { border-bottom: 1.2px solid #000; padding: 0 0.8mm 0.8mm; vertical-align: bottom; overflow-wrap: anywhere; }
+table.gp thead th.gp-ecke { font-size: calc(6pt * var(--gps, 1)); color: #444; padding-left: 0; }
+table.gp th.gp-p b { display: block; font-size: calc(9pt * var(--gps, 1)); line-height: 1.1; }
+table.gp th.gp-p .gp-n, table.gp th.gp-p .gp-a { display: block; font-size: calc(6.4pt * var(--gps, 1)); color: #222; }
+table.gp th.gp-p .gp-a { color: #555; }
+table.gp th.gp-p.gp-ext { background: #eaf5ef; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.gp.sw th.gp-p.gp-ext { background: #f0f0f0; }
+table.gp th.gp-p.gp-ext b { font-style: italic; overflow-wrap: anywhere; }
+table.gp tbody th.gp-z { border-top: 0.5px solid #c8c8c8; border-right: 1px solid #000; }
+table.gp .gp-zl { position: relative; height: 0; }
+table.gp .gp-zl span { position: absolute; right: 1mm; top: 0.15mm; font-size: calc(6.4pt * var(--gps, 1)); line-height: 1.05; white-space: nowrap; }
+table.gp tr.gp-schluss td { height: 0; border-top: 1px solid #000; }
+table.gp td.gp-leer { border-left: 0.5px solid #d0d0d0; border-right: 0.5px solid #d0d0d0; }
+table.gp td.gp-b { border: 0.6px solid #555; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.gp td.gp-b.ueber { outline: 1px solid #c62828; outline-offset: -1px; }
+table.gp td.gp-b.eins { border-left: 1.3mm solid #999; }
+table.gp td.gp-b.eins.art-co { border-left-style: dashed; }
+table.gp td.gp-leer.spur { border-left: 0; }
+table.gp td.gp-leer.spur-r { border-right: 0; }
+table.gp td.gp-b.spur .gp-e { -webkit-hyphens: auto; hyphens: auto; }
+table.gp td.gp-b.spur .gp-e { padding-left: 0.5mm; }
+table.gp .gp-e { padding: 0.3mm 0.5mm 0.35mm 0.7mm; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.gp .gp-e .gp-x.blk { display: block; }
+table.gp .gp-e.rot { font-style: italic; }
+table.gp .gp-e b { font-weight: 700; }
+table.gp .gp-e .gp-t { white-space: nowrap; font-size: calc(6.4pt * var(--gps, 1)); }
+table.gp .gp-e .gp-m { display: block; font-size: calc(6.2pt * var(--gps, 1)); font-style: italic; }
+table.gp .gp-e .gp-co { display: inline-block; border: 0.5px solid #000; border-radius: 0.6mm; padding: 0 0.5mm; margin-right: 0.6mm; font-size: calc(5.8pt * var(--gps, 1)); font-weight: 700; line-height: 1.15; }
+.gp-legende { display: flex; flex-wrap: wrap; gap: 0.8mm 4mm; font-size: 7.5pt; margin-top: 1.6mm; align-items: center; color: #000; }
+.gp-legende .gl i { display: inline-block; width: 3.4mm; height: 2.8mm; border: 0.5px solid #666; border-left: 1.2mm solid #999; margin-right: 1mm; vertical-align: -0.5mm; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.gp-legende .gl.notiz { flex-basis: 100%; }
+@media print { .druckseite.gp-lang { height: auto; break-inside: auto; page-break-inside: auto; } }
+@media print { .druckseite.fliessend.lang { break-inside: auto; page-break-inside: auto; } }
+
+/* ---------- Lehrkräfte: kompakte Tabelle ---------- */
+.ansichtwahl { margin-left: 6px; }
+.chip.fachrolle { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; }
+.chip.fachrolle .rolle { font-size: 9.5px; font-weight: 700; letter-spacing: .2px; color: var(--muted); font-style: normal; }
+.chip.fachrolle.cofach .rolle { color: var(--warn-text); }
+.fachknopf { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px; row-gap: 2px; min-width: 120px; max-width: 250px; min-height: 36px; padding: 2px 4px; border: 1px solid transparent; border-radius: 8px; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.fachknopf:hover, .fachknopf:focus-visible { border-color: var(--line); background: var(--panel); }
+.fachknopf .stift { font-size: 12px; color: var(--muted); padding: 0 4px; white-space: nowrap; }
+table.lehrertab th, table.lehrertab td { padding: 3px 4px; }
+table.lehrertab td input[type=text] { min-width: 48px; }
+table.lehrertab td:nth-child(2) input[type=text] { min-width: 104px; }
+table.lehrertab td input[type=number] { width: 60px; }
+.stdpaar { display: inline-flex; flex-direction: column; gap: 2px; }
+.stdpaar input[type=number] { width: 50px !important; padding-top: 2px; padding-bottom: 2px; }
+.rollenmarke { display: inline-block; width: 18px; font-size: 11px; font-weight: 700; color: var(--muted); }
+.kurzknopf { display: inline-flex; flex-direction: column; align-items: flex-start; text-align: left; white-space: normal; line-height: 1.3; font-size: 12px; color: var(--text-2); }
+.kurzknopf span { white-space: nowrap; }
+.kurzknopf .betont { color: var(--accent-d); font-weight: 600; }
+.kurzknopf.dienstzeitknopf { max-width: 124px; overflow: visible; display: inline-block; white-space: normal; }
+table.lehrertab.ansicht-kompakt .badge { font-size: 11.5px; }
+
+/* Zeitprofile: abweichende Uhrzeit an der Kachel, Geltung des Profils */
+.kachel .kzeit { font-weight: 500; font-size: 10px; color: var(--muted); margin-left: 5px; white-space: nowrap; }
+.druckplan .de .zt { font-size: 7.5pt; color: #444; }
+.profilgilt .kurzknopf { flex-direction: row; gap: 14px; align-items: center; }
+.profilgilt .kurzknopf span { white-space: normal; }
+.terminzeile { margin-bottom: 0; }
+
+/* ---------- v10: Verfügbarkeit mit Pausen, Personen-Dialog, Arbeitszeit-Tabellen ---------- */
+.verf tr.pzeile th { font-weight: 500; color: var(--muted); font-size: 11.5px; white-space: nowrap; text-align: right; }
+.verf tr.pzeile td { height: 16px; font-size: 11px; line-height: 14px; border-style: dashed; }
+.verf td.pz.v1 { background: repeating-linear-gradient(45deg, var(--grau), var(--grau) 4px, var(--flaeche-2) 4px, var(--flaeche-2) 8px); color: transparent; }
+.verf td.pz.v0 { background: var(--err-bg2); color: var(--err-text); border-style: solid; }
+.verf tr.pzeile.luecke td { height: 13px; line-height: 11px; }
+.miniverf i.p.v0 { background: var(--a-rot); }
+.persondialog { min-width: 660px; }
+.persondialog .reiter { margin-top: 0; }
+.persondialog h3:first-child { margin-top: 0; }
+.aztab td, .aztab th { white-space: nowrap; }
+.aztab td.zahl input, .grenzentab td input[type=number] { width: 68px; }
+.aztab tr.ueber td { background: var(--err-bg); }
+.aztab.ohnedet .det { display: none; }
+.aztab td.ein .btn + .btn { margin-left: 2px; }
+.grenzentab td, .grenzentab th { vertical-align: top; }
+.stdfeld { display: inline-flex; align-items: center; gap: 4px; }
+.kompakt td, .kompakt th { padding-top: 4px; padding-bottom: 4px; }
+.offenepunkte .vliste li { align-items: baseline; }
+.terminwahl select { max-width: 330px; }
+.erzwingwahl { display: grid; gap: 6px; margin: 10px 0; }
+.plangrid .zelle.pause { display: flex; align-items: center; justify-content: center; gap: 4px; overflow: hidden; }
+.plangrid .zelle.luecke, .plangrid .zeitzelle.luecke { background: var(--grau); }
+.plangrid .zeitzelle.luecke { padding-top: 0; padding-bottom: 0; }
+.plangrid .zeitzelle.pause { padding-left: 4px; padding-right: 2px; }
+.plangrid .pmarke { font-size: 9.5px; line-height: 1.15; padding: 0 4px; border-radius: 3px; background: var(--warn-bg2); color: var(--warn-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.plangrid .pmarke.sperre { background: none; color: var(--err-text); font-weight: 500; }
+table.druckplan tr.pz td { background: #eee; height: 4.5mm; font-size: 7.5pt; text-align: center; color: #444; padding: 0 3px; line-height: 1.2; vertical-align: middle; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.druckplan tr.pz td.pname { text-align: left; line-height: 1.1; font-size: 7pt; }
+table.druckplan tr.pz td.pname .pzt { display: block; font-size: 6.5pt; white-space: nowrap; }
+table.druckplan tr.pz td.hat { background: #fff3cf; color: #000; font-weight: 600; }
+.grundmarke { display: inline-block; font-size: 10.5px; color: var(--warn-text); background: var(--warn-bg); border-radius: 3px; padding: 0 4px; margin-top: 2px; line-height: 1.5; }
+/* Pausen als eigene Zeilen im Plan */
+.plan tr.pausezeile th, .plan tr.pausezeile td { height: 18px; padding: 0 4px; font-size: 10.5px; color: var(--muted); background: repeating-linear-gradient(45deg, var(--grau), var(--grau) 5px, var(--flaeche-2) 5px, var(--flaeche-2) 10px); border-color: var(--line); text-align: center; white-space: nowrap; overflow: hidden; }
+.plan tr.pausezeile td.hat { color: var(--text); font-weight: 600; background: var(--warn-bg); }
+
+/* ---------- v11: Stundentafel mit Teilung, automatische Fachlehrkraft ---------- */
+.tafelzelle { display: inline-flex; align-items: center; gap: 1px; }
+table.tafel td input[type=number] { width: 46px; }
+.teilknopf { border: 1px solid transparent; background: none; border-radius: 4px; padding: 0 2px; font-size: 12px; line-height: 20px; cursor: pointer; opacity: .5; color: var(--text); }
+.teilknopf:hover, .teilknopf:focus-visible { opacity: 1; background: var(--grau); }
+.teilknopf.aktiv { opacity: 1; background: var(--lila-bg); border-color: var(--lila-rand); color: var(--lila); }
+.teilknopf.mehr { font-weight: 700; letter-spacing: 0; }
+.tafelinfo { font-size: 10.5px; line-height: 13px; white-space: nowrap; margin-top: 1px; }
+.tafelinfo .tp { color: var(--lila); font-weight: 600; margin-right: 3px; }
+.tafelinfo .tp.ohne { color: var(--warn-text); font-weight: 500; }
+.tafelinfo .tc { color: var(--ok); font-weight: 600; }
+.tafelinfo .tm { color: var(--accent-d); font-weight: 600; margin-left: 3px; white-space: nowrap; }
+table.matrix td.geteilt { background: var(--lila-bg); }
+table.matrix td.autooffen { background: var(--err-bg); }
+.teilmarke { color: var(--lila); font-size: 12px; }
+select.autofach { font-style: italic; color: var(--accent-d); }
+
+
