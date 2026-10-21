@@ -301,8 +301,60 @@ function machbarkeit(data) {
     const au = ev.parts.some(p => autoLk(p.u)) && !!zaehl.H05;
     (au ? W : F)(evName(M, e) + ' hat keinen einzigen zulässigen Slot. Häufigste Gründe: ' + top + '.' + (au ? AUTO_TEXT : ''), { seite: 'unterricht', id: M.U[ev.parts[0].u].id });
   });
+  try { aufsichtKapazitaet(data).forEach(x => out.push(x)); } catch (err) { /* die Kapazitätsprüfung ist ein Zusatz – ohne sie weiterprüfen */ }
   return out;
 }
+// Aufsichtsbedarf gegen die Personen, die zu der Zeit überhaupt verfügbar sein können. Unterricht ist hier noch nicht gelegt und zählt nicht;
+// feste Termine, Aufgaben mit Termin, Sperrzeiten, Abwesenheit und Ausschlüsse gelten. Die Prüfung ist eine untere Schranke (jede Person
+// zählt für jeden überdeckenden Bedarf als frei, der Bedarf an anderen Bereichen derselben Zeit wird aber addiert) und liefert nur Warnungen.
+function aufsichtKapazitaet(data) {
+  const DI = data.dienste, out = [];
+  if (!DI || !(DI.bedarfe || []).length) return out;
+  const d0 = Object.assign({}, data, { plan: { platzierungen: [] }, dienste: Object.assign({}, DI, { plan: [] }) });
+  const ctx = dienstKontext(d0, { plan: [] }), D = d0.schule.tage.length;
+  const schicht = (b, a, von, bis) => {
+    const ax = bedarfAusschlussFuerIntervall(b, von, bis);
+    const s = schichtAusDienst(ctx, { id: 'kap', tag: b.tag, typ: b.typ || 'dt_dienst', bereich: b.bereich || null, bedarf: b.id, name: b.name, arbeitszeit: b.arbeitszeit, springer: b.springer, qualifikation: b.qualifikation, farbe: b.farbe,
+      beginn: zeitText(von), ende: bis >= 1440 ? '24:00' : zeitText(bis), rhythmus: { art: 'woechentlich' }, quelle: 'auto', ausschlussPersonen: ax.personen, ausschlussGruppen: ax.gruppen });
+    s.start = von; s.end = bis; s.neu = true; s.lehrer = null;
+    return s;
+  };
+  for (let tag = 0; tag < D; tag++) {
+    const teile = [];
+    DI.bedarfe.filter(b => b.tag === tag).forEach(b => (b.abschnitte || []).forEach(a => { const iv = intervall(a.beginn, a.ende); if (iv && iv.end > iv.start && (a.min || 0) > 0) teile.push({ b, a, iv, springer: istSpringerBedarf(b) }); }));
+    if (!teile.length) continue;
+    const punkte = [...new Set(teile.flatMap(t => [t.iv.start, t.iv.end]))].sort((x, y) => x - y);
+    const meldungen = [];
+    for (let i = 0; i + 1 < punkte.length; i++) {
+      const von = punkte[i], bis = punkte[i + 1];
+      const deckt = teile.filter(t => t.iv.start <= von && t.iv.end >= bis);
+      if (!deckt.length) continue;
+      const fest = deckt.filter(t => !t.springer).reduce((n, t) => n + t.a.min, 0), mitSpringer = deckt.reduce((n, t) => n + t.a.min, 0);
+      const schichten = deckt.map(t => schicht(t.b, t.a, von, bis));
+      const frei = ctx.personen.filter(p => schichten.some(s => !dienstHartGruende(ctx, p, s, false).length));
+      if (mitSpringer <= frei.length) continue;
+      // Wer fehlt und warum: die häufigsten Gründe (Aufgabe/Termin, Sperrzeit, Ausschluss) der nicht verfügbaren Personen
+      const gruende = new Map();
+      ctx.personen.filter(p => !frei.includes(p)).forEach(p => {
+        const g = dienstHartGruende(ctx, p, schichten[0], true)[0]; if (!g) return;
+        const b = (p.basis[tag] || []).find(x => intervalleUeberschneiden(x, { start: von, end: bis }));
+        const name = b ? (b.art === 'aufgabe' ? 'Aufgabe „' + b.text + '“' : b.art === 'gesperrt' ? 'Sperrzeit (Verfügbarkeit)' : g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text) : (g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text);
+        gruende.set(name, (gruende.get(name) || 0) + 1);
+      });
+      const warum = [...gruende].sort((x, y) => y[1] - x[1]).slice(0, 3).map(([n, c]) => c + '× ' + n).join(', ');
+      meldungen.push({ von, bis, fest, mitSpringer, frei: frei.length, harte: fest > frei.length, warum });
+    }
+    // aufeinanderfolgende Abschnitte mit gleichem Befund zu einer Meldung zusammenfassen
+    const reihe = [];
+    meldungen.forEach(m => { const l = reihe[reihe.length - 1]; if (l && l.bis === m.von && l.fest === m.fest && l.mitSpringer === m.mitSpringer && l.frei === m.frei && l.warum === m.warum) l.bis = m.bis; else reihe.push(Object.assign({}, m)); });
+    reihe.forEach(m => out.push({ stufe: 'warnung', ziel: { seite: 'aufsicht' }, text: (aufsichtTagName(d0, tag)) + ' ' + zeitText(m.von) + '–' + zeitText(m.bis) + ': ' + (m.harte
+      ? 'Mindestbedarf ' + m.fest + ' Person' + (m.fest === 1 ? '' : 'en') + ' an Aufsichten, aber höchstens ' + m.frei + ' sind zu dieser Zeit überhaupt verfügbar'
+      : 'Mit Springer werden ' + m.mitSpringer + ' Personen gebraucht, aber höchstens ' + m.frei + ' sind zu dieser Zeit überhaupt verfügbar – der Springer kann nicht besetzt werden')
+      + (m.warum ? ' (nicht verfügbar: ' + m.warum + ')' : '') + '. Aufgaben/Termine zu dieser Zeit verschieben oder den Bedarf senken.' }));
+  }
+  return out;
+}
+const aufsichtTagName = (d, t) => d.schule.tage[t] || ('Tag ' + (t + 1));
 // Zahl deutsch formatiert, st Nachkommastellen (höchstens), vorzeichen: „+“ vor positiven Werten (Differenzen)
 function zahlDe(x, st, vorzeichen) { const f = Math.pow(10, st || 0), r = Math.round(x * f) / f; return (vorzeichen && r > 0 ? '+' : '') + r.toLocaleString('de-DE'); }
 

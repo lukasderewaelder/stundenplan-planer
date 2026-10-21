@@ -480,5 +480,16 @@ function selbsttestZusatz() {
     const a = az.liste.find(x => x.lehrer === 'A'), text = arbeitszeitNachweis(d, 'A').textContent;
     return [!!dbl && dbl.vorbMin === 70 && !abw.length && text.includes(zStd(a.summe)) && text.includes('3 UStd. × 35 min = 105 min'), 'Doppelstunde: ' + (dbl ? dbl.ustd + ' UStd., ' + dbl.vorbMin + ' min Vorbereitung' : 'nicht gefunden') + ' · Abweichungen Nachweis/Übersicht: ' + (abw.join(', ') || 'keine') + ' · Summe A ' + zStd(a.summe)];
   });
+  T('Z53', 'Aufsichtsbedarf gegen Verfügbarkeit', 'Ein fester Termin (Aufgabe) bindet eine Person in der Pause: Bei Mindestbedarf 3 und nur 2 verfügbaren Personen warnt der Machbarkeitscheck, ohne den Termin nicht.', () => {
+    const mk = mitTermin => {
+      const x = testGrunddaten();
+      x.dienste = { bereiche: [{ id: 'hof', name: 'Hof' }], bedarfe: [{ tag: 0, typ: 'dt_pause', bereich: 'hof', name: 'Pause', abschnitte: [{ beginn: '09:30', ende: '10:00', min: 3, soll: 3 }] }], plan: [], auto: false };
+      if (mitTermin) x.unterrichte.push({ id: 'a_sitz', aufgabe: true, name: 'Sitzung', kuerzel: 'Sz', fach: '', klassen: [], gruppen: [], lehrkraefte: [{ lehrer: 'A', rolle: 'fach', modus: 'immer' }], wochenstunden: 0, bloecke: [], termine: [{ tag: 0, pause: '', beginn: '09:30', ende: '10:00' }] });
+      return normalisiere(x);
+    };
+    const filtere = d => machbarkeit(d).filter(m => /überhaupt verfügbar/.test(m.text));
+    const ohne = filtere(mk(false)), mit = filtere(mk(true));
+    return [ohne.length === 0 && mit.length === 1 && /Mindestbedarf 3/.test(mit[0].text) && /Sitzung/.test(mit[0].text), 'ohne Termin ' + ohne.length + ' Meldung(en), mit Termin ' + mit.length + (mit[0] ? ': ' + mit[0].text.slice(0, 160) : '')];
+  });
   return erg;
 }
