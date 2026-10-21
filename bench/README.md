@@ -36,3 +36,7 @@ Vorher/nachher mit denselben Seeds auf allen Datensätzen vergleichen: Median un
 - `bench/baseline/` – eingefrorene Referenzläufe (nur Kennzahlen, keine Personendaten); `bench/ERGEBNISSE.md` fasst sie zusammen.
 - `bench/ergebnisse/` – eigene Messläufe und Profile (nicht im Repo).
 - `bench/daten/privat/` – echte Schuldaten (nicht im Repo), `bench/daten/synth-*.json` – erzeugte Testschulen (nicht im Repo, mit `gen.mjs` neu erzeugbar).
+
+## Hinweis zum Laden der Engine in Node
+
+`tools/lade-engine.mjs` lädt die Engine als Funktionskörper im **Hauptkontext** (wie ein Browser-Skript). In einem `vm.createContext`-Kontext wären globale Zugriffe (`Math`, Funktionsnamen) etwa zehnmal langsamer und jede Zeit- und Profilmessung falsch – das war ein Fehler der ersten Messungen (siehe `ERGEBNISSE.md`).

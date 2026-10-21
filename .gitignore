@@ -8,3 +8,4 @@ node_modules/
 # Messläufe (Rohdaten, Profile); Baselines liegen unter bench/baseline/
 bench/ergebnisse/
 bench/daten/synth-*.json
+

@@ -47,9 +47,38 @@ function vm(det, r, text, extra) { if (det) det.push(Object.assign({ r, text }, 
    Signatur: (M, P, index, det) → Anzahl der Verstöße; det (Array) sammelt Einzelverstöße.
    Klassen-/Lehrerregeln lesen den Kontext P.K / P.L (vorher bauK/bauL).                */
 
+// Zählt dieselben Überschneidungen wie zeitUeberschneidungen (ohne det), aber ohne je Paar Funktionsaufrufe: Zuerst werden die beteiligten
+// Blöcke einmal mit Tag und echter Uhrzeit in Arbeitsfelder gelegt, danach laufen die Paare nur noch über Zahlen. Die Arbeitsfelder
+// sind Modulvariablen (kein Allokieren je Aufruf); die Funktion ist nicht wiedereintrittsfähig, ruft aber nur aktiv/gleich auf.
+let _zuE = new Int32Array(128), _zuS = new Int32Array(128), _zuA0 = new Int32Array(128), _zuA1 = new Int32Array(128);
+function zeitUeberschneidungenZaehlen(M, P, liste, aktiv, gleich) {
+  const H = M.H; let n = 0;
+  if (liste.length > _zuE.length) { const g = liste.length * 2; _zuE = new Int32Array(g); _zuS = new Int32Array(g); _zuA0 = new Int32Array(g); _zuA1 = new Int32Array(g); }
+  for (let i = 0; i < liste.length; i++) {
+    const a = liste[i], sa = P.start[a]; if (sa < 0 || !aktiv(a)) continue;
+    const ea = M.E[a], ta = M.zeitTab[ea.zg], ha = sa % H;
+    const a0 = ta.s[ha], a1 = ta.e[ha + ea.dur - 1]; if (a0 < 0 || a1 < 0) continue;
+    _zuE[n] = a; _zuS[n] = sa; _zuA0[n] = a0; _zuA1[n] = a1; n++;
+  }
+  let v = 0;
+  for (let i = 0; i < n; i++) {
+    const sa = _zuS[i], da = (sa / H) | 0, a0 = _zuA0[i], a1 = _zuA1[i], ea = M.E[_zuE[i]];
+    for (let j = i + 1; j < n; j++) {
+      const sb = _zuS[j];
+      if (((sb / H) | 0) !== da || !(a0 < _zuA1[j] && _zuA0[j] < a1)) continue; // anderer Tag oder keine Überschneidung in echter Uhrzeit
+      const eb = M.E[_zuE[j]]; if (eb.zg === ea.zg) continue;
+      if (sa < sb + eb.dur && sb < sa + ea.dur) continue; // gemeinsame Rasterstunde: schon gezählt
+      if (ea.wochen.length === 1 && eb.wochen.length === 1 && ea.wochen[0] !== eb.wochen[0]) continue;
+      if (gleich && !gleich(ea, eb)) continue;
+      v++;
+    }
+  }
+  return v;
+}
 // Überschneidungen in echter Uhrzeit zwischen Blöcken in VERSCHIEDENEN Rasterstunden (entstehen nur durch unterschiedliche Zeitprofile).
 // aktiv(e) → zählt das Ereignis?; gleich(a, b) → betreffen beide dieselbe Ressource? Blöcke im selben Slot zählt schon die Rasterprüfung.
 function zeitUeberschneidungen(M, P, liste, aktiv, gleich, det, regel, wer, extra) {
+  if (!det) return zeitUeberschneidungenZaehlen(M, P, liste, aktiv, gleich); // Suche: nur zählen, ohne Einzelmeldungen
   const H = M.H; let v = 0;
   for (let i = 0; i < liste.length; i++) {
     const a = liste[i], sa = P.start[a]; if (sa < 0 || !aktiv(a)) continue;
@@ -70,46 +99,38 @@ function zeitUeberschneidungen(M, P, liste, aktiv, gleich, det, regel, wer, extr
   return v;
 }
 function R_H01(M, P, t, det) { // Lehrkraft nicht doppelt belegt
-  const S = M.S, W = P.scW; W.fill(0); let v = 0;
-  for (const e of M.lEv[t]) {
-    const s0 = P.start[e]; if (s0 < 0 || !istAktiv(M, P, e, t)) continue;
-    const ev = M.E[e];
-    for (let k = 0; k < ev.dur; k++) for (const w of ev.wochen) W[w * S + s0 + k]++;
-  }
+  // Der Belegungszähler occ der Lehrkraft-Einheit t (je Woche und Rasterstunde) zählt genau die platzierten Blöcke, in denen t aktiv ist
+  const S = M.S, occ = P.occ, o0 = t * 2 * S; let v = 0;
   for (let s = 0; s < S; s++) {
-    const m = Math.max(W[s], W[S + s]);
+    const m = Math.max(occ[o0 + s], occ[o0 + S + s]);
     if (m > 1) { v += m - 1; vm(det, 'H01', 'Lehrkraft ' + M.lKz[t] + ' ist ' + slotText(M, s) + ' Std. ' + m + '-fach eingeplant.', { l: [t], s }); }
   }
   if (M.lMix[t]) v += zeitUeberschneidungen(M, P, M.lEv[t], e => istAktiv(M, P, e, t), null, det, 'H01', 'Lehrkraft ' + M.lKz[t], { l: [t] });
   return v;
 }
 function R_H02(M, P, c, det) { // Klasse und Gruppe nicht doppelt belegt
-  const S = M.S, U = P.scU, nu = M.kUnits[c].length; U.fill(0, 0, nu * 2 * S);
-  for (const e of M.kEv[c]) {
-    const s0 = P.start[e]; if (s0 < 0) continue;
-    const ev = M.E[e];
-    for (const u of ev.units) { if (M.unitK[u] !== c) continue; const lu = M.unitLokal[u]; for (let k = 0; k < ev.dur; k++) for (const w of ev.wochen) U[(lu * 2 + w) * S + s0 + k]++; }
-  }
+  // Die Belegungszähler occ der Einheiten der Klasse (ganze Klasse, Gruppen) liegen schon vor – kein Neuaufbau je Bewertung
+  const S = M.S, occ = P.occ, ku = M.kUnits[c], nu = ku.length;
   let v = 0;
   for (let s = 0; s < S; s++) {
     let m = 0;
-    for (let lu = 0; lu < nu; lu++) m = Math.max(m, U[(lu * 2) * S + s], U[(lu * 2 + 1) * S + s]);
+    for (let lu = 0; lu < nu; lu++) { const o = ku[lu] * 2 * S + s; m = Math.max(m, occ[o], occ[o + S]); }
     if (m > 1) { v += m - 1; vm(det, 'H02', 'Klasse ' + M.kName[c] + ' ist ' + slotText(M, s) + ' Std. doppelt belegt.', { k: [c], s }); }
   }
   if (M.kMix[c]) v += zeitUeberschneidungen(M, P, M.kEv[c], () => true, (a, b) => ((a.kMaske.get(c) || 0) & (b.kMaske.get(c) || 0)) !== 0 || M.kUnits[c].length === 1, det, 'H02', 'Klasse ' + M.kName[c], { k: [c] });
   return v;
 }
-function R_W17(M, P, c, det) { // Halbgruppen füllen sich auf – nutzt die von R_H02 gefüllte Gruppenbelegung (direkt danach aufrufen)
-  const nu = M.kUnits[c].length; if (nu < 2) return 0;
-  const S = M.S, H = M.H, U = P.scU, sch = M.kUnitSch[c], voll = sch[0];
+function R_W17(M, P, c, det) { // Halbgruppen füllen sich auf – liest die Gruppenbelegung aus occ
+  const ku = M.kUnits[c], nu = ku.length; if (nu < 2) return 0;
+  const S = M.S, H = M.H, occ = P.occ, sch = M.kUnitSch[c], voll = sch[0];
   let v = 0;
   for (let s = 0; s < S; s++) {
     if (M.pause[s % H]) continue;
     let teil = 0, wer = '';
     for (let w = 0; w < 2; w++) {
-      if (U[w * S + s] > 0) continue; // die ganze Klasse hat Unterricht
+      if (occ[(ku[0] * 2 + w) * S + s] > 0) continue; // die ganze Klasse hat Unterricht
       let n = 0, da = 0, namen = '';
-      for (let lu = 1; lu < nu; lu++) if (U[(lu * 2 + w) * S + s] > 0) { n += sch[lu]; da++; namen += (namen ? ', ' : '') + M.kUnitName[c][lu]; }
+      for (let lu = 1; lu < nu; lu++) if (occ[(ku[lu] * 2 + w) * S + s] > 0) { n += sch[lu]; da++; namen += (namen ? ', ' : '') + M.kUnitName[c][lu]; }
       if (da > 0 && da < nu - 1 && !(voll > 0 && n >= voll)) { teil++; wer = namen; }
     }
     if (teil) { v += teil / 2; vm(det, 'W17', 'Klasse ' + M.kName[c] + ': ' + slotText(M, s) + ' Std. hat nur Gruppe ' + wer + ' Unterricht – der Rest der Klasse ist frei.', { k: [c], s }); }

@@ -59,7 +59,7 @@ function lauf(k, daten, opt, schritte, seed) {
   const rnd = zufall(seed), ri = n => Math.floor(rnd() * n);
   const data = opt.personal ? k.personalGrundlage(JSON.parse(JSON.stringify(daten)), {}) : JSON.parse(JSON.stringify(daten));
   const M = k.kompiliere(data, { gelockert: [], minimal: false, referenz: null, personal: !!opt.personal, muster: !!opt.muster });
-  const P = new Plan(M);
+  const P = new Plan(M), P0 = P;
   const E = M.E.length, S = M.S, NP = (M.PE || []).length;
   const verstoesse = [], statistik = { commit: 0, rollback: 0, zuege: {} };
   const melde = (wo, f) => { if (f.length && verstoesse.length < 12) verstoesse.push(wo + ': ' + f.slice(0, 6).join('; ')); };
@@ -108,6 +108,16 @@ function lauf(k, daten, opt, schritte, seed) {
   for (const e of beweglich.slice().sort(() => rnd() - 0.5)) { P.begin(); const L = M.E[e].erlaubt; if (L.length && P.platziere(e, L[ri(L.length)], false)) P.commit(); else P.rollback(); }
   melde('Grundbelegung', gegenprobe(Plan, M, P));
 
+  const meldungenGleich = wo => { const a = k.bewerteAlles(M, P, null), b = k.bewerteAlles(M, P, []), f = []; a.forEach((x, r) => { if (!nahe(x, b[r])) f.push('Regel ' + k.hole('REGELN')[r].id + ': ohne Meldungen ' + x + ', mit Meldungen ' + b[r]); }); melde(wo, f); };
+  const referenzGleich = (wo, P = P0) => {
+    const f = [];
+    for (let t = 0; t < M.T; t++) { const a = k.R_H01(M, P, t, null), b = k.R_H01_ref(M, P, t, []); if (!nahe(a, b)) f.push('R_H01 Lehrkraft ' + t + ': ' + a + ' statt Referenz ' + b); }
+    for (let c = 0; c < M.C; c++) {
+      const a = k.R_H02(M, P, c, null), b = k.R_H02_ref(M, P, c, []); if (!nahe(a, b)) f.push('R_H02 Klasse ' + c + ': ' + a + ' statt Referenz ' + b);
+      const a2 = k.R_W17(M, P, c, null), b2 = k.R_W17_ref(M, P, c, []); if (!nahe(a2, b2)) f.push('R_W17 Klasse ' + c + ': ' + a2 + ' statt Referenz ' + b2);
+    }
+    melde(wo, f);
+  };
   for (let i = 0; i < schritte && beweglich.length; i++) {
     const vor = momentaufnahme(P);
     const [name, , f] = waehle(); zaehle(name);
@@ -119,8 +129,17 @@ function lauf(k, daten, opt, schritte, seed) {
     if (x < 0.4) { P.commit(); statistik.commit++; melde('Schritt ' + i + ' (' + name + ') nach commit', gegenprobe(Plan, M, P)); }
     else if (x < 0.8) { P.commit(); P.rollback(); statistik.rollback++; melde('Schritt ' + i + ' (' + name + ') nach commit + rollback', zustandGleich(vor, momentaufnahme(P))); }
     else { P.rollback(); statistik.rollback++; melde('Schritt ' + i + ' (' + name + ') nach rollback ohne commit', zustandGleich(vor, momentaufnahme(P))); }
+    if (i % 40 === 39) referenzGleich('Schritt ' + i + ' (Regeln gleich Referenz)');
+    if (i % 40 === 39) meldungenGleich('Schritt ' + i + ' (Zählung ohne = mit Einzelmeldungen)');
     if (verstoesse.length >= 12) break;
   }
+  referenzGleich('Schluss (Regeln gleich Referenz)');
+  // zusätzlich ein Plan voller Doppelbelegungen (jeder Block roh an einen zufälligen zulässigen Platz): hier sind die Regeln H01/H02/W17 nicht null
+  { const Q = new Plan(M); for (const e of beweglich) { if (!M.aktiv[e]) continue; const L = M.E[e].erlaubt; if (!L.length) continue; Q.setzeRoh(e, L[ri(L.length)], null, null); } Q.initKosten();
+    referenzGleich('Plan mit Doppelbelegungen (Regeln gleich Referenz)', Q);
+    const n = [...Array(M.T).keys()].filter(t2 => k.R_H01_ref(M, Q, t2, []) > 0).length + [...Array(M.C).keys()].filter(c2 => k.R_H02_ref(M, Q, c2, []) > 0).length;
+    if (!n && beweglich.length > 4) melde('Plan mit Doppelbelegungen', ['enthält keine Doppelbelegung – der Vergleich wäre wertlos']); }
+  meldungenGleich('Schluss (Zählung ohne = mit Einzelmeldungen)');
   // zum Schluss: Bewertung des Gesamtplans (bewerteAlles) muss die inkrementelle Summe für alle Regeln außer H03/H08 treffen
   const alle = k.bewerteAlles(M, P, null), RI = k.hole('RI'), f = [];
   alle.forEach((x, r) => { if (r === RI.H03 || r === RI.H08) return; if (!nahe(x, P.tot[r])) f.push('Regel ' + k.hole('REGELN')[r].id + ': inkrementell ' + P.tot[r] + ', bewerteAlles ' + x); });
@@ -142,11 +161,11 @@ export function datensaetze(k, extraPfade = []) {
 const VARIANTEN = [['ohne Personal, feste Blöcke', { personal: false, muster: false }], ['mit Personal und variabler Blockaufteilung', { personal: true, muster: true }]];
 
 // Ergebnis im Format der Selbsttests: [{ id, name, ok, info }]
-export function invarianten({ schritte = 300, seed = 1, extraPfade = [], aendere = null, nurErsterDatensatz = false } = {}) {
-  const k = ladeEngine({ mitTests: true, aendere });
+export function invarianten({ schritte = 300, seed = 1, extraPfade = [], aendere = null, datensatz = null } = {}) {
+  const k = ladeEngine({ mitTests: true, aendere, zusatz: [fs.readFileSync(path.join(wurzel, 'tools', 'referenz-regeln.js'), 'utf8')] });
   const erg = [];
   let nr = 0;
-  for (const ds of datensaetze(k, extraPfade).slice(0, nurErsterDatensatz ? 1 : undefined)) {
+  for (const ds of datensaetze(k, extraPfade).filter((_, i) => datensatz === null || i === datensatz)) {
     for (const [vname, opt] of VARIANTEN) {
       const id = 'INV' + String(++nr).padStart(2, '0'), name = 'Planzustand-Invarianten: ' + ds.name + ' – ' + vname;
       if (ds.fehler) { erg.push({ id, name, ok: false, info: 'Datensatz nicht ladbar: ' + ds.fehler }); continue; }
@@ -165,14 +184,16 @@ const MUTATIONEN = [
   ['Lehrkraft-Zeilen werden bei Änderungen nicht neu bewertet', 'for (const t of ev.lehrer) if (this.stL[t] !== tx) { this.stL[t] = tx; this.dL.push(t); }', ''],
   ['rollback stellt die Gesamtkosten nicht wieder her', 'this.tot.set(this.totSv);', ''],
   ['rollback bucht den ersten Block nicht wieder ein', 'for (let i = 0; i < n; i++) this._belege(this.logE[i], 1);', 'for (let i = 1; i < n; i++) this._belege(this.logE[i], 1);'],
-  ['Personalwechsel vergisst die Last der alten Lehrkraft', 'this.pLast[alt] -= pe.std;', '']
+  ['Personalwechsel vergisst die Last der alten Lehrkraft', 'this.pLast[alt] -= pe.std;', ''],
+  // Datensatz 1 = Beispieldaten mit Zeitprofilen: dort gibt es Überschneidungen in echter Uhrzeit
+  ['Zählung der Zeitüberschneidungen ohne Einzelmeldungen prüft die Uhrzeit nicht', '((sb / H) | 0) !== da || !(a0 < _zuA1[j] && _zuA0[j] < a1)', '((sb / H) | 0) !== da', 1]
 ];
 export function mutationstest({ schritte = 150, seed = 1 } = {}) {
-  return MUTATIONEN.map(([name, von, nach], i) => {
+  return MUTATIONEN.map(([name, von, nach, datensatz = 0], i) => {
     const id = 'MUT' + String(i + 1).padStart(2, '0');
     let anzahl = 0;
     const aendere = text => { anzahl = text.split(von).length - 1; return anzahl === 1 ? text.replace(von, () => nach) : text; };
-    const r = invarianten({ schritte, seed, aendere, nurErsterDatensatz: true });
+    const r = invarianten({ schritte, seed, aendere, datensatz });
     if (anzahl !== 1) return { id, name: 'Mutation „' + name + '“ wird erkannt', ok: false, info: 'Mutation veraltet: Textstelle kommt ' + anzahl + '× vor (erwartet 1×)' };
     const gefunden = r.filter(x => !x.ok).length;
     return { id, name: 'Mutation „' + name + '“ wird erkannt', ok: gefunden > 0, info: gefunden ? gefunden + ' von ' + r.length + ' Läufen schlagen an' : 'NICHT erkannt – der Invarianten-Test ist an dieser Stelle blind' };
