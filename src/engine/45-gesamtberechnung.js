@@ -16,6 +16,33 @@ function personalGrundlage(daten, opt) {
   ((d.plan && d.plan.platzierungen) || []).forEach(p => { const f = coFest.get(p.unterricht); if (p.co && p.co.length) p.co = p.co.filter(id => f && f.has(id)); });
   return d;
 }
+// Rückkopplung aus der Aufsichtsplanung an die Co-Zuteilung: Für jede offene Mindestschicht wird die Person gesucht, der – ohne ihren Springer, der weich ist –
+// nur die Wochenarbeitszeit fehlt (D11). Ihr wird in reserve (Minuten je Person) die Arbeitszeit gutgeschrieben, die ihre Aufsichten brauchen (ihre
+// bisherigen zählenden Aufsichten plus diese Schicht); die Co-Zuteilung lässt sie frei, weil sie Aufsichten sonst nicht kennt. Liefert true, wenn die Reserve wuchs.
+function aufsichtReserve(d, offen, reserve) {
+  const ctx = dienstKontext(d, { plan: d.dienste.plan.filter(x => !x.springer) });
+  let gewachsen = false;
+  for (const o of (offen || []).filter(x => x.prio === 'min')) {
+    const b = d.dienste.bedarfe.find(x => x.id === o.bedarf); if (!b) continue;
+    const von = minVon(o.beginn), bis = o.ende === '24:00' ? 1440 : minVon(o.ende);
+    if (von === null || bis === null) continue;
+    const ax = bedarfAusschlussFuerIntervall(b, von, bis);
+    const s = schichtAusDienst(ctx, { id: 'reserve', tag: o.tag, typ: o.typ || 'dt_dienst', bereich: o.bereich || null, bedarf: o.bedarf, name: o.name, arbeitszeit: b.arbeitszeit, springer: b.springer, qualifikation: b.qualifikation,
+      farbe: b.farbe, beginn: o.beginn, ende: o.ende, rhythmus: { art: 'woechentlich' }, quelle: 'auto', ausschlussPersonen: ax.personen, ausschlussGruppen: ax.gruppen });
+    s.start = von; s.end = bis; s.neu = true; s.lehrer = null;
+    let beste = null;
+    for (const p of ctx.personen) {
+      const g = dienstHartGruende(ctx, p, s, true);
+      if (!g.length || !g.every(x => x.code === 'D11' && /Wochenarbeitszeit/.test(x.text))) continue;
+      const schon = p.dienste.reduce((n, x) => n + (x.zaehlt ? (x.end - x.start) * x.faktor : 0), 0), frei = p.rest - schon, fehlt = (s.end - s.start) - frei;
+      if (!beste || fehlt < beste.fehlt) beste = { p, schon, fehlt };
+    }
+    if (!beste) continue;
+    const min = Math.ceil(beste.schon + (s.end - s.start) + 3);
+    if (min > (reserve.get(beste.p.id) || 0)) { reserve.set(beste.p.id, min); gewachsen = true; }
+  }
+  return gewachsen;
+}
 // Regelbewertung eines Datenstands, so wie er gespeichert wird (frisch kompiliert)
 function personalPlanBewertung(d) {
   try {
@@ -68,10 +95,33 @@ async function loeseStundenplan(data, konf, cb) {
     try { const nb = coNachbessern(d, { zeitlimit: Math.max(800, Math.min(4000, gesamtSek * 100)), bisher: coBisher }); if (nb.co) co = nb.co; out.statistik.coNachbesserung = { verschoben: nb.verschoben.length, pruefungen: nb.pruefungen }; }
     catch (err) { out.statistik.coNachbesserung = { fehler: String(err && err.message || err) }; }
   }
-  out.platzierungen = JSON.parse(JSON.stringify(d.plan.platzierungen));
-  out.statistik.lehrkraefte = d.unterrichte.filter(u => origL.has(u.id) && origL.get(u.id) !== JSON.stringify(u.lehrkraefte || [])).map(u => ({ id: u.id, lehrkraefte: JSON.parse(JSON.stringify(u.lehrkraefte || [])) }));
-  out.statistik.zuteilung = Object.assign({}, out.statistik.zuteilung, { geaendert: out.statistik.lehrkraefte.length });
-  out.statistik.coNachlauf = co;
+  const vorrang = new Set(); // Kurse mit Co-Lücken: in jeder weiteren Co-Zuteilung zuerst
+  // Sicherung der Teile des Datenstands, die Co-Zuteilung und Aufsichtsplanung verändern (für Wiederholungen, die nur bei Verbesserung gelten)
+  const sichere = () => ({ platz: JSON.stringify(d.plan.platzierungen), lk: JSON.stringify(d.unterrichte.map(u => u.lehrkraefte)), dienste: JSON.stringify(d.dienste) });
+  const stelleHer = s => { d.plan.platzierungen = JSON.parse(s.platz); JSON.parse(s.lk).forEach((l, i) => { d.unterrichte[i].lehrkraefte = l; }); d.dienste = JSON.parse(s.dienste); };
+  // Bleiben Co-Lücken, wird die Co-Zuteilung mit den betroffenen Kursen zuerst wiederholt (bis zu dreimal); übernommen nur, wenn weniger Co-Stunden fehlen
+  // und die Regelverstöße des Plans nicht steigen
+  if (!konf.minimal && !konf.reparatur && !(konf.teil && konf.teil.art) && !konf._ohneCoVorrang && (co.fehlend.length || co.teilweise.length) && !stop()) {
+    const rv = { runden: 0, angenommen: 0 };
+    let luecke = coLuecken(d).summe;
+    for (let runde = 0; runde < 3 && luecke > 1e-9 && !stop(); runde++) {
+      coLuecken(d).liste.forEach(x => vorrang.add(x.u.id));
+      const sicher = sichere(), hartVor = personalPlanBewertung(d).hart;
+      const co2 = coNachPlanErgaenzen(d, { ersetzen: true, bisher: coBisher, vorrang });
+      const luecke2 = coLuecken(d).summe;
+      rv.runden++;
+      if (luecke2 < luecke - 1e-9 && personalPlanBewertung(d).hart <= hartVor) { co = co2; luecke = luecke2; rv.angenommen++; }
+      else { stelleHer(sicher); break; }
+    }
+    out.statistik.coVorrang = rv;
+  }
+  const coUebernehmen = () => {
+    out.platzierungen = JSON.parse(JSON.stringify(d.plan.platzierungen));
+    out.statistik.lehrkraefte = d.unterrichte.filter(u => origL.has(u.id) && origL.get(u.id) !== JSON.stringify(u.lehrkraefte || [])).map(u => ({ id: u.id, lehrkraefte: JSON.parse(JSON.stringify(u.lehrkraefte || [])) }));
+    out.statistik.zuteilung = Object.assign({}, out.statistik.zuteilung, { geaendert: out.statistik.lehrkraefte.length });
+    out.statistik.coNachlauf = co;
+  };
+  coUebernehmen();
   delete out.lehrkraefte;
 
   // ---------- c) Aufsichten: immer neu, gegen genau diesen Fach- und Co-Plan ----------
@@ -80,6 +130,29 @@ async function loeseStundenplan(data, konf, cb) {
   if (d.dienste) {
     try { auf = aufsichtenNeuBerechnen(d, { stabil: true, zeitlimit: Math.max(600, Math.min(4000, gesamtSek * 60)) }); }
     catch (err) { auf = null; out.statistik.aufsichtFehler = String(err && err.message || err); }
+  }
+  // Rückkopplung: Bleibt eine Mindestaufsicht offen, weil einer verfügbaren Person nur noch die Wochenarbeitszeit fehlt (die Co-Zuteilung hat sie
+  // vorher aufgebraucht), wird die Co-Zuteilung mit einer Arbeitszeit-Reserve für diese Person wiederholt und die Aufsicht neu geplant.
+  // Übernommen wird das Ergebnis nur, wenn die Endvalidierung danach weniger Pflichtverstöße meldet.
+  if (auf && (auf.statistik.offenMin || 0) > 0 && !konf._ohneRueckkopplung && !konf.minimal && !konf.reparatur && !(konf.teil && konf.teil.art) && !stop()) {
+    const reserve = new Map(), rk = { runden: 0, angenommen: 0, reserve: [] };
+    let hart0 = null;
+    for (let runde = 0; runde < 3 && (auf.statistik.offenMin || 0) > 0 && !stop(); runde++) {
+      if (!aufsichtReserve(d, auf.offen, reserve)) break;
+      if (hart0 === null) hart0 = endValidierung(d).hart;
+      const sicher = sichere();
+      let co2 = coNachPlanErgaenzen(d, { ersetzen: true, bisher: coBisher, reserve, vorrang });
+      // fehlen durch die Reserve Co-Stunden, bekommen diese Kurse in einem zweiten Anlauf Vorrang
+      { const l2 = coLuecken(d); if (l2.summe > 1e-9) { l2.liste.forEach(x => vorrang.add(x.u.id)); co2 = coNachPlanErgaenzen(d, { ersetzen: true, bisher: coBisher, reserve, vorrang }); } }
+      let auf2 = null;
+      try { auf2 = aufsichtenNeuBerechnen(d, { stabil: true, zeitlimit: Math.max(600, Math.min(1500, gesamtSek * 60)) }); } catch (err) { auf2 = null; }
+      rk.runden++;
+      const hart1 = auf2 ? endValidierung(d).hart : Infinity;
+      if (auf2 && hart1 < hart0) { co = co2; auf = auf2; hart0 = hart1; rk.angenommen++; coUebernehmen(); }
+      else { stelleHer(sicher); break; }
+    }
+    rk.reserve = [...reserve].map(([id, min]) => ({ lehrer: id, minuten: min }));
+    if (rk.runden) out.statistik.aufsichtRueckkopplung = rk;
   }
   out.dienste = auf ? { plan: auf.plan, offen: auf.offen, stand: auf.stand, verdraengt: auf.verdraengt } : null;
   out.statistik.aufsicht = auf ? auf.statistik : null;

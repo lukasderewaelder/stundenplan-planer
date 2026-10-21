@@ -317,6 +317,19 @@ async function selbsttestGesamt() {
     return [vorher.join('/') === '26/24' && nachher.join('/') === '25/25' && !fehlerK.length && hinweis && m.end.hart === 0 && m.statistik.unplatziert === 0 && anders.length === 1,
       'Standardaufteilung Woche A/B: ' + vorher.join('/') + ' UStd. · nach Ausgleich: ' + nachher.join('/') + ' UStd. (frei 25) · Prüfung: ' + (fehlerK.length ? fehlerK.length + ' Fehler' : 'kein Fehler') + (hinweis ? ', Hinweis auf den Ausgleich' : '') + ' · Berechnung: ' + m.end.hart + ' harte Fehler, ' + m.statistik.unplatziert + ' unplatziert · anders aufgeteilt: ' + (anders.join(', ') || 'nichts')];
   });
+  await T('28', 'Mindestaufsicht gegen Co-Arbeitszeit: Reserve für die einzige Aufsichtsperson', 'Nur die Co-Kraft X darf die Aufsicht Mo 09:30–10:00 machen (Mindestbedarf 1). Die Co-Zuteilung gäbe ihr alle drei Co-Stunden und verbrauchte ihre Wochenarbeitszeit (3,5 h), sodass für die Aufsicht nur 24 min bleiben. Die Rückkopplung hält Arbeitszeit für die Aufsicht frei, die Co-Stunden gehen an Y.', async () => {
+    const d = gesamtTestDaten(x => {
+      x.lehrer.forEach(l => { l.aufsicht = l.id === 'X'; });
+      const X = x.lehrer.find(l => l.id === 'X'), Y = x.lehrer.find(l => l.id === 'Y');
+      X.arbeitszeit = 3.5; X.anwesenheitTage = [0, 1, 2]; Y.arbeitszeit = 3.5; Y.anwesenheitTage = [0, 1, 2];
+      x.dienste = { bereiche: [{ id: 'hof', name: 'Hof' }], bedarfe: [{ tag: 0, typ: 'dt_pause', bereich: 'hof', name: 'Pause', abschnitte: [{ beginn: '09:30', ende: '10:00', min: 1, soll: 1 }] }], plan: [], auto: true };
+    });
+    const ohne = await loeseStundenplan(JSON.parse(JSON.stringify(d)), { seed: 3, iterLimit: 5000, zeitlimit: 10, _ohneRueckkopplung: true });
+    const mit = await loeseStundenplan(JSON.parse(JSON.stringify(d)), { seed: 3, iterLimit: 5000, zeitlimit: 10 });
+    const rk = mit.statistik.aufsichtRueckkopplung;
+    return [ohne.end.hart > 0 && (ohne.statistik.aufsicht.offenMin || 0) === 1 && mit.end.hart === 0 && !!rk && rk.angenommen === 1 && (mit.statistik.aufsicht.offenMin || 0) === 0,
+      'ohne Rückkopplung: ' + ohne.end.hart + ' harte Fehler, ' + ohne.statistik.aufsicht.offenMin + ' Mindestaufsicht offen · mit: ' + mit.end.hart + ' harte Fehler' + (rk ? ', Rückkopplung ' + rk.angenommen + ' von ' + rk.runden + ' Runde(n) angenommen, Reserve ' + rk.reserve.map(r => r.lehrer + ' ' + r.minuten + ' min').join(', ') : ', keine Rückkopplung')];
+  });
   return erg;
 }
 

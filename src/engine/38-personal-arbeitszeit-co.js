@@ -210,6 +210,8 @@ function coNachPlanErgaenzen(d, opt) {
     kurse.push({ u, pls, cb });
   });
   if (!kurse.length) return erg;
+  // opt.vorrang (Menge von Unterrichts-IDs): diese Kurse zuerst – wer nur wenige mögliche Personen hat, bekommt sie, bevor andere Kurse deren Arbeitszeit aufbrauchen
+  if (opt.vorrang && opt.vorrang.size) kurse.sort((p, q) => (opt.vorrang.has(q.u.id) ? 1 : 0) - (opt.vorrang.has(p.u.id) ? 1 : 0));
   // Ausgangsniveau der harten Regeln. Automatische Co-Zuordnungen dürfen dieses Niveau niemals verschlechtern (Punkt 11).
   let coHartBasis = personalPlanBewertung(d).hart;
 
@@ -236,7 +238,8 @@ function coNachPlanErgaenzen(d, opt) {
         if (ausgebildet && R.lehrkraefte === 'nie') return;
         const ax = azMap.get(l.id); if (!ax) return;
         // Wichtung (0–10): Anteil des noch offenen Deputats, den eine ausgebildete Lehrkraft für Co-Einsätze verwenden darf
-        const restArbeit = ax.soll > 0 ? ax.soll - ax.summe : 0, restDep = ax.hatSollStd ? (ax.sollStd - ax.istStd) * (ausgebildet ? R.wichtung / 10 : 1) : Infinity;
+        // opt.reserve (Minuten je Person): Arbeitszeit, die für Mindestaufsichten freibleiben soll (Rückkopplung aus der Aufsichtsplanung)
+        const restArbeit = (ax.soll > 0 ? ax.soll - ax.summe : 0) - ((opt.reserve && opt.reserve.get(l.id)) || 0), restDep = ax.hatSollStd ? (ax.sollStd - ax.istStd) * (ausgebildet ? R.wichtung / 10 : 1) : Infinity;
         // Automatisch nur Personen einsetzen, bei denen nach dem Fachunterricht tatsächlich noch Soll-Kapazität frei ist.
         if (!(restArbeit > 3) || !(restDep > 1e-9)) return;
         const busy = idx.get(l.id) || [], gewaehlt = [], tagPlus = new Map(); let std = 0, arbeit = 0, dep = 0;
