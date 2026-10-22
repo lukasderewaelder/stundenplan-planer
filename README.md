@@ -14,7 +14,8 @@ Stundenplan-Generator für Schulen: Wochenstundenplan erzeugen, von Hand nachbea
 | `src/ui/` | Oberfläche (Stammdaten, Berechnung, Plan-Editor, Aufsichten, Import/Export, Druck) |
 | `src/tests/` | Selbsttests (Expertenmodus → Ergebnis & Auswertung → Selbsttest) |
 | `src/manifest.json` | Reihenfolge der Dateien – die Dateien werden Byte für Byte aneinandergehängt (kein Bundler, keine Umformung) |
-| `tools/` | Build, Test-Runner, Invarianten-Test |
+| `tools/` | Build, Test-Runner, Invarianten-Test, Anleitung (`anleitung.mjs`) |
+| `anleitung/` | PDF-Anleitung für Neulinge: `Stundenplaner-Anleitung.pdf` (eingecheckt, wird von GitHub Pages mitausgeliefert und aus dem Programm verlinkt), Quelle in `quelle/` (HTML/CSS) |
 | `bench/daten/privat/` | echte Schuldaten für Messungen – **nicht** im Repo (`.gitignore`) |
 
 ## Befehle (Node.js ≥ 20)
@@ -26,6 +27,8 @@ node tools/build.mjs --gegen <Ref>   # vergleicht den Build mit index.html aus e
 node tools/test.mjs                  # alle Selbsttests der Engine im Terminal (ca. 40 s)
 node tools/test.mjs --schnell        # ohne die rechenintensiven Solver-Suiten (ca. 6 s)
 node tools/invarianten.mjs           # nur der Invarianten-Test des Planzustands
+node tools/anleitung.mjs             # Anleitung neu erzeugen: Screenshots der Beispieldaten (Chrome/Edge headless) + PDF
+node tools/anleitung.mjs --nur-pdf   # nur die PDF neu schreiben (Text/Layout geändert, Bilder vorhanden)
 ```
 
 Die Oberflächen-Selbsttests (`selbsttestOberflaeche`) brauchen einen Browser; die übrigen laufen headless.
@@ -39,3 +42,7 @@ Die Oberflächen-Selbsttests (`selbsttestOberflaeche`) brauchen einen Browser; d
 ## Zeilenenden
 
 Quelle der Wahrheit sind LF-Zeilenenden (`.gitattributes`). Der Build lehnt Dateien mit CR ab, damit `index.html` byte-genau reproduzierbar bleibt.
+
+## Anleitung (PDF)
+
+`anleitung/Stundenplaner-Anleitung.pdf` erklärt das Programm für Neulinge (Rundgang mit der Beispielschule, FAQ, Glossar). Der Link steht im Menü, im Hilfe-Dialog und auf der Startseite. Nach Änderungen an der Oberfläche oder am Text `node tools/anleitung.mjs` ausführen und die PDF mit einchecken. Das Skript braucht nur Node und einen installierten Chrome oder Edge (Pfad notfalls in `CHROME_PFAD`); es zeigt ausschließlich die eingebauten Beispieldaten und nutzt ein leeres Browserprofil. Bei nicht gefundenen Bildmarken meldet es `!!`-Warnungen – dann die Selektoren in `tools/anleitung.mjs` anpassen.
