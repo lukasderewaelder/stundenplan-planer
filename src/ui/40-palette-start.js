@@ -22,6 +22,7 @@ function paletteEintraege() {
   aktion('Einstellungen …', 'zahnrad', einstellungenDialog, 'Farbschema dunkel hell Expertenmodus Dichte');
   aktion(expertenModus() ? 'Expertenmodus ausschalten' : 'Expertenmodus einschalten', 'regler', () => { APP.meta.experte = !expertenModus(); metaSpeichern(); navBauen(); render(); }, 'Zusatzreiter Unterrichtsversorgung Regeln Selbsttest');
   aktion('Hilfe und Datenschutz', 'hilfe', infoDialog, 'Anleitung Tastatur');
+  aktion('Anleitung (PDF) herunterladen', 'buch', anleitungOeffnen, 'Hilfe Handbuch Tutorial Einführung');
   aktion('Beispieldaten laden', 'stern', beispielLaden, 'Beispiel Demo');
   const ziel = (art, sym, o, text, unter, such, planArt, stammSeite) => out.push({ art, text, unter: unter + (hatPlan ? '' : ' · Stammdaten'), icon: sym, such, kurz: (o.kuerzel || o.name || '').toLowerCase(),
     tun: () => { if (hatPlan) editorZeigen(planArt, o.id); else springeZu({ seite: stammSeite, id: o.id }); }, tun2: () => springeZu({ seite: stammSeite, id: o.id }) });
@@ -137,6 +138,7 @@ function startNaechster(z) {
 SEITEN_RENDER.start = () => {
   const d = APP.daten, z = startStand();
   const lokal = h('p', { class: 'startlokal muted klein' }, icon('schloss', 'k'), 'Alle Daten bleiben lokal in diesem Browser – es wird nichts an einen Server gesendet.');
+  const anleitung = h('p', { class: 'startlokal muted klein' }, icon('buch', 'k'), 'Neu hier? ', anleitungLink('Anleitung als PDF herunterladen'), ' – Schnellstart, Bilder, FAQ und Glossar.');
   // Ohne Daten: Auswahl, womit es losgehen soll
   if (!z.hatDaten) {
     const wahl = (sym, titel, text, knopf, tun, primaer) => h('div', { class: 'karte startwahl' + (primaer ? ' haupt' : '') }, h('span', { class: 'swsym' }, icon(sym)), h('h2', {}, titel), h('p', { class: 'muted' }, text),
@@ -148,7 +150,7 @@ SEITEN_RENDER.start = () => {
         wahl('kompass', 'Neu einrichten', 'In sieben Schritten von den Unterrichtszeiten bis zum fertigen Plan – die Übersicht zeigt jederzeit den nächsten Schritt.', 'Einrichtung starten', () => gehe('schule'), true),
         wahl('stern', 'Beispieldaten ansehen', 'Eine fertige Beispielschule mit zwölf Klassen zum Ausprobieren – lässt sich jederzeit wieder ersetzen.', 'Beispieldaten laden', beispielLaden),
         wahl('ordner', 'Projekt importieren', 'Eine früher exportierte Projektdatei (JSON) öffnen und dort weiterarbeiten.', 'Projektdatei wählen …', importDialog)),
-      lokal
+      lokal, anleitung
     ];
   }
   const nx = startNaechster(z);
@@ -178,7 +180,7 @@ SEITEN_RENDER.start = () => {
       h('div', { class: 'zeile', style: { marginBottom: '6px' } }, h('h2', { style: { margin: 0 } }, 'In sieben Schritten zum Plan'), h('span', { class: 'muted klein' }, fertig + ' von 7 erledigt')),
       h('div', { class: 'fortschritt schmal', role: 'progressbar', 'aria-label': 'Erledigte Schritte', 'aria-valuemin': 0, 'aria-valuemax': 7, 'aria-valuenow': fertig }, h('div', { style: { width: Math.round(fertig / 7 * 100) + '%' } })),
       stepper),
-    lokal
+    lokal, anleitung
   ];
 };
 

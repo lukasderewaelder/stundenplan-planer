@@ -193,7 +193,8 @@ function kopfMenue(knopf) {
     '-',
     { icon: 'lupe', text: 'Suchen und springen …', taste: 'Strg+K', tun: paletteOeffnen },
     { icon: 'zahnrad', text: 'Einstellungen …', tun: einstellungenDialog },
-    { icon: 'hilfe', text: 'Hilfe und Datenschutz', tun: infoDialog }
+    { icon: 'hilfe', text: 'Hilfe und Datenschutz', tun: infoDialog },
+    { icon: 'buch', text: 'Anleitung (PDF)', hinweis: 'herunterladen', tun: anleitungOeffnen }
   ]);
 }
 // Einstellungen der Oberfläche (nur APP.meta, nicht Teil der Projektdatei): Farbschema und Expertenmodus

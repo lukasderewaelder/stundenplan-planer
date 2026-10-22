@@ -9,3 +9,6 @@ node_modules/
 bench/ergebnisse/
 bench/daten/synth-*.json
 
+
+# Screenshots der Anleitung (werden von tools/anleitung.mjs erzeugt; eingecheckt wird nur die fertige PDF)
+anleitung/bilder/
