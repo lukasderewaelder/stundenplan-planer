@@ -1,0 +1,84 @@
+<section class="kapitel" id="kap-aufsichten">
+  <h1>Aufsichten</h1>
+  <p class="einstieg">Auf der Seite „Aufsichten“ (Schritt 4 der Seitenleiste) wird festgelegt, wo und in welchem Umfang Aufsicht nötig ist – Pausenaufsichten, Früh- und Spätaufsichten, Bistro, Betreuung und weitere. Die Verteilung auf die Mitarbeitenden übernimmt das Programm, passend zum Stundenplan und zur Wochenarbeitszeit. Dieser Schritt ist <b>optional</b>: Braucht Ihre Schule keine geplanten Aufsichten, lassen Sie ihn aus.</p>
+  <div class="kasten merke"><p><span class="titel">Begriffe:</span> Es gibt nur <b>Aufsichten</b> – keine festen Typen. Früh, Spät und Pause ergeben sich aus der Uhrzeit: Eine Aufsicht, die um 07:00 oder früher beginnt und vor 12:00 endet, gilt als Frühaufsicht; eine, die ab 16:00 endet und nach 12:00 beginnt, als Spätaufsicht; eine aus dem Zeitraster übernommene Pause als Pausenaufsicht. Bistro, Betreuung oder Hort sind frei benannte Aufsichten. Ganztagsangebote haben einen eigenen Planer (<a data-ref="k8-1"></a>).</p></div>
+
+  <h2 id="k7-1">Die Seite „Aufsichten“</h2>
+  <figure id="abb-aufsichten"><div class="rahmen"><img src="../bilder/k07-aufsichten.jpg" alt="Seite Aufsichten"></div><figcaption>Die Seite „Aufsichten“ der Beispielschule: Wochenübersicht mit Bedarf und Besetzung.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Aufsichten planen</span> verteilt alle Aufsichten neu: Automatische Einsätze werden ersetzt, manuelle und fixierte bleiben.</li>
+    <li><span class="ui">Nur offene besetzen</span> lässt die vorhandenen Einsätze unangetastet und besetzt nur noch fehlende Schichten.</li>
+    <li><b>automatisch nachplanen</b> (Standard an): Nach Änderungen am Stundenplan, an Arbeitszeiten oder am Bedarf wird neu verteilt. „Änderungen gering halten“ (Standard an) hält dabei bestehende Einsätze möglichst fest. Die Berechnung des Stundenplans rechnet die Aufsichten immer vollständig neu.</li>
+    <li>Die Reiter <span class="ui">Aufsichten</span>, <span class="ui">Bereiche</span> und <span class="ui">Auswertung</span>.</li>
+    <li><span class="ui">Gesamtansicht →</span> führt zur Zeitleiste aller Personen; die Zahl zeigt offene Schichten (rot, wenn das Minimum fehlt).</li>
+  </ol>
+  <p>Gelbe Hinweise oben nennen „Noch kein Stundenplan berechnet …“ oder „Aufsichtsplan ist nicht mehr aktuell“; rote Meldungen betreffen feste Einsätze, die mit Unterricht kollidieren und deshalb nicht übernommen wurden (mit „Zur Kenntnis genommen“ bestätigen).</p>
+
+  <h2 id="k7-2">Pausen und Springer</h2>
+  <figure id="abb-pausen"><div class="rahmen"><img src="../bilder/k07-pausen.jpg" alt="Pausen aus dem Zeitraster und Springer"></div><figcaption>Die aufklappbare Karte „Pausen aus dem Zeitraster und Springer“.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Alle übernehmen</span> (oder je Pause „+ Pausenname Zeit“) legt für jede Pause, jeden Bereich und jeden Schultag einen Bedarf mit Minimum 1 und Soll 1 an. Ohne Bereiche entsteht sie bereichslos. Als Pause gelten Zeilen des Zeitrasters mit dem Haken „Pause“ und Lücken ab 10 Minuten; durch Zeitprofile verschobene Pausen erzeugen keinen Bedarf.</li>
+    <li><b>Springer je Pause:</b> eine Zahl von 0 bis 20, die an allen Schultagen gilt. Springer sind Reserve für Ausfälle (Bedarf „Springer – Pausenname“), arbeitszeitneutral; ein unbesetzter Springer ist nur eine Warnung (gelb).</li>
+  </ol>
+
+  <h2 id="k7-3">Bedarf: Wochenübersicht und Bearbeiten</h2>
+  <figure id="abb-wochenuebersicht"><div class="rahmen"><img src="../bilder/k07-wochenuebersicht.jpg" alt="Wochenübersicht der Aufsichten"></div><figcaption>Wochenübersicht: eine Zeile je Aufsicht und Bereich, eine Spalte je Tag.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Mo → Di–Fr</span> überträgt den Montag auf die übrigen Tage (mit Rückfrage; gleich benannte Bedarfe im selben Bereich werden ersetzt).</li>
+    <li><span class="ui">Ganzen Tag kopieren …</span> kopiert alle Bedarfe eines Tages auf gewählte Zieltage.</li>
+    <li><span class="ui">+ Aufsicht</span> legt eine eigene Aufsicht an (siehe unten).</li>
+  </ol>
+  <p>Jedes Feld zeigt eine kleine Treppe und die Zahl (Minimum–Soll, z. B. „2–3“, bzw. die Sollzahlen der Abschnitte, z. B. „1·2·3“). Mit Plan kommt ein „✓“ (besetzt) oder „−n“ (n Personen fehlen) hinzu; „⊘“ steht für Ausschlüsse, „+“ legt die Aufsicht an einem weiteren Tag an. Farben: <b style="color:#1f8a4c">besetzt</b>, <b style="color:#9a6a00">unter Soll</b> (gelb), <b style="color:#d92d20">unter Minimum</b> (rot). Ein Klick auf einen Tagknopf wählt den Tag für neue Aufsichten.</p>
+  <h3>Eine Aufsicht bearbeiten</h3>
+  <figure id="abb-aufsicht-detail"><div class="rahmen"><img src="../bilder/k07-detail.jpg" alt="Detailkarte einer Aufsicht"></div><figcaption>Die Detailkarte „Bearbeiten · Donnerstag“ mit Zeitabschnitten, Minimum und Soll.</figcaption></figure>
+  <p>Ein Klick auf ein Feld öffnet die Karte „Bearbeiten · Tag“. Oben stehen Tag, Bezeichnung und Bereich sowie die Knöpfe <span class="ui">Eigenschaften</span>, <span class="ui">+ Zeitabschnitt</span>, Duplizieren, „Auf andere Tage übertragen“ und Löschen; mit den Pfeilen blättern Sie durch dieselbe Aufsicht an den anderen Tagen („4 von 5 Tagen“). Die Tabelle enthält je Zeitabschnitt:</p>
+  <table>
+    <thead><tr><th style="width:20%">Spalte</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Von, Bis</td><td>Beginn und Ende des Abschnitts. Überschneidungen werden abgelehnt; eine Änderung an einer Grenze zieht den Nachbarabschnitt mit.</td></tr>
+    <tr><td>Minimum</td><td>So viele Personen müssen mindestens eingeteilt sein (Pflicht; 0 bis 50).</td></tr>
+    <tr><td>Soll</td><td>Wunschbesetzung. Das Minimum hebt das Soll mit an.</td></tr>
+    <tr><td>Ausschlüsse</td><td>Dialog „Ausschlüsse für hh:mm–hh:mm“: Gruppen (alle Lehrkräfte, alle Co-Kräfte, weiteres Personal, Klassenteam einer Klasse) und Einzelpersonen, die in diesem Abschnitt nie eingeteilt werden (hart).</td></tr>
+    <tr><td>Besetzt</td><td>Aktuelle Besetzung, z. B. „2 / 3 ~“.</td></tr>
+    <tr><td>Aktionen</td><td>„Zeitraum teilen“ (Mitte, auf 15 Minuten gerundet, mindestens 10 Minuten lang), „Mit folgendem Abschnitt zusammenführen“, „Abschnitt löschen“.</td></tr>
+  </table>
+  <p>Darunter steht die Bedarfskurve. Der Dialog <span class="ui">Eigenschaften</span> enthält „zählt zur Arbeitszeit“ und „erforderliche Qualifikation“ (z. B. ersthelfer; wird kleingeschrieben und auf 40 Zeichen begrenzt).</p>
+  <h3>Neue Aufsicht</h3>
+  <figure id="abb-neue-aufsicht" class="klein"><div class="rahmen"><img src="../bilder/k07-neue-aufsicht.jpg" alt="Dialog Neue Aufsicht"></div><figcaption>Der Dialog „Neue Aufsicht“.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:26%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Bezeichnung, Bereich, Tage</td><td>z. B. „Frühstückspause“, „Frühaufsicht“, „Bistro“; Bereich optional; die Tage sind mit dem gewählten Tagknopf vorbelegt.</td></tr>
+    <tr><td>Von, Bis, Personen</td><td>Zeitraum und Zahl der Personen (1 bis 50).</td></tr>
+    <tr><td>Verlauf</td><td>„gleichbleibend“, „gestaffelt steigend (1, 2, 3 …)“ oder „gestaffelt fallend (… 3, 2, 1)“ mit Stufen von 15, 30 oder 60 Minuten – praktisch für eine Frühaufsicht, bei der von 06:45 bis 07:30 immer mehr Kinder kommen. Eine Vorschau zeigt das Ergebnis.</td></tr>
+    <tr><td>zählt zur Arbeitszeit</td><td>Standard an; ohne Haken ist die Aufsicht arbeitszeitneutral.</td></tr>
+    <tr><td>erforderliche Qualifikation</td><td>Optional; nur Personen mit dieser Qualifikation kommen in Frage (hart).</td></tr>
+  </table>
+
+  <h2 id="k7-4">Bereiche</h2>
+  <figure id="abb-bereiche"><div class="rahmen"><img src="../bilder/k07-bereiche.jpg" alt="Bereiche"></div><figcaption>Der Reiter „Bereiche“.</figcaption></figure>
+  <p>Bereiche sind Orte wie Schulhof, Flur/Treppenhaus oder Mensa. <span class="ui">+ Bereich</span> legt einen an (Namensfeld, Haken <b>exklusiv</b> = nie zwei Personen gleichzeitig, Löschen mit Rückfrage, wenn er verwendet wird). Ohne Bereiche gibt es nur bereichslose Aufsichten. Der Knopf „Regeln &amp; Gewichte“ führt zu den Aufsichtsregeln (<a data-ref="k4-5"></a>).</p>
+
+  <h2 id="k7-5">So wird verteilt</h2>
+  <div class="drei">
+    <div><b>1 Wer kommt in Frage?</b>Personen mit Aufsichts-Haken, die im Haus sind (Unterricht direkt davor oder danach), nicht gesperrt und nicht ausgeschlossen.</div>
+    <div><b>2 Bedarf decken</b>Zuerst die Mindestbesetzung, schwierigste Schichten zuerst; es gewinnt, wer die meisten freien Arbeitsstunden hat.</div>
+    <div><b>3 Auffüllen</b>Danach bis zum Soll, nur mit Personen, die noch genug freie Wochenarbeitszeit haben.</div>
+  </div>
+  <ul>
+    <li><b>Reihenfolge:</b> Fachunterricht → Co-Lehrkräfte → Aufsichten. Aufsichten werden also gegen den fertigen Unterricht geplant.</li>
+    <li><b>Hart ausgeschlossen:</b> wer zur selben Zeit Unterricht, Co-Unterricht oder eine Aufgabe hat; Abwesende; ausdrückliche Ausschlüsse; fehlende Qualifikation; ein bereits belegter exklusiver Bereich; wer seine Wochen- oder Tagesgrenze schon erreicht hat (nicht bei Springern); die Person, die in derselben Pause die feste Aufsicht hat.</li>
+    <li><b>Weich entschieden</b> (wer von mehreren Geeigneten): vor allem „Arbeitszeit ausgleichen“ – wer die meisten Minusstunden hat, bekommt zuerst; erst bei fast gleichem Stand zählt „weiteres Personal vor Co-Kräften vor Lehrkräften“. Danach: Lücken und Anschluss, Fairness bei Früh/Spät, Kontinuität, persönliche Wünsche, Stabilität. Weiche Kosten entscheiden nur, <i>wer</i> eingeteilt wird, nie <i>ob</i> eine Pflichtschicht besetzt wird.</li>
+    <li>Eine Person steht in einer Pause höchstens einmal. Findet sich für den Pflichtbedarf niemand, bleibt das Feld unbesetzt: Es erscheint rot (Minimum fehlt), und die Zahl erscheint in der Navigation und in den offenen Punkten. Die Prüfung warnt schon vorher, wenn der Mindestbedarf größer ist als die Zahl der verfügbaren Personen.</li>
+    <li>Die Aufsichtszeit zählt zur Wochenarbeitszeit (außer Springer und arbeitszeitneutralen Aufsichten).</li>
+  </ul>
+  <div class="kasten beispiel"><p><span class="titel">Beispiel:</span> Schulhof „2–3“ in der großen Pause heißt: Es sind immer mindestens zwei Personen auf dem Hof. Eine dritte kommt nur hinzu, wenn jemand bis zur Wochenarbeitszeit noch mindestens die Pausendauer (z. B. 20 Minuten) frei hat.</p></div>
+
+  <h2 id="k7-6">Persönliche Wünsche und Grenzen</h2>
+  <p>Im Dialog <span class="ui">Zeiten &amp; Verfügbarkeit</span> einer Person (<a data-ref="k3-8"></a>) legt der Reiter „Aufsichten“ fest: den Haken „Für Aufsichten einplanbar“; „Frühaufsicht“ und „Spätaufsicht“ mit gern, neutral, ungern oder nicht möglich; „max. Frühaufsichten/Woche“ und „max. Spätaufsichten/Woche“ (leer = unbegrenzt); „Früh- und Spätaufsicht am selben Tag erlaubt“; die Tabelle „Anwesenheit je Tag“ (frühestens, spätestens, keine Aufsicht); „Allgemeine persönliche Ausschlüsse“ (Verbot oder „Ausnahme – erlaubt“ mit Bereich, Tag und Zeit) und „Qualifikationen“. Wunschzeiten und Früh-/Spätpräferenzen sind <b>weich</b> und dürfen eine notwendige Besetzung nicht verhindern; echte Abwesenheit, ausdrückliche Ausschlüsse und fehlende Qualifikation sind <b>hart</b>.</p>
+
+  <h2 id="k7-7">Von Hand ändern</h2>
+  <p>Aufsichten lassen sich in der Gesamtansicht per Ziehen verschieben, tauschen und fixieren (<a data-ref="k8-2"></a>). Wer eine Aufsicht von Hand einteilt oder fixiert, wird bei der nächsten Verteilung nicht wieder verdrängt – es sei denn, sie kollidiert mit dem Unterricht; dann wird sie ersetzt und gemeldet („verdrängt“). „Leeren“ in der Gesamtansicht entfernt alle Aufsichten (wahlweise auch die manuellen; fixierte bleiben immer) und schaltet die Automatik aus.</p>
+
+  <h2 id="k7-8">Auswertung der Aufsichten</h2>
+  <p>Sechs Kennzahlen fassen die Lage zusammen: Mindestbedarfe offen, Sollbesetzungen offen, Zeitkonflikte, Personen über Arbeitszeit, extrem lange Anwesenheitstage und das Früh-/Spät-Ungleichgewicht. Darunter stehen „Meldungen“ (ein Klick springt zur Stelle; Symbole ✕, !, i), die „Besetzung je Tag“ und „Früh- und Spätaufsichten je Person“ als Balken.</p>
+  <div class="kasten merke"><p><span class="titel">Aufsichtspläne drucken:</span> Gesamtplan je Tag, persönliche Pläne, Aufsichtsplan der gesamten Woche, Früh-/Spätaufsichten, Aufsichten nach Bereich und die Arbeitszeitübersicht stehen unter <span class="ui">Druck &amp; Export</span> bzw. im Menü „Drucken / PDF“ der Gesamtansicht (<a data-ref="kap-druck"></a>).</p></div>
+</section>

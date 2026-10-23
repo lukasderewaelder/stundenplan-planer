@@ -1,0 +1,177 @@
+/* Gestaltung des Benutzerhandbuchs (A4 hochkant). Wird von tools/handbuch.mjs über Chrome gedruckt. */
+@page { size: A4; margin: 20mm 19mm 20mm 19mm;
+  @top-left { content: "Stundenplaner · Benutzerhandbuch"; font: 8pt "Segoe UI", Arial, sans-serif; color: #5b6475; vertical-align: bottom; padding-bottom: 4mm; }
+  @top-right { content: "Stand: " var(--stand, "Oktober 2026"); font: 8pt "Segoe UI", Arial, sans-serif; color: #5b6475; vertical-align: bottom; padding-bottom: 4mm; }
+  @bottom-center { content: "Seite " counter(page) " von " counter(pages); font: 8pt "Segoe UI", Arial, sans-serif; color: #5b6475; vertical-align: top; padding-top: 4mm; } }
+@page :first { margin: 0; @top-left { content: none; } @top-right { content: none; } @bottom-center { content: none; } }
+
+:root { --blau: #1d3c9a; --blau2: #2a49b0; --blau3: #5b7bd5; --hell: #e8eefb; --text: #1b2333; --grau: #5b6475; --linie: #d8dde8; --rot: #d92d20; --gruen: #1f8a4c; --gelb: #fff6df; --gelb-rand: #e6b53a; }
+* { box-sizing: border-box; }
+html { font-family: "Segoe UI", "Lato", "Helvetica Neue", Arial, sans-serif; color: var(--text); font-size: 10pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; }
+h1, h2, h3, h4 { line-height: 1.25; margin: 0; }
+p { margin: 0 0 2.6mm; }
+a { color: var(--blau2); text-decoration: none; }
+a.ref { font-weight: 650; }
+b, strong { font-weight: 650; }
+code, kbd { font-family: Consolas, "Cascadia Mono", monospace; font-size: .9em; }
+code { background: #eef1f8; border-radius: 1mm; padding: 0 1.2mm; }
+kbd { border: .3mm solid #b9c0cf; border-bottom-width: .6mm; border-radius: 1.2mm; padding: 0 1.4mm; background: #f4f6fb; white-space: nowrap; }
+.ui { font-weight: 600; color: #17307f; }
+.knopf { display: inline-block; border: .3mm solid #aab3c8; border-radius: 1.4mm; padding: 0 2mm; background: #fff; font-size: .92em; white-space: nowrap; }
+.knopf.blau { background: var(--blau2); border-color: var(--blau2); color: #fff; }
+.zahl-rot { display: inline-block; width: 4.6mm; height: 4.6mm; border-radius: 50%; background: var(--rot); color: #fff; font-weight: 700; font-size: 7.8pt; line-height: 4.6mm; text-align: center; vertical-align: .1mm; }
+
+/* ---------- Deckblatt (wie das frühere Benutzerhandbuch) ---------- */
+.deckblatt { height: 297mm; position: relative; break-after: page; overflow: hidden; background: #fff; }
+.deckblatt .band { position: absolute; left: 0; right: 0; top: 0; height: 131mm; background: linear-gradient(135deg, #1f3fae 0%, #2f5ad9 100%); }
+.deckblatt .inhalt { position: relative; padding: 24mm 19mm 0 19mm; color: #fff; }
+.deckblatt .wort { display: flex; align-items: center; gap: 3mm; font-weight: 700; letter-spacing: .16em; font-size: 11pt; }
+.deckblatt .wort svg { width: 9mm; height: 9mm; }
+.deckblatt h1 { font-size: 44pt; font-weight: 700; margin: 16mm 0 5mm; letter-spacing: -.01em; }
+.deckblatt .untertitel { font-size: 14pt; line-height: 1.35; max-width: 150mm; opacity: .97; }
+.deckblatt .hero { position: absolute; left: 44mm; right: 44mm; top: 104mm; border-radius: 3mm; overflow: hidden; box-shadow: 0 2mm 7mm rgba(15, 25, 70, .35); border: .3mm solid #c9d3ee; background: #fff; }
+.deckblatt .hero img { display: block; width: 100%; }
+.deckblatt .kacheln { position: absolute; left: 19mm; right: 19mm; top: 203mm; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+.deckblatt .kachel { border: .3mm solid #c9d4f4; background: #eef2fd; border-radius: 2.4mm; padding: 3.2mm 4mm; }
+.deckblatt .kachel b { display: block; color: var(--blau2); font-size: 10.5pt; margin-bottom: 1mm; }
+.deckblatt .kachel span { color: #3d475c; font-size: 9pt; line-height: 1.35; display: block; }
+.deckblatt .fuss { position: absolute; left: 19mm; right: 19mm; bottom: 20mm; display: flex; justify-content: space-between; align-items: flex-end; border-top: .3mm solid var(--linie); padding-top: 4mm; font-size: 9.5pt; color: #3d475c; }
+.deckblatt .fuss b { color: var(--blau2); font-size: 10.5pt; }
+.deckblatt .fuss .rechts { text-align: right; }
+
+/* ---------- Inhaltsverzeichnis ---------- */
+.toc { break-after: page; }
+.toc h1 { font-size: 26pt; color: var(--blau); border-bottom: .5mm solid var(--blau2); padding-bottom: 2mm; margin-bottom: 7mm; }
+.toc ol { list-style: none; padding: 0; margin: 0; }
+.toc li { display: flex; align-items: baseline; gap: 2mm; line-height: 1.45; }
+.toc li .nr { flex: 0 0 11mm; }
+.toc li .punkte { flex: 1; border-bottom: .25mm dotted #a9b2c6; transform: translateY(-1mm); }
+.toc li .seite { font-variant-numeric: tabular-nums; }
+.toc li.k1 { margin-top: 3.6mm; font-weight: 700; font-size: 10.6pt; color: var(--blau2); }
+.toc li.k1 .nr { color: var(--blau2); }
+.toc li.k2 { font-size: 9.6pt; color: #2b3447; }
+.toc li.k2 .nr { color: var(--grau); padding-left: 4mm; flex-basis: 15mm; }
+.toc li a { color: inherit; }
+.toc .hinweis { margin-top: 7mm; font-size: 8.6pt; color: var(--grau); }
+
+/* ---------- Kapitel und Abschnitte ---------- */
+.kapitel { break-before: page; }
+.kapitel > h1 { font-size: 26pt; color: var(--blau); padding-bottom: 2mm; border-bottom: .5mm solid var(--blau2); margin-bottom: 6mm; display: flex; gap: 6mm; align-items: baseline; break-after: avoid; }
+.kapitel > h1 .nr { color: var(--blau2); }
+.kapitel h2 { font-size: 15pt; margin: 8mm 0 3mm; color: var(--blau2); break-after: avoid; display: flex; gap: 4mm; align-items: baseline; }
+.kapitel h2 .nr { color: var(--blau3); font-weight: 500; min-width: 10mm; }
+.kapitel h3 { font-size: 11.4pt; margin: 5mm 0 1.8mm; break-after: avoid; color: var(--text); }
+.kapitel h4 { font-size: 10pt; margin: 3mm 0 1mm; break-after: avoid; color: var(--blau2); }
+.einstieg { font-size: 10.6pt; color: #2b3447; margin-bottom: 4mm; break-inside: avoid; break-after: avoid; }
+ul, ol { margin: 0 0 3mm; padding-left: 5.6mm; }
+li { margin: 0 0 1.1mm; }
+li::marker { color: var(--blau2); }
+
+/* ---------- Abbildungen ---------- */
+figure { margin: 3mm 0 4.5mm; break-inside: avoid; }
+figure .rahmen { display: table; margin: 0 auto; border: .3mm solid var(--linie); border-radius: 2.2mm; overflow: hidden; box-shadow: 0 .6mm 2.4mm rgba(20, 30, 60, .10); background: #fff; }
+figure img { display: block; max-width: 100%; max-height: 112mm; width: auto; margin: 0 auto; }
+figure.hoch img { max-height: 150mm; }
+figure.klein img { max-height: 70mm; }
+figure.schmal .rahmen { max-width: 62%; }
+figcaption { font-size: 8.6pt; color: var(--grau); margin-top: 1.6mm; text-align: center; }
+figcaption b { color: var(--blau2); }
+.paar { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; align-items: start; break-inside: avoid; }
+.paar figure { margin: 0; }
+.paar figure img { max-height: 120mm; }
+.seitlich { display: grid; grid-template-columns: 52mm 1fr; gap: 7mm; align-items: start; break-inside: avoid; margin: 3mm 0 4mm; }
+.seitlich figure { margin: 0; }
+
+/* Nummerierte Legende – gleiche Marken wie in den Bildern */
+ol.legende { list-style: none; padding: 0; margin: 0 0 3.4mm; counter-reset: m; }
+ol.legende li { counter-increment: m; position: relative; padding-left: 8mm; margin: 0 0 1.6mm; min-height: 5.4mm; break-inside: avoid; }
+ol.legende li::before { content: counter(m); position: absolute; left: 0; top: .2mm; width: 5.4mm; height: 5.4mm; border-radius: 50%; background: var(--rot); color: #fff; font-weight: 700; font-size: 8.6pt; line-height: 5.4mm; text-align: center; }
+ol.legende.zwei { columns: 2; column-gap: 7mm; }
+
+/* Schrittkreise (blau) */
+ol.schritte { list-style: none; padding: 0; margin: 3mm 0 4mm; counter-reset: s; }
+ol.schritte > li { counter-increment: s; position: relative; padding: 0 0 0 10mm; margin: 0 0 2.6mm; break-inside: avoid; min-height: 7.4mm; }
+ol.schritte > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 6.6mm; height: 6.6mm; border-radius: 50%; background: var(--blau2); color: #fff; font-weight: 700; font-size: 9.6pt; line-height: 6.6mm; text-align: center; }
+ol.schritte > li::marker { content: ""; }
+ol.schritte > li b:first-child { display: inline; }
+
+/* ---------- Kästen ---------- */
+.kasten { border-radius: 2.2mm; padding: 2.8mm 4mm 2.4mm; margin: 3.4mm 0 4mm; break-inside: avoid; border-left: 1.4mm solid var(--blau2); background: var(--hell); }
+.kasten p:last-child, .kasten ul:last-child { margin-bottom: 0; }
+.kasten .titel { font-weight: 700; }
+.tipp { background: #eaf6ee; border-left-color: var(--gruen); }
+.wichtig { background: var(--gelb); border-left-color: var(--gelb-rand); }
+.beispiel { background: #ece9f9; border-left-color: #7a66d3; }
+.rechnung { background: #f0eefb; border-left-color: #7a66d3; }
+.merke { background: #f3f4f8; border-left-color: #8b93a7; }
+.formel { text-align: center; font-weight: 650; color: var(--blau2); background: var(--hell); border-radius: 2.2mm; padding: 3mm; margin: 3mm 0 4mm; break-inside: avoid; }
+
+/* ---------- Tabellen ---------- */
+table { border-collapse: collapse; width: 100%; margin: 2.4mm 0 4.6mm; font-size: 9.2pt; }
+table.fix { table-layout: fixed; }
+tr { break-inside: avoid; }
+thead { display: table-header-group; }
+th, td { text-align: left; padding: 1.7mm 2.4mm; border-bottom: .25mm solid var(--linie); vertical-align: top; }
+th { background: var(--hell); color: var(--blau2); font-weight: 700; border-bottom: .3mm solid var(--blau3); }
+td.kennung, th.kennung { font-family: Consolas, "Cascadia Mono", monospace; color: var(--blau2); font-weight: 700; white-space: nowrap; width: 11mm; }
+td.zahl { text-align: center; }
+
+/* ---------- Übersicht Ablauf (Kacheln mit Pfeilen) ---------- */
+.ablauf { display: flex; align-items: stretch; gap: 1.6mm; margin: 4mm 0 5mm; break-inside: avoid; }
+.ablauf .schritt { flex: 1; border: .3mm solid #c9d4f4; background: #eef2fd; border-radius: 2.2mm; padding: 2.6mm 2mm; text-align: center; }
+.ablauf .schritt .n { display: inline-block; width: 5.6mm; height: 5.6mm; border-radius: 50%; background: var(--blau2); color: #fff; font-weight: 700; font-size: 8.6pt; line-height: 5.6mm; margin-bottom: 1mm; }
+.ablauf .schritt b { display: block; color: var(--blau2); font-size: 9.4pt; }
+.ablauf .schritt span { display: block; color: #4a5570; font-size: 8pt; line-height: 1.3; }
+.ablauf .pfeil { align-self: center; color: var(--blau3); font-weight: 700; }
+.drei { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; margin: 3mm 0 5mm; break-inside: avoid; }
+.drei > div { border: .3mm solid #c9d4f4; background: #eef2fd; border-radius: 2.2mm; padding: 2.6mm 3mm; font-size: 9pt; }
+.drei > div b { display: block; color: var(--blau2); margin-bottom: .8mm; }
+
+/* ---------- FAQ und Checkliste ---------- */
+.frage { break-inside: avoid; margin: 0 0 3.4mm; padding-left: 8mm; position: relative; }
+.frage::before { content: "?"; position: absolute; left: 0; top: .2mm; width: 5.4mm; height: 5.4mm; border-radius: 50%; background: var(--blau2); color: #fff; font-weight: 700; font-size: 8.6pt; line-height: 5.4mm; text-align: center; }
+.frage > b { display: block; color: var(--blau2); margin-bottom: .6mm; }
+.frage p { margin-bottom: 1mm; }
+.frage-gruppe { font-size: 11.4pt; font-weight: 700; margin: 6mm 0 2.4mm; color: var(--text); break-after: avoid; }
+ul.checkliste { list-style: none; padding: 0; }
+ul.checkliste li { padding: 2mm 0 2mm 9mm; border-bottom: .25mm solid var(--linie); position: relative; break-inside: avoid; margin: 0; }
+ul.checkliste li::before { content: ""; position: absolute; left: .6mm; top: 2.2mm; width: 4.6mm; height: 4.6mm; border: .4mm solid var(--blau2); border-radius: 1.2mm; }
+
+/* ---------- Glossar ---------- */
+dl { margin: 0; }
+dt { font-weight: 700; margin-top: 2.2mm; break-after: avoid; color: var(--blau2); }
+dd { margin: 0; color: #2b3447; break-inside: avoid; }
+.glossar { columns: 2; column-gap: 9mm; }
+
+.spalten2 { columns: 2; column-gap: 8mm; }
+.spalten2 ul { margin-bottom: 2mm; break-inside: avoid; }
+figure.klein img { max-height: 90mm; }
+
+/* ---------- Verdichtung (Seitenzahl) ---------- */
+html { font-size: 9.4pt; line-height: 1.42; }
+@page { margin: 18mm 17mm 18mm 17mm; }
+figure { margin: 2mm 0 3mm; }
+figure img { max-height: 84mm; }
+figure.hoch img { max-height: 120mm; }
+figure.klein img { max-height: 62mm; }
+.paar figure img { max-height: 92mm; }
+ol.legende { columns: 2; column-gap: 7mm; }
+ol.legende li { break-inside: avoid; margin-bottom: 1.2mm; }
+.seitlich ol.legende { columns: 1; }
+.kapitel h2 { margin: 6mm 0 2.4mm; font-size: 13.5pt; }
+.kapitel > h1 { font-size: 22pt; margin-bottom: 4mm; }
+table { font-size: 8.8pt; margin: 1.8mm 0 3.4mm; }
+th, td { padding: 1.2mm 2mm; }
+.kasten { margin: 2.4mm 0 3mm; padding: 2.2mm 3.4mm 1.8mm; }
+p { margin-bottom: 2mm; }
+li { margin-bottom: .8mm; }
+.einstieg { font-size: 10pt; margin-bottom: 3mm; }
+figure img { max-height: 76mm; }
+.paar figure img { max-height: 84mm; }
+
+.toc li { line-height: 1.3; }
+.toc li.k1 { margin-top: 2.4mm; }
+.toc h1 { margin-bottom: 4mm; }
+.toc .hinweis { margin-top: 4mm; }
+.toc .projekt { margin-top: 3mm; font-size: 8.4pt; color: var(--grau); border-top: .25mm solid var(--linie); padding-top: 2mm; }

@@ -1,0 +1,148 @@
+  <h2 id="k3-8">Mitarbeitende</h2>
+  <p>Hier erfassen Sie alle Personen, die unterrichten, als Co-Kraft im Unterricht helfen, Aufgaben oder Aufsichten übernehmen. Die Seite gehört zu Schritt 2 und hat die Reiter <span class="ui">Mitarbeitende</span> (Seitenkopf „Lehrkräfte“), <span class="ui">Arbeitszeit &amp; Deputat</span> und <span class="ui">Aufgaben</span>. Oben steht eine Karte zur Arbeitszeit mit dem Knopf <span class="ui">Arbeitszeit &amp; Deputat →</span> und der Legende der Verfügbarkeit.</p>
+  <figure id="abb-mitarbeitende"><div class="rahmen"><img src="../bilder/k03-mitarbeitende.jpg" alt="Mitarbeitende: Liste und Details"></div><figcaption>Mitarbeitende als „Liste mit Details“: links die Liste, rechts die Felder der gewählten Person.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Liste:</b> Name, Kürzel, Art, Klassenleitung; die gelbe Marke zeigt, wie viele Stunden der Wochenarbeitszeit noch nicht verplant sind (siehe <a data-ref="kap-arbeitszeit"></a>).</li>
+    <li><b>Art:</b> Lehrkraft, Co-Kraft oder weiteres Personal (siehe unten).</li>
+    <li><b>Wochenarbeitszeit (h):</b> harte Grenze (0 bis 80 in Schritten von 0,5; Standard aus dem Rechenmodell, 40). Daneben zeigt das Ist-Abzeichen „✓“, „↓“ oder „✕“ mit der Differenz.</li>
+    <li><b>Fächer:</b> Chips mit „L“ (als Lehrkraft), „Co“ (als Co-Kraft) oder „L+Co“.</li>
+    <li><b>Darstellung:</b> „Liste mit Details“ oder „Tabelle“ (siehe unten).</li>
+  </ol>
+  <h3>Drei Arten von Mitarbeitenden</h3>
+  <table>
+    <thead><tr><th style="width:24%">Art</th><th>Aufgabe im Programm</th></tr></thead>
+    <tr><td><b>Lehrkraft</b></td><td>Unterrichtet als Fachlehrkraft. Als Co-Lehrkraft wird sie nur ergänzt, wenn keine Co-Kraft passt (siehe <a data-ref="k3-12"></a>). Kann Klassenleitung sein.</td></tr>
+    <tr><td><b>Co-Kraft</b></td><td>Zweitkraft im Unterricht (z. B. Schulbegleitung, pädagogische Fachkraft), keine ausgebildete Fachlehrkraft. Nur als Co-Lehrkraft einsetzbar. Eine Co-Kraft ohne Fächer ist in allen Fächern einsetzbar.</td></tr>
+    <tr><td><b>Weiteres Personal</b></td><td>Unterrichtet nicht, auch nicht als Co. Übernimmt Aufsichten und Aufgaben und wird für Aufsichten zuerst eingeteilt.</td></tr>
+  </table>
+  <p>Beim Wechsel der Art werden die Lehrkraft-Fächer zu Co-Fächern kopiert. Bei weiterem Personal wird die Person aus allen Unterrichten, dem Klassenteam und der Klassenleitung ausgetragen (mit Hinweis).</p>
+  <h3>Felder einer Person</h3>
+  <table>
+    <thead><tr><th style="width:26%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Name, Kürzel</td><td>Das Kürzel wird aus dem Namen vorgeschlagen und muss eindeutig sein (rote Marke „Kürzel fehlt“ bzw. „Kürzel doppelt“).</td></tr>
+    <tr><td>Fächer</td><td>Ein Klick öffnet den Fächerdialog: je Fach die unabhängigen Haken „als Lehrkraft“ und „als Co“, oben „Alle Fächer:“ als Schnellwahl.</td></tr>
+    <tr><td>Wochenarbeitszeit (h)</td><td>Maximale Arbeitszeit je Woche – harte Grenze.</td></tr>
+    <tr><td>Unterrichtsdeputat (max. UStd. je Woche)</td><td>Nur sichtbar, wenn „Unterrichtsdeputat begrenzen“ an ist (siehe <a data-ref="k3-2"></a>). Leer = keine Grenze, 0 = keine Unterrichtsstunde. Eine Überschreitung ist eine Warnung.</td></tr>
+    <tr><td>Klassenleitung</td><td>Klasse, die die Person leitet; sie bekommt die Klassenleitungs-Pauschale (siehe <a data-ref="k9-1"></a>) und soll die Klasse möglichst oft sehen (Wunsch).</td></tr>
+    <tr><td>max. / min. UStd. je Tag</td><td>Stundengrenzen an Unterrichtstagen (Standard max. 8, min. 0). Aufgaben zählen nicht.</td></tr>
+    <tr><td>max. Freistd. je Tag</td><td>Standard 2; jede Freistunde darüber zählt beim Wunsch „Freistunden der Lehrkräfte vermeiden“ doppelt.</td></tr>
+    <tr><td>max. Arbeitszeit je Tag (h)</td><td>Harte Tagesgrenze (0 = keine Grenze).</td></tr>
+    <tr><td>Wunsch: frei</td><td>Tage, die möglichst frei bleiben sollen.</td></tr>
+    <tr><td>Anwesenheit</td><td><b>Vollzeit</b> (Standard), <b>Teilzeit an …</b> (nur die markierten Tage) oder <b>Ausbildungstag am …</b> (markierte Tage fest gesperrt). Beides wirkt hart.</td></tr>
+    <tr><td>Aufsichten</td><td>Haken „Aufsichten“ (Standard an): ohne Haken wird die Person nie für Aufsichten eingeplant.</td></tr>
+  </table>
+  <div class="paar">
+    <figure id="abb-lehrer-faecher"><div class="rahmen"><img src="../bilder/k03-lehrer-faecher.jpg" alt="Fächerdialog"></div><figcaption>Der Fächerdialog einer Person.</figcaption></figure>
+    <figure id="abb-verfuegbarkeit"><div class="rahmen"><img src="../bilder/k03-verfuegbarkeit.jpg" alt="Verfügbarkeit"></div><figcaption>Reiter „Verfügbarkeit &amp; Pausen“.</figcaption></figure>
+  </div>
+  <h3>Zeiten &amp; Verfügbarkeit</h3>
+  <p>Die kleine Wochenmatrix in den Details öffnet den Dialog <span class="ui">Zeiten &amp; Verfügbarkeit</span> mit drei Reitern. Im Reiter <b>Verfügbarkeit &amp; Pausen</b> hat jedes Feld einen von vier Werten; ein Klick schaltet reihum:</p>
+  <table>
+    <thead><tr><th style="width:20%">Wert</th><th>Wirkung</th></tr></thead>
+    <tr><td><b>möglich</b> (leer)</td><td>Normal einplanbar.</td></tr>
+    <tr><td><b>gesperrt</b> ✕</td><td>Hart: dort findet nie Unterricht statt (H05).</td></tr>
+    <tr><td><b>gewünscht</b> ✓</td><td>Bevorzugt, sofern die Person überhaupt Wunschstunden hat (Wunsch „Gewünschte Slots nutzen“).</td></tr>
+    <tr><td><b>ungern</b> ~</td><td>Möglich, kostet aber Strafpunkte (Wunsch „Ungern-Slots meiden“).</td></tr>
+  </table>
+  <p>Ziehen mit gedrückter Maustaste füllt einen Bereich; ein Klick auf einen Tag oder eine Stunde setzt die ganze Spalte bzw. Zeile; <span class="ui">Alle möglich</span> und <span class="ui">Alle gesperrt</span> setzen alles zurück. Pausen (schmale Zeilen) lassen sich je Tag sperren: Dort bekommt die Person keine Aufsicht und keinen Aufgabenblock.</p>
+  <div class="paar">
+    <figure id="abb-grenzen"><div class="rahmen"><img src="../bilder/k03-grenzen.jpg" alt="Grenzen und Anwesenheit"></div><figcaption>Reiter „Grenzen &amp; Anwesenheit“.</figcaption></figure>
+    <figure id="abb-dienste-person"><div class="rahmen"><img src="../bilder/k03-dienste-person.jpg" alt="Aufsichten der Person"></div><figcaption>Reiter „Aufsichten“.</figcaption></figure>
+  </div>
+  <p>Der Reiter <b>Grenzen &amp; Anwesenheit</b> fasst Unterricht je Tag (max., min., Freistunden), Arbeitszeit (Woche, Tag, Deputat), „Wunsch: frei“ und „Anwesenheit“ zusammen. Der Reiter <b>Aufsichten</b> enthält persönliche Aufsichtswünsche (siehe <a data-ref="k7-6"></a>). Ein Fehler in einem Reiter blockiert <span class="ui">Übernehmen</span> und springt zum betroffenen Reiter.</p>
+  <h3>Die Tabellenansicht</h3>
+
+  <h2 id="k3-9">Aufgaben</h2>
+  <p>Aufgaben sind personengebundene Tätigkeiten ohne Klasse und ohne Fach – z. B. Schulleitung, Medienverantwortliche, SV-Beratung oder Teamsitzungen. Sie belegen Zeit im Plan der zugeordneten Personen und zählen zur Arbeitszeit, aber nicht zu „max. UStd. je Tag“. Sie stehen im Reiter <span class="ui">Aufgaben</span> der Mitarbeitenden-Seite.</p>
+  <p>Die Liste zeigt Bezeichnung, Kürzel, Person(en), Umfang je Woche, Blöcke, Raum und ob die Aufgabe auf das Deputat zählt. <span class="ui">+ Neue Aufgabe</span> öffnet den Aufgabendialog.</p>
+  <figure id="abb-aufgabe-dialog"><div class="rahmen"><img src="../bilder/k03-aufgabe-dialog.jpg" alt="Aufgabendialog"></div><figcaption>Der Aufgabendialog am Beispiel der Schulleitung.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:26%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Bezeichnung, Kürzel im Plan, Farbe</td><td>Bezeichnung ist Pflicht; das Kürzel (höchstens 12 Zeichen) steht im Plan.</td></tr>
+    <tr><td>Person(en)</td><td>Mindestens eine. Bei mehreren Personen liegt die Aufgabe für alle zur selben Zeit.</td></tr>
+    <tr><td>Raum (optional)</td><td>„kein Raum nötig“ oder ein Raum.</td></tr>
+    <tr><td>Umfang eingeben</td><td>Umfang je Woche in <b>Unterrichtsstunden (UStd.)</b> oder <b>Zeitstunden (h)</b>. Umgerechnet wird mit der mittleren Stundenlänge des Rasters. Aufteilung: automatisch, gleich lange Blöcke oder eigene Blocklängen.</td></tr>
+    <tr><td>Feste Zeiten und Termine</td><td>Feste Zeiten für einzelne Blöcke (Tag und Stunde, auch nach Unterrichtsschluss) und „Zusätzliche Termine mit Uhrzeit – auch in Pausen“. Ein solcher Termin wird nicht verschoben; die Person bekommt dann keine Aufsicht, kollidierender Unterricht bleibt für sie frei, die Zeit zählt zur Arbeitszeit.</td></tr>
+    <tr><td>Aus festen Terminen</td><td>Statt eines Umfangs ergibt sich der Umfang aus Terminen im Zeitraster oder mit Uhrzeit.</td></tr>
+    <tr><td>Pausen im Block zählen als Arbeitszeit</td><td>Standard an – sinnvoll für durchgehende Tätigkeiten wie die Schulleitung.</td></tr>
+    <tr><td>auf das Unterrichtsdeputat anrechnen</td><td>Neue Aufgaben zählen standardmäßig nicht zum Deputat; mit Haken sind es Anrechnungsstunden.</td></tr>
+  </table>
+  <p>Beim Speichern prüft der Dialog Bezeichnung, Person, Umfang oder Termin, Summe der Blöcke und gültige Uhrzeiten. Eine neue Aufgabe landet im Plan-Editor in der Ablage des Lehrerplans.</p>
+
+  <h2 id="k3-10">Unterrichtsversorgung (Expertenmodus)</h2>
+  <p>Im Normalbetrieb brauchen Sie diese Seite nicht: Aus Klassen und Stundentafel entstehen die Unterrichte von selbst, und die Berechnung teilt die Lehrkräfte zu. Wer die Zuordnung selbst steuern möchte, schaltet unter <span class="ui">Menü → Einstellungen → Expertenmodus</span> den Reiter <span class="ui">Unterrichtsversorgung</span> (Bereich „Klassen &amp; Stundentafel“) ein.</p>
+  <figure id="abb-unterricht-matrix"><div class="rahmen"><img src="../bilder/k03-unterricht-matrix.jpg" alt="Unterrichtsversorgung: Matrix Klasse mal Fach"></div><figcaption>Die Matrix der Unterrichtsversorgung: Zeile = Klasse, Spalte = Fach.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Mit Stundentafel abgleichen</span> gleicht die Unterrichte mit den Stundentafeln ab (Dialog „Stundenzahl anpassen“, „Neu anlegen“, „Nicht (mehr) in der Stundentafel“, „Von Hand prüfen“). Nur einfache Unterrichte (eine Klasse, ohne Gruppen und Kopplung) werden angepasst; Gruppen, Kopplungen und mehrere Kurse werden nur gemeldet. Zwingende Personalvorgaben bleiben, Platzierungen geänderter Unterrichte werden verworfen.</li>
+    <li><span class="ui">+ Neuer Unterricht</span> legt einen Unterricht ohne Vorgaben an, z. B. für jahrgangsübergreifende Kurse.</li>
+    <li><span class="ui">Leeren …</span> räumt auf (siehe unten).</li>
+  </ol>
+  <p>Jede Zelle zeigt die Fachlehrkraft (Auswahl „automatisch“, „Kürzel (auto)“ oder eine Person; das Klassenteam steht oben) und einen Knopf mit der Stundenzahl, der den Unterrichtsdialog öffnet (ein „+“ steht bei fester Co-Vorgabe). Geteilte Fächer zeigen die Schere oder „∥Kürzel“ sowie die Knöpfe „A“ und „B“. Eine Zelle ohne Unterricht zeigt „+ n“ (laut Stundentafel n Stunden) und legt per Klick den Unterricht an. Die Spalte „Σ je Schüler“ vergleicht Stundentafel und Verteilung; darunter zeigt eine Karte „Stunden und Arbeitszeit je Lehrkraft“ Chips, die die Liste filtern.</p>
+  <p>Die Liste zeigt jeden Unterricht mit Fach, Klassen/Gruppen, Lehrkräften, UStd., Blöcken, Vorbereitung, Raum, Kopplung, Rhythmus und Fixierungen (höchstens 400 Zeilen). Filter nach Fach, Klasse, Lehrkraft und Eigenschaft (z. B. „mit fester Co-Vorgabe“, „in Gruppen geteilt“, „mit A/B-Woche“) und ein Suchfeld („7a Ma“ oder „Mü“) grenzen ein. Über die Kästchen lassen sich mehrere Unterrichte wählen; die Leiste bietet <span class="ui">Löschen</span>, <span class="ui">Mit Vorbereitung</span>, <span class="ui">Ohne Vorbereitung</span>, <span class="ui">Co-Lehrkräfte entfernen</span> und <span class="ui">Auswahl aufheben</span>.</p>
+  <p><span class="ui">Leeren …</span> bietet <b>Nur feste Personalvorgaben</b> (Standard), <b>Nur die Stunden</b> und <b>Alles</b>. Aufgaben bleiben immer erhalten; ein vorhandener Plan wird mit geleert.</p>
+
+  <h2 id="k3-11">Der Unterrichtsdialog</h2>
+  <p>Der Dialog „Unterricht bearbeiten“ (Zahlenknopf in der Matrix oder <span class="ui">Bearbeiten</span> in der Liste) legt alle Einzelheiten eines Kurses fest.</p>
+  <figure id="abb-unterricht-dialog"><div class="rahmen"><img src="../bilder/k03-unterricht-dialog.jpg" alt="Unterrichtsdialog"></div><figcaption>Der Unterrichtsdialog: Chemie mit 3 Wochenstunden.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:24%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Fach, UStd. je Woche</td><td>Grunddaten des Kurses (0 bis 40).</td></tr>
+    <tr><td>Blöcke</td><td>Leer = automatisch nach der Doppelstundenregel des Fachs (die Vorschau steht im Feld, z. B. „auto: 2+1“). Eigene Aufteilung mit Komma: <code>2,2</code> · <code>2,1</code> · <code>1,1,1</code>. Mit A/B-Rhythmus: <code>2,2A</code> = eine Doppelstunde jede Woche und eine nur in Woche A.</td></tr>
+    <tr><td>Raum</td><td>Ohne Angabe gilt der Raumtyp des Fachs (bei „klassenraum“ der Klassenraum). Alternativ ein anderer Raumtyp oder ein fester Raum.</td></tr>
+    <tr><td>Rhythmus</td><td>„jede Woche“, „nur Woche A“ oder „nur Woche B“ (nur mit A/B-Rhythmus der Schule).</td></tr>
+    <tr><td>Kopplung</td><td>Frei wählbare Kennung, z. B. <code>rel7</code>. Alle Unterrichte mit derselben Kennung liegen zeitgleich und brauchen dieselbe Stundenzahl, Blockaufteilung und denselben Rhythmus.</td></tr>
+    <tr><td>Stunde mit Vorbereitungszeit</td><td>Ohne Haken zählen die Stunden nur mit ihrer Dauer zur Arbeitszeit.</td></tr>
+    <tr><td>Klassen, Nur Teilgruppen</td><td>Eine oder mehrere Klassen; optional nur bestimmte Gruppen (ohne Auswahl nimmt die ganze Klasse teil).</td></tr>
+    <tr><td>Zwingende Personalvorgaben</td><td>Mindestens eine <b>Fachlehrkraft</b> (nur ausgebildete). Weitere Zeilen als <b>Co-Lehrkraft</b>. Modus <b>immer</b>: in allen Stunden dabei (hart geplant); <b>anteilig</b>: in so vielen Stunden, wie unter „Anteil“ angegeben, soweit sie frei ist. Der Haken „Zwang: Co-Kraft zulassen“ erlaubt ausnahmsweise eine Co-Kraft als Fachlehrkraft. Ohne Vorgabe wählt die Berechnung selbst.</td></tr>
+    <tr><td>Fixierungen</td><td>Vorgegebene Slots (Tag und Stunde), die die Berechnung nicht verändert; die erste Fixierung gilt für den ersten Block, die zweite für den zweiten usw. Im Plan erkennbar am Pin.</td></tr>
+    <tr><td>Teilung in Gruppen A und B</td><td>Siehe <a data-ref="k3-13"></a>.</td></tr>
+  </table>
+  <p>Fehlerhafte Angaben werden direkt im Dialog markiert (z. B. eine Co-Kraft in der Rolle „Fachlehrkraft“); gespeichert wird dann nicht. Ändert sich durch das Speichern die Blockaufteilung, werden die bisherigen Platzierungen des Kurses verworfen.</p>
+
+  <h2 id="k3-12">Co-Lehrkräfte</h2>
+  <p>Für Fächer mit dem Haken <b>Co einplanen</b> (und für Zellen mit Co-Bedarf in der Stundentafel) ergänzt die Berechnung automatisch Co-Lehrkräfte – in einem eigenen Schritt nach dem Fachunterricht (siehe <a data-ref="k5-2"></a>). Von Hand eingetragene Co-Lehrkräfte bleiben immer erhalten. Es gibt keinen eigenen Knopf mehr dafür; die Regeln stehen im Expertenmodus unter <span class="ui">Regeln &amp; Gewichte → Co-Lehrkräfte</span> (siehe <a data-ref="k4-4"></a>).</p>
+  <p>So wählt das Programm die Person aus (in dieser Rangfolge):</p>
+  <ol class="schritte">
+    <li><b>Co-Kräfte vor Lehrkräften.</b> Zuerst kommen nicht ausgebildete Kräfte in Frage; ausgebildete Lehrkräfte nur, wenn keine Co-Kraft passt (einstellbar).</li>
+    <li><b>Klassenteam.</b> Mitglieder des Klassenteams werden bevorzugt, bei Lehrkräften die Klassenleitung in ihrer Klasse zuerst.</li>
+    <li><b>Passendes Fach.</b> Es kommen nur Personen mit dem Fach „als Co“ in Frage; Co-Kräfte ohne eingetragene Fächer gelten in allen Fächern.</li>
+    <li><b>Freie Arbeitszeit.</b> Die Person muss genug freie Wochenarbeitszeit haben (Unterricht plus Vorbereitung); bei Gleichstand gewinnt, wer mehr Zeit frei hat.</li>
+  </ol>
+  <p>Bleiben Lücken, wird die Zuteilung bis zu dreimal wiederholt, die betroffenen Kurse zuerst („Co-Vorrang“); bleibt eine Mindestaufsicht nur wegen fehlender Arbeitszeit offen, bekommt die Person eine Reserve. Beides wird nur übernommen, wenn es die Pflichtverstöße senkt. Kurse, für die niemand gefunden wurde, meldet die Berechnung als offenen Punkt „Co-Bedarf ohne Co-Lehrkraft“.</p>
+
+  <h2 id="k3-13">A/B-Wochen und Teilung in Gruppen</h2>
+  <h3>A/B-Wochen</h3>
+  <p>Mit dem A/B-Rhythmus (<span class="ui">Schule &amp; Zeiten → Wochenrhythmus</span>) wechseln sich zwei Wochenpläne ab. Ein A-Unterricht und ein B-Unterricht dürfen denselben Slot, dieselbe Lehrkraft und denselben Raum belegen, weil sie nie in derselben Woche stattfinden. In Plänen und Ausdrucken tragen solche Blöcke den Zusatz [A] bzw. [B]; für Arbeitszeit und Soll/Ist zählen A/B-Stunden halb. Im Plan-Editor zeigt ein Umschalter „Woche A + B“, „nur Woche A“ oder „nur Woche B“.</p>
+  <div class="kasten wichtig"><p><span class="titel">Ungerade Stundenzahl bei Doppelstundenpflicht:</span> Verlangt ein Fach Doppelstunden („pflicht“), hat aber eine ungerade Wochenstundenzahl (z. B. Chemie mit 3 Stunden), geht das nur mit A/B-Wochen: Eine Doppelstunde liegt jede Woche, die zweite im Wechsel in Woche A bzw. B (Anzeige „2+2A“). Im Durchschnitt ergibt das genau 3 Wochenstunden; die Zusatz-Doppelstunden werden zwischen den Klassen abwechselnd auf Woche A und B gelegt. Im Unterrichtsdialog erscheint dazu die Empfehlung; eine Einzelstunde erzwingt man über „Blöcke“ (z. B. <code>2,1</code>). Halbe Stunden in der Stundentafel (0,5) brauchen ebenfalls den A/B-Rhythmus.</p></div>
+  <h3>Teilung in Gruppen A und B</h3>
+  <p>Im Unterrichtsdialog eines gespeicherten Kurses mit genau einer Klasse und ohne Gruppen stehen drei Teilungsarten zur Wahl. Fehlen die Gruppen A und B, werden sie in der Klasse angelegt (je halbe Schülerzahl).</p>
+  <table>
+    <thead><tr><th style="width:30%">Art</th><th>Ergebnis</th></tr></thead>
+    <tr><td><b>In Gruppen teilen</b> (eine Lehrkraft, nacheinander)</td><td>Dasselbe wie die Schere in der Stundentafel: Jede Gruppe bekommt die volle Stundenzahl, die Vorbereitung zählt einmal.</td></tr>
+    <tr><td><b>Parallel teilen</b> (zwei Lehrkräfte, zeitgleich)</td><td>Zwei Kurse (Gruppe A und B) mit derselben Kopplung liegen immer zeitgleich, z. B. in zwei Räumen mit zwei Lehrkräften. Gruppe A behält die bisherige Fachlehrkraft; für Gruppe B wird eine ausgebildete Lehrkraft aus dem Klassenteam mit diesem Fach vorgeschlagen, sonst bleibt das Feld leer. Der Dialog für Gruppe B öffnet sich direkt zur Kontrolle; Co-Lehrkräfte werden dabei entfernt.</td></tr>
+    <tr><td><b>Im Wechsel teilen</b> (Gruppe A in Woche A, B in Woche B)</td><td>Gruppe A hat den Unterricht in Woche A, Gruppe B in Woche B, mit derselben Lehrkraft. Der A/B-Rhythmus der Schule wird dabei eingeschaltet.</td></tr>
+  </table>
+  <p>Halbgruppen sollen möglichst nebeneinander liegen (Wunsch „Halbgruppen nebeneinander“, siehe <a data-ref="k4-2"></a>).</p>
+
+  <h2 id="k3-14">Prüfung</h2>
+  <p>Der Schritt <span class="ui">5. Prüfung</span> (Seitenkopf „Prüfung &amp; Start“) zeigt die Vorprüfung, die nach jeder Änderung im Hintergrund läuft. Sie unterscheidet:</p>
+  <ul>
+    <li><b>✕ Fehler:</b> Die Aufgabe ist so nicht lösbar oder die Daten sind widersprüchlich. Fehler <b>blockieren</b> die Berechnung.</li>
+    <li><b>! Warnungen:</b> mögliche Probleme, die die Berechnung nicht verhindern.</li>
+    <li><b>ℹ Hinweise:</b> Information, z. B. zu ungewöhnlichen, aber zulässigen Einstellungen.</li>
+  </ul>
+  <figure id="abb-pruefung"><div class="rahmen"><img src="../bilder/k03-pruefung.jpg" alt="Prüfung ohne Fehler"></div><figcaption>Die Prüfung der Beispielschule: keine Fehler, der Knopf „Plan berechnen“ ist freigegeben.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Ergebnis:</b> „✓ keine Fehler“ heißt: Es kann losgehen. Darüber zählen sechs Kennzahlen Klassen, Lehrkräfte, Räume, Unterrichte, Blöcke und Unterrichtsstunden je Woche.</li>
+    <li><b>Plan berechnen:</b> bei Fehlern gesperrt (Tooltip „Erst die Fehler beheben“). Auch der Knopf in der Kopfleiste führt dann zu dieser Seite.</li>
+  </ol>
+  <figure id="abb-pruefung-fehler"><div class="rahmen"><img src="../bilder/k03-pruefung-fehler.jpg" alt="Prüfung mit Fehler"></div><figcaption>Dieselbe Seite mit einem Fehler (hier: ein Kürzel kommt doppelt vor). Jede Meldung führt mit einem Klick zur Stelle.</figcaption></figure>
+  <h3>Typische Meldungen</h3>
+  <table>
+    <thead><tr><th style="width:16%">Stufe</th><th>Auslöser (Auswahl)</th></tr></thead>
+    <tr><td><b>Fehler</b></td><td>Unterricht ohne Fach oder Klasse · doppelte Person · Co-Kraft ohne „Zwang“ als Fachlehrkraft · Aufgabe ohne Person · Blockaufteilung ergibt nicht die Wochenstunden · Doppelstundenregel verletzt (z. B. „pflicht“ mit Einzelstunden) · kein Raum vom passenden Typ oder mit genug Plätzen · Kopplung mit unterschiedlicher Stundenzahl · A/B-Unterricht ohne A/B-Rhythmus · mehr Unterrichtsstunden als freie Rasterstunden · unvollständiges Parallelband · Stundentafel und Verteilung stimmen nicht überein · Lehrkraft hat mehr feste Stunden als freie Slots · fixierte Unterrichte kollidieren.</td></tr>
+    <tr><td><b>Warnung</b></td><td>Unterricht ohne Fachlehrkraft (nicht „automatisch“) · Klasse ohne Klassenraum · Halbgruppen ohne Parallelpartner · Kürzel fehlt oder doppelt · Lehrkraft ohne Lehrbefähigung für das Fach · Co-Lehrkraft ohne Co-Fach · Deputat oder Wochenarbeitszeit überschritten · vertragliche Arbeitszeit um mehr als 2 h unterschritten · Personal reicht nicht für ein Fach · Zeitprofile verbinden Klassen mit verschiedenen Uhrzeiten · Aufgabe ohne Stunden oder Termin · Aufsichtskapazität reicht nicht (Mindestbedarf größer als die verfügbaren Personen).</td></tr>
+    <tr><td><b>Hinweis</b></td><td>Die Standard-Blockaufteilung füllt eine Woche zu voll – das Programm gleicht A und B aus · ein Fach gibt es nur für einzelne Gruppen · Doppelstundenpflicht bei ungerader Stundenzahl wird im Wechsel A/B erzeugt.</td></tr>
+  </table>
+  <div class="kasten merke"><p><span class="titel">Gut zu wissen:</span> Meldungen zu den <b>Aufsichten</b> erscheinen in einer eigenen Zeile („Aufsichten: n Fehler, m Warnungen – blockieren die Stundenplanberechnung nicht“) mit dem Knopf „Zur Auswertung der Aufsichten →“. Vor der ersten Berechnung sind die Aufsichten noch unbesetzt; das ist normal.</p></div>
+</section>

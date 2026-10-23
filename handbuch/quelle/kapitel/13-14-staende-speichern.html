@@ -1,0 +1,32 @@
+<section class="kapitel" id="kap-staende">
+  <h1>Stände</h1>
+  <p class="einstieg">Stände sind benannte Momentaufnahmen des Plans – etwa „Entwurf 1“ oder „Nach Gesamtkonferenz“. Es gibt höchstens 20. Sie stehen im Reiter <span class="ui">Stände</span> von Schritt 7.</p>
+  <figure id="abb-staende"><div class="rahmen"><img src="../bilder/k13-staende.jpg" alt="Stände"></div><figcaption>Gespeicherte Stände mit Strafpunkten und dem Vergleich zweier Stände.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Aktuellen Plan als Stand speichern:</b> Name eintragen (Platzhalter „z. B. Entwurf 1, Nach Sitzung“; ohne Namen heißt der Stand „Stand n“) und speichern. Der Zähler zeigt „n / 20“; ohne Plan ist der Knopf deaktiviert.</li>
+    <li><b>Wiederherstellen</b> ersetzt den aktuellen Plan durch den Stand (rückgängig machbar). Wiederhergestellt werden Platzierungen, Besetzungen einzelner Stunden und die automatisch gewählten Fachlehrkräfte; die Aufsichten werden danach neu nachgeführt.</li>
+    <li><b>Vergleich:</b> Zwei Stände (oder ein Stand und der aktuelle Plan) gegenüberstellen. Angezeigt werden die Zahl der geänderten Platzierungen (Tag, Stunde oder Raum) sowie Strafpunkte und harte Verstöße vorher und nachher.</li>
+  </ol>
+  <p>Die Tabelle nennt je Stand Name, Zeitpunkt, harte Verstöße, Strafpunkte und Platzierungen; der Papierkorb löscht einen Stand. Stände liegen in den Projektdaten und sind damit in der Exportdatei enthalten.</p>
+  <div class="kasten tipp"><p><span class="titel">Tipp:</span> Speichern Sie vor jeder größeren Handänderung und vor jeder Neuberechnung einen Stand. So können Sie Pläne vergleichen und jederzeit zu einem guten Zwischenstand zurückkehren.</p></div>
+</section>
+
+<section class="kapitel" id="kap-speichern">
+  <h1>Speichern, Rückgängig und Hilfe</h1>
+  <h2 id="k14-1">Automatisch speichern</h2>
+  <ul>
+    <li>Das Programm speichert etwa eine Sekunde nach jeder Änderung im Browser dieses Rechners (localStorage; ab etwa 4 Millionen Zeichen oder bei einem Fehler IndexedDB). Die Programmeinstellungen liegen getrennt davon.</li>
+    <li>Der Statuspunkt in der Kopfleiste meldet „Änderungen werden gespeichert …“, „Gespeichert um …“, „Geladen um …“ oder „Speichern fehlgeschlagen“ (mit Banner und dem Hinweis auf „Projekt exportieren“). Beim Schließen des Fensters wird ausstehendes Speichern ausgelöst.</li>
+    <li><b>Export-Erinnerung:</b> Nach sieben Tagen ohne Export erscheint ein Punkt am Menü und beim Programmstart ein Hinweis.</li>
+    <li>Daten gelten pro Browser, Gerät und Adresse: Die Datei auf dem Rechner (<code>file://</code>) und die Webseite sehen nicht dieselben Projekte. Zum Umziehen dient die Exportdatei.</li>
+  </ul>
+  <h2 id="k14-2">Rückgängig und Wiederholen</h2>
+  <ul>
+    <li>Kopfleiste oder <kbd>Strg</kbd>+<kbd>Z</kbd> / <kbd>Strg</kbd>+<kbd>Y</kbd> (auch <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>Z</kbd>): bis zu 60 Schritte – auch für Berechnung, Import und Beispieldaten. Eine neue Änderung leert die Wiederholen-Liste.</li>
+    <li>In Textfeldern und geöffneten Dialogen wirken die Tastenkürzel wie gewohnt nur auf den Text; dann die Knöpfe in der Kopfleiste verwenden.</li>
+    <li>Der Verlauf liegt nur im Arbeitsspeicher und ist nach dem Neuladen der Seite leer. Wichtige Zwischenstände deshalb als Stand speichern oder exportieren. Löschaktionen bieten acht Sekunden lang „Rückgängig“ an.</li>
+  </ul>
+  <h2 id="k14-3">Hilfe und Datenschutz</h2>
+  <figure id="abb-hilfe"><div class="rahmen"><img src="../bilder/k14-hilfe.jpg" alt="Dialog Hilfe und Datenschutz"></div><figcaption>Der Dialog „Hilfe und Datenschutz“ (Menü → Hilfe und Datenschutz).</figcaption></figure>
+  <p>Der Dialog nennt den Datenschutzhinweis (alles bleibt lokal), den Link zu diesem Handbuch, Hinweise zum Sichern, eine Kurzanleitung („So geht es“) mit der Priorität Fachunterricht → Co-Lehrkräfte → Aufsichten, die Tastaturhinweise und die Knöpfe <span class="ui">Beispieldaten laden</span> und – im Expertenmodus – <span class="ui">Selbsttest</span>. Dazu kommen die ⓘ-Hilfetexte neben Beschriftungen, <kbd>F1</kbd> in Eingabefeldern, die Hilfetexte „Mehr erfahren“ in den Seitenköpfen und die Hinweise in leeren Zuständen („Noch keine Fächer“ …).</p>
+</section>

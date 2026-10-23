@@ -1,0 +1,56 @@
+<section class="kapitel" id="kap-druck">
+  <h1>Druck &amp; Export</h1>
+  <p class="einstieg">Ein Plan, der nur am Bildschirm existiert, hilft niemandem. Dieses Kapitel zeigt, wie Sie Pläne ausgeben, Daten exportieren und Ihre Arbeit sichern.</p>
+
+  <h2 id="k12-1">Drucken und PDF</h2>
+  <figure id="abb-druck"><div class="rahmen"><img src="../bilder/k12-druck.jpg" alt="Seite Druck und Export"></div><figcaption>Die Seite „Druck &amp; Export“ (Schritt 7, Reiter „Druck &amp; Export“).</figcaption></figure>
+  <ol class="legende">
+    <li><b>Pläne:</b> Auswahlfeld mit den Planarten (siehe Tabelle) und darunter der Auswahl „Alle … drucken“ oder einer einzelnen Klasse, Lehrkraft, eines Raums bzw. Tages.</li>
+    <li><span class="ui">Drucken / als PDF</span> öffnet den Druckdialog des Browsers (A4 quer, 10 mm Rand). Dort wählen Sie einen Drucker oder „Als PDF speichern“. Die Fußzeile zeigt „Stand: Datum“ und „Seite i von n“.</li>
+    <li><b>Farbe / Schwarzweiß (Muster je Fach):</b> Standard ist Farbe; Schwarzweiß unterscheidet die Fächer durch Muster.</li>
+    <li><b>Optionen</b> je nach Planart: „Uhrzeiten anzeigen“, „Räume anzeigen“, „Vollnamen statt Kürzel“, „Pausen anzeigen“, „Gruppenbezeichnung bei Halbgruppen anzeigen“ und – nur bei Lehrerplänen – „Aufsichten mitdrucken“.</li>
+    <li><span class="ui">Plan als CSV</span> (siehe <a data-ref="k12-3"></a>).</li>
+    <li><span class="ui">HTML-Datei mit allen Plänen</span> (siehe <a data-ref="k12-3"></a>).</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:30%">Planart</th><th>Inhalt</th></tr></thead>
+    <tr><td><b>Klassenpläne</b></td><td>Wochenplan je Klasse mit Fächern, Lehrkräften, Räumen und Uhrzeiten.</td></tr>
+    <tr><td><b>Lehrerpläne</b> (mit Aufsichten = persönlicher Plan)</td><td>Wochenplan je Lehrkraft; mit „Aufsichten mitdrucken“ zusätzlich der Block „Aufsichten &amp; Dienste“.</td></tr>
+    <tr><td><b>Raumpläne</b></td><td>Belegung je Raum.</td></tr>
+    <tr><td><b>Gesamtplan je Tag</b></td><td>Alle Personen mit Unterricht, Co, Aufgaben und Aufsichten; „Alle Tage (je Tag eigene Seiten)“ oder ein Tag; „Personen je Seite“ (8/10/12/14/16, Standard 12). Nur Schwarzweiß.</td></tr>
+    <tr><td><b>Aufsichtsplan – gesamte Woche</b>, <b>Früh-/Spätaufsichten</b>, <b>Aufsichten nach Bereich</b></td><td>Die Aufsichtspläne (siehe <a data-ref="kap-aufsichten"></a>).</td></tr>
+    <tr><td><b>GTA-Plan</b></td><td>Ganztagsangebote.</td></tr>
+    <tr><td><b>Arbeitszeitübersicht</b>, <b>Arbeitszeitnachweis je Person</b></td><td>Alle Personen in einer Tabelle bzw. die Rechnung je Person (siehe <a data-ref="kap-arbeitszeit"></a>).</td></tr>
+  </table>
+  <p>Bei A/B-Wochen gibt es zusätzlich „A/B-Wochen“: „beide Wochen in einem Plan“, „nur Woche A“, „nur Woche B“ oder „Woche A und B je eine Seite“. Die Vorschau zeigt die erste Seite im Maßstab 90 %.</p>
+  <figure id="abb-vorschau"><div class="rahmen"><img src="../bilder/k12-vorschau.jpg" alt="Vorschau eines Klassenplans"></div><figcaption>Vorschau der ersten Seite: Klassenplan der 5a (A4 quer).</figcaption></figure>
+  <div class="paar">
+    <figure id="abb-vorschau-lehrer"><div class="rahmen"><img src="../bilder/k12-vorschau-lehrer.jpg" alt="Vorschau Lehrerplan"></div><figcaption>Lehrerplan mit der Zeile der Aufsichten.</figcaption></figure>
+    <figure id="abb-vorschau-aufsicht"><div class="rahmen"><img src="../bilder/k12-vorschau-aufsicht.jpg" alt="Vorschau Aufsichtsplan"></div><figcaption>Aufsichtsplan der gesamten Woche.</figcaption></figure>
+  </div>
+  <div class="kasten merke"><p><span class="titel">Lange Listen:</span> Beim Lehrerplan mit Aufsichten geht der Block „Aufsichten &amp; Dienste“ erst auf zwei, dann drei Spalten über, dann schrumpft die Schrift bis 72 %; danach folgt eine Fortsetzungsseite. Der Gesamtplan verkleinert die Schrift bis 88 %, bevor der Tag auf die nächste Seite weiterläuft.</p></div>
+
+  <h2 id="k12-2">Projektdatei: Export und Import</h2>
+  <p>Die Projektdatei enthält alle Daten – Stammdaten, Unterricht, Plan, Aufsichten, GTAs, Stände, Regeln und Gewichte. Sie ist Ihre <b>Sicherung</b> und der Weg, ein Projekt auf einen anderen Rechner oder Browser mitzunehmen. Die Programmeinstellungen (Darstellung, Expertenmodus …) gehören nicht dazu.</p>
+  <table>
+    <thead><tr><th style="width:28%">Menüpunkt</th><th>Wofür</th></tr></thead>
+    <tr><td><span class="ui">Projekt exportieren</span></td><td>Speichert alle Daten als Datei <code>stundenplan_schule_JJJJ-MM-TT.json</code>. Das Menü nennt dahinter „noch nie“, „zuletzt Datum“ oder „seit n Tagen nicht“. Bewahren Sie die Datei sicher auf – sie enthält personenbezogene Daten.</td></tr>
+    <tr><td><span class="ui">Anonymisiert exportieren</span></td><td>Wie Export (Dateiname endet auf <code>_anonym</code>), aber Namen der Lehrkräfte werden durch das Kürzel ersetzt und die Notizen der Aufsichten und Bedarfe geleert. Schulname, Klassennamen sowie GTA- und Aufgabennotizen bleiben unverändert.</td></tr>
+    <tr><td><span class="ui">Projekt importieren …</span></td><td>Öffnet eine Projektdatei (Dialog „Import: Dateiname“).</td></tr>
+  </table>
+  <figure id="abb-import" class="klein"><div class="rahmen"><img src="../bilder/k12-import.jpg" alt="Importdialog"></div><figcaption>Der Importdialog mit Anzahlen und Prüfliste.</figcaption></figure>
+  <ul>
+    <li>Der Dialog zeigt die Anzahlen (Klassen, Lehrkräfte, Räume, Unterrichte, Platzierungen) und die <b>Prüfliste</b>: Entweder „✓ Pflichtfelder, Verweise und Zahlenbereiche sind in Ordnung.“ oder „n Auffälligkeiten gefunden (Ort und Grund)“ – z. B. fehlende oder doppelte IDs, unbekannte Verweise, Zahlen außerhalb des Bereichs, ungültige Verfügbarkeitswerte oder Platzierungen außerhalb des Zeitrasters.</li>
+    <li><b>Ersetzen</b> verwirft den aktuellen Datenstand (ohne vorhandene Daten heißt der Knopf „Laden“). <b>Zusammenführen</b> übernimmt Objekte mit neuer ID und überschreibt Objekte mit gleicher ID; Schule, Regeln und Aufsichten bleiben, fehlende Zeitprofile kommen mit. <b>Abbrechen</b> verwirft den Import.</li>
+    <li>Ein Import lässt sich mit <kbd>Strg</kbd>+<kbd>Z</kbd> rückgängig machen. Ungültiges JSON ergibt „Keine gültige JSON-Datei …“.</li>
+  </ul>
+  <div class="kasten wichtig"><p><span class="titel">Wichtig:</span> Exportieren Sie nach jeder größeren Arbeitssitzung. Das dauert Sekunden und rettet Stunden – denn Browserdaten sind kein Archiv (siehe <a data-ref="k14-1"></a>).</p></div>
+
+  <h2 id="k12-3">Weitere Formate</h2>
+  <table>
+    <thead><tr><th style="width:30%">Knopf</th><th>Ergebnis</th></tr></thead>
+    <tr><td><span class="ui">Plan als CSV</span></td><td>Eine Zeile je Stunde: Klasse, Gruppe, Tag, Stunde, Beginn, Ende, Fach, Fachlehrkraft, Co-Lehrkraft, Raum. Trennzeichen Semikolon, UTF-8 mit BOM – öffnet direkt in Excel. Enthält auch Aufgaben und – bei „Aufsichten mitdrucken“ – die Aufsichten.</td></tr>
+    <tr><td><span class="ui">Aktuellen Editor-Plan kopieren</span></td><td>Kopiert den im Editor gewählten Plan als Tabelle in die Zwischenablage – zum Einfügen in Excel oder Word.</td></tr>
+    <tr><td><span class="ui">HTML-Datei mit allen Plänen</span></td><td>Eine eigenständige Webseite <code>stundenplaene_schule_Datum.html</code> mit allen Klassen- und Lehrerplänen (inkl. Aufsichten), Aufsichtsplan, GTA-Plan und Gesamtplan, auswählbar über eine Liste. Geeignet zur Weitergabe, z. B. im Schulnetz.</td></tr>
+  </table>
+</section>

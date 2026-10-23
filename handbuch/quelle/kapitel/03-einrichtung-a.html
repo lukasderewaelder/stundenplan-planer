@@ -1,0 +1,181 @@
+<section class="kapitel" id="kap-einrichtung">
+  <h1 id="kap-einrichtung-h">Einrichtung</h1>
+  <p class="einstieg">Vor der ersten Berechnung beschreiben Sie die Schule: wann unterrichtet wird, welche Fächer, Räume, Klassen und Mitarbeitenden es gibt und wie viele Stunden jede Klasse in jedem Fach hat. Aus der Stundentafel erzeugt das Programm den Unterricht selbst; Fachlehrkräfte, Co-Lehrkräfte und Räume teilt die Berechnung zu. Die Einrichtung folgt der Seitenleiste von oben nach unten.</p>
+
+  <h2 id="k3-1">Schule &amp; Zeiten</h2>
+  <p>Die Seite gehört zu Schritt 1 der Seitenleiste. Oben stehen die Reiter <span class="ui">Schule &amp; Zeiten</span>, <span class="ui">Fächer</span> und <span class="ui">Räume</span>; auf der Seite selbst gibt es drei innere Reiter: <span class="ui">Allgemein</span>, <span class="ui">Zeitraster &amp; Pausen</span> und <span class="ui">Zeitprofile</span>. Mit dem Knopf <span class="ui">Beispieldaten laden</span> oben rechts lässt sich jederzeit die Beispielschule laden.</p>
+  <h3>Kopfdaten und Unterrichtstage (Reiter „Allgemein“)</h3>
+  <figure id="abb-schule"><div class="rahmen"><img src="../bilder/k03-schule.jpg" alt="Schule und Zeiten, Reiter Allgemein"></div><figcaption>Reiter „Allgemein“: Kopfdaten, Unterrichtstage und Unterrichtsschluss.</figcaption></figure>
+  <ol class="legende">
+    <li>Die inneren Reiter der Seite. Das Zeitraster behandelt der nächste Abschnitt.</li>
+    <li><b>Unterrichtstage:</b> Haken von Montag bis Samstag (Standard Montag bis Freitag; mindestens ein Tag). Beim Abwählen eines Tages werden die Platzierungen dieses Tages verworfen.</li>
+    <li><b>Wochenrhythmus:</b> „einfach (jede Woche gleich)“ oder „A/B (14-tägig wechselnd)“. Nur mit A/B-Rhythmus dürfen Unterricht oder Blöcke in Woche A oder B liegen (siehe <a data-ref="k3-13"></a>).</li>
+    <li><b>Unterrichtsschluss je Wochentag:</b> „alle Stunden (bis n.)“ oder „bis zur n. Stunde“, z. B. freitags nach der 6. Stunde. Es ist eine Pflichtregel für Unterricht; Aufgaben dürfen danach liegen.</li>
+  </ol>
+  <p><b>Schulname</b> und <b>Schuljahr</b> erscheinen in der Kopfleiste, auf allen Ausdrucken und im Dateinamen des Exports. Die Karte „Wo steht was?“ unter den Feldern springt zu Zeitraster, Zeitprofilen, Arbeitszeit &amp; Deputat und Aufsichten.</p>
+  <h3>Das Zeitraster (Reiter „Zeitraster &amp; Pausen“)</h3>
+  <figure id="abb-zeitraster"><div class="rahmen"><img src="../bilder/k03-zeitraster.jpg" alt="Zeitraster mit Stunden, Pausen und Vorlagen"></div><figcaption>Das Zeitraster der Beispielschule mit Vorlagen, Stundenlänge und Pausen.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Vorlage:</b> „45-Minuten-Raster mit Pausen“, „60-Minuten-Raster“ oder „Doppelstunden-Raster (90 Minuten)“ setzen mit einem Klick ein komplettes Raster. Gibt es schon einen Plan, folgt eine Rückfrage („Ersetzen“).</li>
+    <li><b>Folgende Zeiten mitverschieben:</b> Ist der Haken gesetzt (Standard), rücken alle späteren Zeiten nach, wenn Sie eine Zeit ändern.</li>
+    <li><b>Stundendauer für alle Unterrichtsstunden:</b> eine einheitliche Länge (10 bis 180 Minuten); <span class="ui">Übernehmen</span> setzt sie für alle Stunden.</li>
+    <li><b>Pausen</b> entstehen aus einer Lücke von mindestens 10 Minuten zwischen zwei Stunden („⋯ Pause“, mit eigenem Namen wie „Große Pause“) oder als eigene Zeile mit Haken „Pause“ (z. B. die Mittagspause). Pausenzeiten gelten für die Aufsichten.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:24%">Spalte</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Stunde</td><td>„1. Stunde“ usw.; eine als Pause markierte Zeile heißt „Pause“.</td></tr>
+    <tr><td>Beginn, Ende</td><td>Uhrzeiten; frei tippbar (<code>7:30</code>, <code>0730</code>, <code>7.30</code>). Wird eine Zeit direkt geändert, passen sich Dauer und Pause davor bzw. danach an.</td></tr>
+    <tr><td>Dauer</td><td>Länge in Minuten (5 bis 600). Sie wird auch für die Arbeitszeit verwendet.</td></tr>
+    <tr><td>Bezeichnung</td><td>Frei benennbar, z. B. für Pausen.</td></tr>
+    <tr><td>Pause</td><td>Die Zeile ist eine Pause – dort findet nie Unterricht statt.</td></tr>
+    <tr><td>Doppelstunde darf beginnen</td><td>Ein Doppelblock darf in dieser Stunde beginnen. Vor einer großen Pause ausschalten, damit keine Doppelstunde über die Pause läuft.</td></tr>
+    <tr><td>+ darunter, Papierkorb</td><td>Zeile einfügen oder löschen. Platzierungen in einer gelöschten Stunde werden verworfen.</td></tr>
+  </table>
+  <div class="kasten tipp"><p><span class="titel">Tipp:</span> Zeiten einfach tippen: <kbd>Tab</kbd> springt zum nächsten Feld, <kbd>Enter</kbd> in dieselbe Spalte der nächsten Zeile (<kbd>Umschalt</kbd>+<kbd>Enter</kbd> zurück), <kbd>Strg</kbd>+<kbd>Enter</kbd> fügt darunter eine Zeile ein. Bei ungleich langen Stunden erscheint ein Hinweis; Umrechnungen (z. B. für Aufgaben in Zeitstunden) nehmen dann den Durchschnitt.</p></div>
+  <h3>Zeitprofile (Reiter „Zeitprofile“)</h3>
+  <p>Das Zeitraster bleibt die logische Stundenstruktur der Schule. Ein <b>Zeitprofil</b> legt echte Uhrzeiten für einzelne Klassen oder Fächer fest – z. B. die Unterstufe in 90-Minuten-Blöcken ohne Wechselpause oder Sport als Block ohne Wechselpause. Die Zeiten erscheinen in Plänen und Ausdrucken und gelten für Aufsichten und Anwesenheit.</p>
+  <figure id="abb-zeitprofile"><div class="rahmen"><img src="../bilder/k03-zeitprofile.jpg" alt="Zeitprofile der Beispielschule"></div><figcaption>Zwei Zeitprofile der Beispielschule: Unterstufe 5/6 (Blöcke) und Sport (Block ohne Wechselpause).</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">+ Zeitprofil</span> legt ein Profil („Profil n“) an, vorbefüllt aus dem Raster; Zeilen mit „Doppelstunde darf beginnen“ werden zu einem Block. Je Profil gibt es <span class="ui">+ Block</span>, <span class="ui">Profil duplizieren</span> und <span class="ui">Profil löschen</span>.</li>
+    <li><b>Gilt für:</b> Klassen und Fächer, für die das Profil gilt. Ein Klick öffnet den Zuordnungsdialog.</li>
+  </ol>
+  <p>Im Dialog wählen Sie Klassen (höchstens ein Profil je Klasse; „Schnellwahl: Jg. n“) und Fächer „in allen Klassen“ (höchstens ein Profil je Fach). Gilt beides, hat das Profil des Fachs Vorrang. Die Zeit eines Blocks verteilt sich gleichmäßig auf seine Stunden. Warnungen weisen auf Profile hin, die für nichts gelten, auf überschneidende oder ungültige Zeiten und auf Stunden ohne Block (dort gelten die Zeiten des Schulrasters). Die Zuordnung ist auch in der Klasse möglich (Feld „Zeitprofil“).</p>
+
+  <h2 id="k3-2">Arbeitszeitmodell</h2>
+  <p>Das Rechenmodell legt fest, wie gehaltene Unterrichtsstunden in Arbeitszeit umgerechnet werden. Es steht auf der Seite <span class="ui">Arbeitszeit &amp; Deputat</span> (Schritt 2) im Reiter <span class="ui">Grenzen &amp; Rechenmodell</span>.</p>
+  <figure id="abb-az-modell"><div class="rahmen"><img src="../bilder/k03-arbeitszeit-modell.jpg" alt="Grenzen und Rechenmodell"></div><figcaption>Reiter „Grenzen &amp; Rechenmodell“ der Seite „Arbeitszeit &amp; Deputat“.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Arbeitszeitgrenzen:</b> „hart – nie überschreiten“ (Standard) oder „weich – nur Strafpunkte“. Es ist dieselbe Einstellung wie die Regel „Arbeitszeitgrenzen“ (H16, siehe <a data-ref="k4-1"></a>).</li>
+    <li><b>Unterrichtsdeputat begrenzen:</b> Standard aus. Erst wenn der Haken gesetzt ist, erscheint das Deputat als Spalte und als Feld bei den Mitarbeitenden.</li>
+  </ol>
+  <p>Die Beispielschule hat „Unterrichtsdeputat begrenzen“ eingeschaltet, damit auch die Deputatspalte zu sehen ist; in einem neuen Projekt ist die Option aus. Weiter unten auf der Seite steht das Rechenmodell:</p>
+  <figure id="abb-az-modell2"><div class="rahmen"><img src="../bilder/k03-arbeitszeit-modell2.jpg" alt="Rechenmodell und Vorgaben"></div><figcaption>Der Abschnitt „Rechenmodell und Vorgaben“.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Vorbereitung Lehrkraft / Co-Lehrkraft:</b> Zuschläge je Unterrichtsstunde (Tabelle unten).</li>
+    <li><b>Klassenleitung (min/Woche):</b> Pauschale je Klassenleitung.</li>
+    <li><b>Vorgaben für neu angelegte Personen:</b> Wochenarbeitszeit und Höchstarbeitszeit je Tag.</li>
+    <li><span class="ui">für alle setzen</span> überträgt den Wert (mit Rückfrage) auf alle vorhandenen Personen.</li>
+  </ol>
+  <table>
+    <thead><tr><th>Feld</th><th style="width:16%">Standard</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Vorbereitung Lehrkraft (min je Stunde)</td><td>35 min</td><td>Zuschlag je Unterrichtsstunde (Bezugsgröße 45 min) als Fachlehrkraft, nur für Stunden mit Vorbereitungshäkchen.</td></tr>
+    <tr><td>Vorbereitung Co-Lehrkraft (min je Stunde)</td><td>17 min</td><td>Zuschlag je Stunde als Co-Lehrkraft.</td></tr>
+    <tr><td>Klassenleitung (min/Woche)</td><td>90 min</td><td>Pauschale Vorbereitungszeit je Woche für jede Klassenleitung.</td></tr>
+    <tr><td>Wochenarbeitszeit (h) für neue Personen</td><td>40 h</td><td>Vorgabe für neu angelegte Personen; je Person änderbar.</td></tr>
+    <tr><td>max. Arbeitszeit je Tag (h)</td><td>0 (keine Grenze)</td><td>Vorgabe für die Höchstarbeitszeit je Tag.</td></tr>
+  </table>
+  <p>Die vollständige Berechnung mit Beispiel steht in Kapitel <a data-ref="kap-arbeitszeit"></a>.</p>
+
+  <h2 id="k3-3">Tabellen bedienen</h2>
+  <p>Fächer, Räume, Klassen und Mitarbeitende werden in gleich aufgebauten Tabellen gepflegt. Eingaben werden sofort übernommen; es gibt keinen Speichern-Knopf. Klassen und Mitarbeitende lassen sich als <b>Liste mit Details</b> (links die Liste, rechts alle Felder der gewählten Zeile) oder als <b>Tabelle</b> darstellen; Fächer und Räume sind immer Tabellen.</p>
+  <figure id="abb-tabelle"><div class="rahmen"><img src="../bilder/k03-tabelle.jpg" alt="Fächer-Tabelle mit Werkzeugleiste und Mehrfachauswahl"></div><figcaption>Die Fächer-Tabelle mit Werkzeugleiste und der Leiste „n ausgewählt“.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">+ Neue Zeile</span> legt einen leeren Eintrag an und markiert ihn.</li>
+    <li><span class="ui">Aus Excel einfügen</span> (siehe unten).</li>
+    <li>Zusatzknöpfe je Tabelle, hier <span class="ui">Standardfächer einfügen</span>.</li>
+    <li><b>Suchfeld:</b> filtert die Zeilen während der Eingabe (Groß-/Kleinschreibung egal).</li>
+    <li><b>Mehrfachauswahl:</b> Mit den Kästchen links lassen sich mehrere Zeilen wählen; die Leiste „n ausgewählt“ bietet <span class="ui">Löschen</span>, <span class="ui">Feld setzen</span> und <span class="ui">Auswahl aufheben</span>.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:26%">Funktion</th><th>So geht es</th></tr></thead>
+    <tr><td><b>Sortieren</b></td><td>In der Tabelle: Klick auf die Spaltenüberschrift, ein zweiter Klick kehrt die Reihenfolge um (▲/▼). In der Liste: Auswahlfeld „Sortieren nach“ (Standard „wie angelegt“) mit Umkehrknopf. Die Sortierung ist natürlich: 5a steht vor 10a.</td></tr>
+    <tr><td><b>Duplizieren</b></td><td>Kopiert die Zeile direkt darunter (bei Klassen mit Strich im Namen und ohne Klassenraum, bei Personen mit neuem Kürzelvorschlag).</td></tr>
+    <tr><td><b>Löschen</b></td><td>Eine Zeile wird ohne Rückfrage gelöscht; ein Hinweis nennt, wo der Eintrag verwendet wurde, und bietet „Rückgängig“ an. Abhängige Zuordnungen werden leer gesetzt (z. B. das Fach in einem Unterricht). Bei mehr als 5 gewählten Zeilen fragt ein Dialog nach.</td></tr>
+    <tr><td><b>Feld setzen</b></td><td>Feld wählen, Wert eintragen, <span class="ui">Übernehmen</span> – der Wert gilt für alle gewählten Zeilen (z. B. „Co einplanen: ja“ für mehrere Fächer, „Arbeitszeit: 30“ für mehrere Personen).</td></tr>
+  </table>
+  <h3>Aus Excel einfügen</h3>
+  <figure id="abb-excel" class="klein"><div class="rahmen"><img src="../bilder/k03-excel.jpg" alt="Dialog Aus Excel einfügen"></div><figcaption>Einfügen aus Excel: Spalten durch Tabulator getrennt, mit Vorschau.</figcaption></figure>
+  <p>Zellen in Excel oder LibreOffice Calc markieren, kopieren und in das Textfeld des Dialogs einfügen (eine Zeile je Eintrag, Spalten durch Tabulator). Der Dialog nennt die erwartete Spaltenreihenfolge und zeigt eine Vorschau; eine Kopfzeile wird erkannt und übersprungen. <span class="ui">Übernehmen</span> hängt die Zeilen an.</p>
+  <table>
+    <thead><tr><th style="width:20%">Tabelle</th><th>Spalten (in dieser Reihenfolge)</th></tr></thead>
+    <tr><td>Fächer</td><td>Kürzel · Name · Raumtyp · Doppelstunde · max./Tag</td></tr>
+    <tr><td>Räume</td><td>Name · Typ · Kapazität · teilbar</td></tr>
+    <tr><td>Klassen</td><td>Name · Jahrgang · Schüler · frühestens · spätestens · max. UStd./Tag</td></tr>
+    <tr><td>Mitarbeitende</td><td>Name · Kürzel · Arbeitszeit (h) · Fächer als Lehrkraft · Ausgebildet · Deputat (max. UStd.) · Fächer als Co. Fächer als Kürzel, getrennt durch Leerzeichen, Komma, Semikolon oder „/“. „Ausgebildet“ mit nein, n, 0 oder „co“ ergibt eine Co-Kraft, „personal“ weiteres Personal, alles andere eine Lehrkraft.</td></tr>
+  </table>
+
+  <h2 id="k3-4">Fächer</h2>
+  <p>Jedes Fach hat Kürzel, Name, Farbe und – wenn nötig – einen Raumtyp. Die üblichen Fächer lassen sich mit <span class="ui">Standardfächer einfügen</span> übernehmen (18 Fächer von Deutsch bis Technik/Computer; vorhandene Kürzel werden übersprungen).</p>
+  <figure id="abb-faecher"><div class="rahmen"><img src="../bilder/k03-faecher.jpg" alt="Fächer-Tabelle"></div><figcaption>Die Seite „Fächer“ (Reiter von „Schule &amp; Zeiten“).</figcaption></figure>
+  <ol class="legende zwei">
+    <li><b>Kürzel</b> und <b>Name</b> des Fachs.</li>
+    <li><b>Farbe:</b> erscheint in allen Plänen; neue Fächer erhalten automatisch die am seltensten genutzte Farbe.</li>
+    <li><b>Raumtyp:</b> muss zum Typ eines Raums passen („klassenraum“ ist der Standard; leer = kein Raum nötig).</li>
+    <li><b>Doppelstunde:</b> pflicht, bevorzugt, egal (Standard), vermeiden oder verboten.</li>
+    <li><b>Kernfach:</b> Kernfächer liegen bevorzugt früh am Tag, zwei Kernfächer folgen möglichst nicht direkt aufeinander, und die Klassenleitung unterrichtet sie bevorzugt selbst.</li>
+    <li><b>Co einplanen:</b> Kurse des Fachs bekommen automatisch eine Co-Lehrkraft (siehe <a data-ref="k3-12"></a>).</li>
+    <li><b>Vorbereitung:</b> Vorgabe für neue Kurse (Standard an): Stunden zählen mit Vorbereitungszeit zur Arbeitszeit.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:22%">Doppelstunde</th><th>Wirkung</th></tr></thead>
+    <tr><td><b>pflicht</b></td><td>Nur Doppelstunden. Bei ungerader Stundenzahl liegt die übrige Doppelstunde im Wechsel A/B (siehe <a data-ref="k3-13"></a>).</td></tr>
+    <tr><td><b>bevorzugt</b></td><td>Doppelstunden sind erwünscht; ohne Doppelblock entstehen Strafpunkte (Wunsch „Doppelstunden nach Fachregel“).</td></tr>
+    <tr><td><b>egal</b></td><td>Doppelblöcke nur, wenn sie nötig sind.</td></tr>
+    <tr><td><b>vermeiden</b></td><td>Doppelblöcke sind unerwünscht (Wunsch).</td></tr>
+    <tr><td><b>verboten</b></td><td>Keine Doppelblöcke (Pflicht).</td></tr>
+  </table>
+  <p><b>max./Tag</b> (Standard 2; ein Doppelblock zählt als zwei) begrenzt, wie oft das Fach in einer Klasse an einem Tag vorkommen darf; in der Stundentafel lässt sich je Klasse ein eigener Wert setzen. Beim Löschen eines Fachs wird es in den Unterrichten leer gesetzt und verschwindet aus Stundentafeln, Fächerlisten der Personen und Paarregeln.</p>
+
+  <h2 id="k3-5">Räume</h2>
+  <figure id="abb-raeume"><div class="rahmen"><img src="../bilder/k03-raeume.jpg" alt="Räume-Tabelle mit Massenanlage"></div><figcaption>Die Seite „Räume“ mit Massenanlage und Tabelle.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Massenanlage:</b> Präfix (Standard „Raum “), Nummer von/bis (z. B. 101 bis 110), Typ und Kapazität eintragen und <span class="ui">Anlegen</span> – es entstehen „Raum 101“ bis „Raum 110“ (höchstens 200; vorhandene Namen werden übersprungen).</li>
+    <li><b>Typ:</b> muss zum Raumtyp der Fächer passen; vorhandene Typen werden beim Tippen vorgeschlagen (klassenraum, chemie, physik, biologie, informatik, sporthalle, kunst, musik oder eigene).</li>
+    <li><b>Kapazität:</b> Anzahl Plätze (Standard 30). Ein Raum ist nur passend, wenn die Kapazität mindestens der Schülerzahl entspricht.</li>
+    <li><b>teilbar:</b> Standard 1. Eine Sporthalle mit „teilbar = 2“ nimmt zwei Unterrichte gleichzeitig auf.</li>
+    <li><b>Verfügbarkeit:</b> Die Mini-Matrix öffnet per Klick den Verfügbarkeitsdialog; gesperrte Slots sind für den Raum tabu. Die Spalte „Klassenraum von“ zeigt, welche Klasse den Raum als Klassenraum hat (zugeordnet wird bei den Klassen).</li>
+  </ol>
+  <p>Das Löschen eines Raums setzt Klassenräume und feste Räume leer, die ihn verwendet haben.</p>
+
+  <h2 id="k3-6">Klassen &amp; Gruppen</h2>
+  <p>Die Seite heißt im Seitenkopf „Klassen &amp; Gruppen“ und hat die Reiter <span class="ui">Klassen</span> und <span class="ui">Stundentafeln</span> (siehe <a data-ref="k3-7"></a>).</p>
+  <figure id="abb-klassen"><div class="rahmen"><img src="../bilder/k03-klassen.jpg" alt="Klassen mit Massenanlage und Details"></div><figcaption>Klassen: Massenanlage, Liste und Details der Klasse 5a.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Massenanlage über Muster:</b> z. B. <code>5a–5d, 6a–6c</code> (Bereiche mit Bindestrich, Aufzählung mit Komma). Gibt es schon eine Klasse desselben Jahrgangs, übernimmt die neue deren Stundentafel, Teilungen, Parallelpartner, Co-Bedarf und Höchstzahlen; die Unterrichte werden gleich angelegt. <span class="ui">Freie Klassenräume zuordnen</span> gibt jeder Klasse ohne Raum einen noch freien Raum vom Typ „klassenraum“.</li>
+    <li><b>Klassenliste:</b> Name, Jahrgang, Schülerzahl, Raum, Zahl der Unterrichte und Kürzel der Klassenleitung.</li>
+    <li><b>Klassenleitung:</b> eine Person je Klasse; eine neue Wahl löst die bisherige ab.</li>
+    <li><b>Darstellung:</b> „Liste mit Details“ oder „Tabelle“.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:26%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Name, Jahrgang</td><td>Der Jahrgang (1–13, neu 5) steuert Vorlagen der Stundentafel und die Unterstufen-Regel (Wunsch „Wenig Nachmittag in der Unterstufe“).</td></tr>
+    <tr><td>Schüler</td><td>Standard 25; wichtig für die Raumkapazität.</td></tr>
+    <tr><td>Klassenraum</td><td>Heimraum der Klasse: Unterrichte ohne besonderen Raumtyp finden dort statt.</td></tr>
+    <tr><td>Unterricht frühestens ab / spätestens bis Stunde</td><td>Stundenkorridor: kein Unterricht vor bzw. nach dieser Stunde (z. B. Klasse 5 nie nach der 6.).</td></tr>
+    <tr><td>max. UStd. je Tag</td><td>Obergrenze je Tag (Pflichtregel „Klassenkorridor“).</td></tr>
+    <tr><td>Zeitprofil</td><td>„– Schulraster –“ oder ein Zeitprofil (siehe <a data-ref="k3-1"></a>).</td></tr>
+    <tr><td>Gruppen &amp; Klassenteam</td><td>Teilgruppen der Klasse und die Lehrkräfte, die fest zur Klasse gehören (siehe unten).</td></tr>
+  </table>
+  <h3>Gruppen</h3>
+  <p>Eine Gruppe kollidiert mit der ganzen Klasse und mit derselben Gruppe, nicht aber mit einer anderen Gruppe derselben Klasse. So können Gruppe A und Gruppe B gleichzeitig unterschiedlichen Unterricht haben. Ohne Gruppen zeigt die Zelle <span class="ui">+ Gruppen</span> und <span class="ui">A/B teilen</span> (legt die Halbgruppen „A“ und „B“ an, die Schülerzahl wird halbiert). Mehrere Klassen lassen sich auf einmal teilen: Klassen anhaken und in der Auswahlleiste <span class="ui">In Gruppen A/B teilen</span> wählen.</p>
+  <div class="paar">
+    <figure id="abb-gruppen"><div class="rahmen"><img src="../bilder/k03-gruppen.jpg" alt="Gruppendialog"></div><figcaption>Der Gruppendialog einer Klasse mit zwei Halbgruppen.</figcaption></figure>
+    <figure id="abb-klassenteam"><div class="rahmen"><img src="../bilder/k03-klassenteam.jpg" alt="Klassenteam-Dialog"></div><figcaption>Das Klassenteam: Co-Kräfte und Lehrkräfte der Klasse.</figcaption></figure>
+  </div>
+  <p>Im <b>Gruppendialog</b> stehen Name und Schülerzahl je Gruppe; <span class="ui">+ Gruppe</span> und <span class="ui">+ Halbgruppen 1/2</span> legen weitere an. Als Halbgruppen für die Teilung gelten Gruppen mit den Namen A/B oder 1/2.</p>
+  <h3>Klassenteam</h3>
+  <p>Das <b>Klassenteam</b> gehört zur Klasse, nicht zur Klassenleitung; bei einem Wechsel der Leitung bleibt es bestehen. Teammitglieder stehen in den Auswahllisten der Klasse oben und werden bei der automatischen Zuteilung bevorzugt; ergänzte Co-Lehrkräfte kommen nur aus dem Team (die Klassenleitung gehört dazu). Der Dialog bietet Haken für „Co-Kräfte“ und „Lehrkräfte“ („·“ markiert, wer die Klasse schon unterrichtet) und den Knopf <span class="ui">Alle aus der Unterrichtsverteilung übernehmen</span>.</p>
+
+  <h2 id="k3-7">Stundentafeln</h2>
+  <p>Die Stundentafel nennt die Wochenstunden eines <b>einzelnen Schülers</b> je Fach – sie ist die führende Eingabe: Aus ihr erzeugt das Programm den Unterricht, die Halbgruppen, die Blöcke und die Parallelbänder. Sie steht im Reiter <span class="ui">Stundentafeln</span> der Klassen-Seite.</p>
+  <figure id="abb-stundentafel"><div class="rahmen"><img src="../bilder/k03-stundentafel.jpg" alt="Stundentafel als Tabelle Klasse mal Fach"></div><figcaption>Die Stundentafel: Zeile = Klasse, Spalte = Fach, Zahl = Wochenstunden eines Schülers.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Wochenstunden:</b> Jede Zelle hat ein Zahlenfeld (0 bis 40 in Schritten von 0,5; 0,5 = eine Stunde nur in Woche A oder B). Haken in der Klassenspalte markieren mehrere Klassen – dann gilt eine Eingabe für alle markierten.</li>
+    <li><b>Co-Bedarf:</b> Die grüne Marke „Co“ zeigt, dass im Fach eine zweite Kraft eingeplant wird; „Co 2“ heißt zwei Stunden mit Co.</li>
+    <li><b>Σ je Schüler:</b> Summe der Wochenstunden; bei Abweichung zur Unterrichtsverteilung steht „≠ x“.</li>
+  </ol>
+  <p>Hinter jeder Zahl stehen zwei Knöpfe: Die <b>Schere</b> teilt das Fach in die Gruppen A und B (Halbgruppen); der Knopf <b>⋯</b> öffnet den Zellendialog.</p>
+  <figure id="abb-tafelzelle" class="klein"><div class="rahmen"><img src="../bilder/k03-tafelzelle.jpg" alt="Zellendialog der Stundentafel"></div><figcaption>Zellendialog: Halbgruppe, Parallelpartner, Co-Lehrkraft, Höchstens je Tag.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:24%">Einstellung</th><th>Wirkung</th></tr></thead>
+    <tr><td><b>Halbgruppe</b></td><td>„… in zwei Halbgruppen unterrichten“. Jede Gruppe hat die volle Stundenzahl; für den Schüler bleibt sie gleich (Kunst 2 UStd. in zwei Gruppen sind 2 UStd., nicht 4).</td></tr>
+    <tr><td><b>Parallelpartner</b></td><td>Zwei geteilte Fächer füllen sich auf: Gruppe 1 hat Kunst, Gruppe 2 zeitgleich Musik, danach umgekehrt. Das Partnerfach braucht dieselbe Stundenzahl (sonst „⚠ andere Stundenzahl“). Ohne Partner ist die andere Gruppe währenddessen frei. Zwei geteilte Fächer ohne Partner mit gleicher Stundenzahl werden automatisch Partner.</td></tr>
+    <tr><td><b>Co-Lehrkraft</b></td><td>Vorgabe des Fachs, kein Co, ein Teil der Stunden mit Co („UStd. mit Co“) oder alle Stunden mit Co.</td></tr>
+    <tr><td><b>Höchstens je Tag</b></td><td>Vorgabe des Fachs oder 1× bis 6× je Tag. Bei 1× gibt es keine Doppelstunden. Warnungen erscheinen, wenn der Wert nicht zur Stundenzahl oder zu „Doppelstunde pflicht“ passt.</td></tr>
+  </table>
+  <figure id="abb-stundentafel-unten"><div class="rahmen"><img src="../bilder/k03-stundentafel-unten.jpg" alt="Funktionen unter der Stundentafel"></div><figcaption>Unter der Tabelle: Stunden aus der Unterrichtsverteilung übernehmen und Stundentafeln kopieren.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Aus Unterrichtsverteilung übernehmen</span> trägt die Stunden je Schüler aus den vorhandenen Unterrichten ein (für markierte Klassen oder alle; Halbgruppen zählen einmal, A/B-Wochen halb).</li>
+    <li><span class="ui">Stundentafel kopieren von</span> … <span class="ui">auf die markierten Klassen übertragen</span> ersetzt die Tafeln der Zielklassen (mit Halbgruppen, Parallelpartnern und Co-Bedarf).</li>
+  </ol>
+  <p>Ändern Sie die Stundentafel, wird die Unterrichtsverteilung sofort automatisch angepasst (Hinweis „Rückgängig mit Strg+Z“). Umgekehrt folgt die Stundentafel Änderungen im Unterrichtsdialog.</p>

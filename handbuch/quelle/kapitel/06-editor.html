@@ -1,0 +1,95 @@
+<section class="kapitel" id="kap-editor">
+  <h1>Der Plan-Editor</h1>
+  <p class="einstieg">Im Plan-Editor wird der berechnete Plan angesehen und von Hand angepasst. Jede Änderung wird sofort bewertet; die Seitenleiste zeigt, ob und warum ein Ziel regelkonform ist. Der Editor gehört zu Schritt 7 „Plan bearbeiten &amp; Ergebnis“ (Reiter <span class="ui">Plan bearbeiten</span>).</p>
+
+  <h2 id="k6-1">Aufbau und Ansichten</h2>
+  <figure id="abb-editor"><div class="rahmen"><img src="../bilder/k06-editor.jpg" alt="Plan-Editor mit Klassenplan der 5a"></div><figcaption>Der Plan-Editor mit dem Klassenplan der 5a.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Ansicht:</b> <i>Klassenplan</i>, <i>Lehrerplan</i> oder <i>Raumplan</i>; daneben wählen Sie Klasse, Person bzw. Raum und blättern mit den Pfeilen. Bei A/B-Wochen steht zusätzlich „Woche A + B“, „nur Woche A“ oder „nur Woche B“ zur Wahl.</li>
+    <li><b>Kachel:</b> eine Unterrichtsstunde mit Fach, Lehrkraft-Kürzel und Raum; „(+Sch)“ bedeutet: Co-Lehrkraft Sch ist dabei. Die Farbe entspricht dem Fach.</li>
+    <li><b>Seitenleiste</b> mit den Reitern <span class="ui">Details</span>, <span class="ui">Probleme</span> und <span class="ui">Zuordnen</span> (mit <kbd>←</kbd> <kbd>→</kbd> wechselbar). Auf schmalen Fenstern ist sie ein einklappbares Blatt unten.</li>
+    <li><b>Ablage:</b> das Dock „nicht platzierte Stunden“. Hier liegen Stunden ohne Platz; Kacheln lassen sich hineinziehen und wieder herausholen. „alle zeigen“ zeigt auch Stunden, die nicht zur aktuellen Ansicht gehören.</li>
+    <li><b>Offene Punkte</b> mit Zähler: Liste dessen, was noch zu klären ist (<a data-ref="k10-2"></a>).</li>
+    <li><b>⋯ Weitere Aktionen</b> (siehe unten).</li>
+  </ol>
+  <div class="paar">
+    <figure id="abb-editor-menue"><div class="rahmen"><img src="../bilder/k06-menue.jpg" alt="Menü Weitere Aktionen"></div><figcaption>Das Menü „Weitere Aktionen“.</figcaption></figure>
+    <figure id="abb-editor-legende"><div class="rahmen"><img src="../bilder/k06-legende.jpg" alt="Tastatur und Legende"></div><figcaption>„Tastatur und Legende“ (?).</figcaption></figure>
+  </div>
+  <table>
+    <thead><tr><th style="width:36%">Eintrag im Menü „⋯“</th><th>Wirkung</th></tr></thead>
+    <tr><td>Parallelansicht (zwei Pläne nebeneinander)</td><td>Zeigt zwei Pläne nebeneinander, jeder mit eigenem Kopf. Im Klassenplan wird automatisch der Lehrerplan der Klassenleitung als zweiter Plan vorbelegt. Ziehen funktioniert zwischen beiden Plänen.</td></tr>
+    <tr><td>Woche A | Woche B nebeneinander</td><td>Nur bei A/B-Wochen: Woche A links, Woche B rechts.</td></tr>
+    <tr><td>Größe der Kacheln</td><td>Kompakt, Normal (Standard) oder Groß (Zeilenhöhe 44/58/78 Pixel). Dasselbe steht in den Einstellungen.</td></tr>
+    <tr><td>Nur diese Klasse (Lehrkraft) neu berechnen</td><td>Startet die Berechnung als Teilneuplanung ausgehend vom aktuellen Plan (nicht im Raumplan).</td></tr>
+    <tr><td>Plan verwerfen …</td><td>Löscht den Plan (mit Bestätigung; rückgängig mit <kbd>Strg</kbd>+<kbd>Z</kbd>).</td></tr>
+  </table>
+  <p>Die Legende („?“) erklärt die Zeichen im Raster: Freistunde, „nach Unterrichtsschluss (Aufgaben möglich)“, „gesperrt (Sperrzeit)“, „fixiert – wird nicht verschoben“, „ohne Lehrkraft (N. N.)“, „Konflikt: verletzt eine Pflichtregel“ und „kursiv: Einsatz als Co-Lehrkraft“, und sie nennt die Tastenkürzel.</p>
+
+  <h2 id="k6-2">Stunden verschieben und tauschen</h2>
+  <figure id="abb-ziehen"><div class="rahmen"><img src="../bilder/k06-ziehen.jpg" alt="Beim Ziehen zeigen die Zielfelder Haken und Kreuze"></div><figcaption>Beim Ziehen färben sich die Zielfelder: Haken = passt, Kreuz = geht nicht.</figcaption></figure>
+  <p>Fassen Sie eine Kachel mit der Maus (oder mit Stift oder Finger) und ziehen Sie sie auf ein anderes Feld – nach einer Bewegung von mehr als 6 Pixeln beginnt der Zug. Fixierte Kacheln lassen sich nicht ziehen. Schon während des Ziehens zeigen die Felder, was dort möglich ist; ein Hinweis am Mauszeiger nennt den Grund.</p>
+  <table>
+    <thead><tr><th style="width:18%">Farbe</th><th>Bedeutung</th></tr></thead>
+    <tr><td><b style="color:#1f8a4c">Grün (✓)</b></td><td>Frei und regelkonform (gegebenenfalls sogar mit weniger Strafpunkten).</td></tr>
+    <tr><td><b style="color:#9a6a00">Gelb (~)</b></td><td>Möglich, kostet aber Strafpunkte; der Hinweis nennt die Zahl und die Wünsche (z. B. „+11 Strafpunkte“).</td></tr>
+    <tr><td><b style="color:#d92d20">Rot (✕)</b></td><td>Harter Konflikt mit Grund, z. B. „Lehrkraft Hf unterrichtet dort 6b (De)“. Ablegen wird zunächst verweigert.</td></tr>
+  </table>
+  <ul>
+    <li><b>Verschieben:</b> auf ein freies Feld ziehen und loslassen.</li>
+    <li><b>Tauschen:</b> auf eine Zelle ziehen, in der eine Kachel gleicher Länge mit gleichem Start liegt („Tausch mit …“); beide Blöcke tauschen die Plätze, sofern der Tausch in beide Richtungen zulässig ist.</li>
+    <li><b>Aus dem Plan nehmen:</b> Kachel in die Ablage ziehen; von dort lässt sie sich wieder in den Plan ziehen.</li>
+    <li><b>Rotes Ziel loslassen:</b> Es erscheint „Trotzdem verschieben?“ (bzw. „tauschen?“). Zur Wahl stehen „Verschieben und neu lösen“ (die Stunde wird fixiert und eine Reparaturberechnung sucht für die verdrängten Stunden neue Plätze) oder „Nur verschieben – der Verstoß bleibt stehen“. Findet die Reparatur keine vollständige Lösung, bietet ein Dialog „Zurücknehmen“, „So lassen“ oder „Ganzen Plan neu berechnen“ an.</li>
+    <li>Jede Änderung lässt sich mit <kbd>Strg</kbd>+<kbd>Z</kbd> zurücknehmen.</li>
+  </ul>
+
+  <h2 id="k6-3">Das Kachelmenü</h2>
+  <p>Rechtsklick auf eine Kachel (oder <kbd>Umschalt</kbd>+<kbd>F10</kbd>) öffnet das Kachelmenü.</p>
+  <figure id="abb-kachelmenue"><div class="rahmen"><img src="../bilder/k06-kachelmenue.jpg" alt="Kachelmenü"></div><figcaption>Das Kachelmenü einer Stunde.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:36%">Eintrag</th><th>Wirkung</th></tr></thead>
+    <tr><td><b>Fixieren</b> / <b>Lösen</b> (<kbd>L</kbd>)</td><td>Fixierte Blöcke verschiebt weder die Berechnung noch ein Zug mit der Maus. So schützen Sie Handarbeit. Fixierungen aus dem Unterrichtsdialog löst man dort.</td></tr>
+    <tr><td><b>Verschieben nach …</b> (<kbd>V</kbd>)</td><td>Liste aller zulässigen Ziele, sortiert: ✓ regelkonform vor ~ mit Strafpunkten. <kbd>↑</kbd> <kbd>↓</kbd> oder <kbd>Tab</kbd> wählen, <kbd>Enter</kbd> übernimmt. Der Haken „auch Ziele mit hartem Verstoß zeigen (✕) – zum Erzwingen“ zeigt alle.</td></tr>
+    <tr><td><b>Raum ändern …</b></td><td>Alle passenden Räume; belegte sind gekennzeichnet.</td></tr>
+    <tr><td><b>Lehrkraft ändern …</b></td><td>Neue Fachlehrkraft für alle Blöcke des Kurses (nur ausgebildete). Die Liste zeigt Lehrbefähigung und ob die Person frei ist; Klassenteam steht oben. Außerdem: „Nur diese Stunde besetzen“, „aus allen Stunden entfernen“ (die Berechnung setzt sie dort nicht wieder ein) und „wieder automatisch einplanen lassen“.</td></tr>
+    <tr><td><b>Ersatz suchen</b> (Fachlehrkraft, Co-Lehrkraft, Raum)</td><td>Öffnet die Seitenleiste „Details“ und hebt die passende Gruppe hervor.</td></tr>
+    <tr><td><b>In die Ablage legen</b> (<kbd>Entf</kbd>)</td><td>Nimmt den Block aus dem Plan.</td></tr>
+    <tr><td><b>Harten Fehler akzeptieren …</b></td><td>Nimmt einen harten Fehler bewusst in Kauf (nach einer Warnung); siehe <a data-ref="k10-2"></a>.</td></tr>
+    <tr><td><b>Details öffnen</b> (<kbd>Enter</kbd>)</td><td>Öffnet den Unterrichtsdialog (<a data-ref="k3-11"></a>).</td></tr>
+  </table>
+  <figure id="abb-verschieben" class="klein"><div class="rahmen"><img src="../bilder/k06-verschieben.jpg" alt="Dialog Verschieben nach"></div><figcaption>„Verschieben nach …“ bietet nur zulässige Ziele an; ✓ regelkonform, ~ mit Strafpunkten.</figcaption></figure>
+
+  <h2 id="k6-4">Details, Probleme und Zuordnen</h2>
+  <figure id="abb-editor-details"><div class="rahmen"><img src="../bilder/k06-details.jpg" alt="Details einer gewählten Stunde"></div><figcaption>Reiter „Details“ („Ressourcen für diesen Termin“) bei gewählter Stunde.</figcaption></figure>
+  <p>Der Reiter <b>Details</b> zeigt für die gewählte Stunde die Gruppen „Fachlehrkräfte“, „Co-Lehrkräfte“ und „Räume“ mit den Zeichen ✓ (verfügbar), ⚠ (mit Nachteilen) und ✕ („Derzeit nicht verfügbar“, mit Grund). Ein Klick auf eine Person öffnet ein Menü („Nur diesen Termin übernehmen“, „… für alle Stunden einsetzen“); bei ✕ fragt das Programm „Trotzdem erzwingen?“. Ein leeres Feld anzuklicken zeigt, welche offenen Stunden dort liegen könnten.</p>
+  <div class="paar">
+    <figure id="abb-probleme"><div class="rahmen"><img src="../bilder/k06-probleme.jpg" alt="Reiter Probleme"></div><figcaption>Reiter „Probleme“.</figcaption></figure>
+    <figure id="abb-zuordnen"><div class="rahmen"><img src="../bilder/k06-zuordnen.jpg" alt="Reiter Zuordnen"></div><figcaption>Reiter „Zuordnen“ („Ziehen &amp; zuordnen“).</figcaption></figure>
+  </div>
+  <p>Der Reiter <b>Probleme</b> zeigt „✓ 0 harte Fehler“ bzw. „✕ n harte Fehler“ der Endvalidierung, die Strafpunkte und die „Verstöße in dieser Ansicht“ (✕ hart, ~ weich); ein Klick lässt die betroffenen Kacheln aufblinken. Im Reiter <b>Zuordnen</b> stehen Lehrkräfte und Räume mit einem Filterfeld; im Klassenplan steht das Klassenteam vorn.</p>
+  <ul>
+    <li><b>Lehrkraft auf eine Kachel ziehen:</b> Per Menü wählen Sie die Rolle: „Nur diese Stunde übernehmen“, „Als Fachlehrkraft einsetzen“, „Als Co-Lehrkraft hinzufügen“ oder – bei Co-Kräften – „Als Fachlehrkraft mit Zwang“. Bei Aufgaben gibt es „Aufgabe übernehmen“ und „Zusätzlich eintragen (gemeinsamer Termin)“.</li>
+    <li><b>Person auf eine Stunde ziehen, in der sie schon steht</b> (auch automatisch geplant): Das Menü bietet an, sie für diese Stunde oder den ganzen Kurs herauszunehmen; die automatische Planung setzt sie dort nicht wieder ein.</li>
+    <li><b>Raum auf eine Kachel ziehen:</b> setzt den Raum für diesen Block.</li>
+  </ul>
+
+  <h2 id="k6-5">Lehrerplan mit Arbeitszeit und Aufsichten</h2>
+  <figure id="abb-lehrerplan"><div class="rahmen"><img src="../bilder/k06-lehrerplan.jpg" alt="Lehrerplan"></div><figcaption>Der Lehrerplan: Abzeichen für Unterrichtsstunden und Arbeitszeit, darunter die Aufsichten der Person.</figcaption></figure>
+  <p>Im Lehrerplan zeigt ein Abzeichen neben der Auswahl die Unterrichtsstunden („x,x UStd.“) und die Wochenarbeitszeit als „Summe / Soll h“ (grün = passt, gelb = mehr als eine Stunde darunter, rot = darüber); ein Klick öffnet den Nachweis mit den Anteilen (<a data-ref="kap-arbeitszeit"></a>). Unter dem Raster stehen die Termine der Person und, solange die Druckoption „Aufsichten mitdrucken“ aktiv ist, der Block „Aufsichten &amp; Dienste“ mit Tag, Zeit, Aufsicht, Bereich und Hinweis. GTAs erscheinen als eigene Kacheln. Der Raumplan zeigt die Belegung eines Raums.</p>
+
+  <h2 id="k6-6">Parallelansicht und Teiloptimierung</h2>
+  <figure id="abb-parallel"><div class="rahmen"><img src="../bilder/k06-parallel.jpg" alt="Parallelansicht"></div><figcaption>Parallelansicht: Klassenplan links, Lehrerplan der Klassenleitung rechts.</figcaption></figure>
+  <p>In der Parallelansicht lassen sich Stunden zwischen beiden Plänen ziehen – praktisch zum Tauschen zwischen Klassenplan und Lehrerplan. Möchten Sie nur einen Teil neu rechnen lassen, ohne den Rest zu verändern, wählen Sie im Menü „⋯“ <span class="ui">Nur diese Klasse neu berechnen</span> (bzw. „Nur diese Lehrkraft …“); die Berechnung startet dann als Teilneuplanung mit dem aktuellen Plan als Ausgangspunkt (<a data-ref="k5-1"></a>).</p>
+
+  <h2 id="k6-7">Bedienung mit der Tastatur</h2>
+  <table>
+    <thead><tr><th style="width:28%">Taste</th><th>Wirkung</th></tr></thead>
+    <tr><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>Kachel wählen (links/rechts = anderer Tag, oben/unten = gleicher Tag).</td></tr>
+    <tr><td><kbd>Entf</kbd> oder <kbd>←</kbd>-Rücktaste</td><td>Gewählte Kachel in die Ablage legen.</td></tr>
+    <tr><td><kbd>L</kbd></td><td>Fixieren bzw. lösen.</td></tr>
+    <tr><td><kbd>V</kbd></td><td>„Verschieben nach …“ öffnen; dort <kbd>↑</kbd> <kbd>↓</kbd>/<kbd>Tab</kbd> wählen, <kbd>Enter</kbd> übernimmt.</td></tr>
+    <tr><td><kbd>Enter</kbd></td><td>Unterrichtsdialog öffnen.</td></tr>
+    <tr><td><kbd>Umschalt</kbd>+<kbd>F10</kbd></td><td>Kachelmenü öffnen (<kbd>↑</kbd> <kbd>↓</kbd> wählen, <kbd>Esc</kbd> schließt).</td></tr>
+  </table>
+  <p>Die Editor-Tasten greifen nur ohne offenen Dialog oder Menü und außerhalb von Eingabefeldern. Alle Tastenkürzel stehen in Kapitel <a data-ref="kap-tasten"></a>.</p>
+</section>

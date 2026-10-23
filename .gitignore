@@ -10,5 +10,7 @@ bench/ergebnisse/
 bench/daten/synth-*.json
 
 
-# Screenshots der Anleitung (werden von tools/anleitung.mjs erzeugt; eingecheckt wird nur die fertige PDF)
-anleitung/bilder/
+# Screenshots des Handbuchs (werden von tools/handbuch.mjs erzeugt; eingecheckt wird nur die fertige PDF)
+handbuch/bilder/
+handbuch/_zustand.json
+handbuch/quelle/_gesamt.html

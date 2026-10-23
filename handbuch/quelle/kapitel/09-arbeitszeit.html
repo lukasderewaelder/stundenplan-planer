@@ -1,0 +1,46 @@
+<section class="kapitel" id="kap-arbeitszeit">
+  <h1>Wochenarbeitszeit</h1>
+  <p class="einstieg">Für jede Person rechnet das Programm die Arbeitszeit aus den gehaltenen Stunden und vergleicht sie mit der eingetragenen Wochenarbeitszeit (Soll). Die Übersicht steht auf der Seite „Arbeitszeit &amp; Deputat“ (Reiter „Übersicht je Person“); der Ist-Wert erscheint außerdem in der Mitarbeitenden-Tabelle und im Lehrerplan.</p>
+
+  <h2 id="k9-1">Die Berechnung</h2>
+  <table>
+    <thead><tr><th style="width:24%">Anteil</th><th>Rechnung (Standardwerte)</th></tr></thead>
+    <tr><td>Unterricht</td><td>Dauer aller Stunden als Fachlehrkraft (z. B. 45 min je Stunde; nach Zeitprofil auch abweichend).</td></tr>
+    <tr><td>Vorbereitung</td><td>35 min je 45 min Unterricht als Fachlehrkraft – nur für Stunden mit Vorbereitungshäkchen; bei geteilten Gruppen nur einmal.</td></tr>
+    <tr><td>Co-Einsatz</td><td>Dauer aller Stunden als Co-Lehrkraft.</td></tr>
+    <tr><td>Co-Vorbereitung</td><td>17 min je 45 min als Co-Lehrkraft – nur mit Vorbereitungshäkchen.</td></tr>
+    <tr><td>Klassenleitung</td><td>90 min pauschal je Woche.</td></tr>
+    <tr><td>Aufgaben</td><td>Dauer nach Plan plus feste Termine (ohne Vorbereitung).</td></tr>
+    <tr><td>Aufsicht</td><td>Dauer aller eingeteilten Aufsichten; bei Rhythmus anteilig. Springer und arbeitszeitneutrale Aufsichten zählen nicht.</td></tr>
+    <tr><td>GTA</td><td>Dauer der Ganztagsangebote, ohne Vorbereitung.</td></tr>
+    <tr><td><b>Summe</b></td><td>Summe aller Anteile; <b>Differenz</b> = Summe − Soll.</td></tr>
+  </table>
+  <div class="kasten rechnung"><p><span class="titel">Rechenbeispiel:</span> Eine Lehrkraft mit 20 Stunden als Fachlehrkraft (alle mit Vorbereitung), 2 Stunden als Co-Lehrkraft, Klassenleitung und 60 Minuten Aufsicht:<br>20 × (45 + 35) = 1600 min · 2 × (45 + 17) = 124 min · Klassenleitung 90 min · Aufsicht 60 min<br>Summe = 1874 min ≈ <b>31,2 h</b>. Bei einer Wochenarbeitszeit von 32 h beträgt die Differenz −0,8 h (grün).</p></div>
+  <ul>
+    <li><b>Grundlage:</b> Sobald ein Plan existiert, zählen die tatsächlich platzierten Stunden (anteilige Co-Lehrkräfte nur, wo sie eingeplant sind). Ohne Plan rechnet das Programm mit der Unterrichtsverteilung und der durchschnittlichen Stundenlänge.</li>
+    <li><b>A/B-Stunden</b> zählen halb, weil sie nur jede zweite Woche stattfinden.</li>
+    <li><b>Höchstarbeitszeit je Tag:</b> Unterricht, Co-Einsätze, Aufgaben und Aufsichten an einem Tag – ohne Vorbereitung.</li>
+  </ul>
+  <div class="kasten merke"><p><span class="titel">Drei Grenzen:</span> <b>Wochenarbeitszeit</b> und <b>Höchstarbeitszeit je Tag</b> sind hart (einstellbar auf „weich“); das <b>Unterrichtsdeputat</b> begrenzt nur die Unterrichtsstunden (als Lehrkraft und Co zusammen) und warnt bei Überschreitung. Wer sein Deputat ausgeschöpft hat, kann trotzdem noch Arbeitszeit für Aufgaben, Aufsichten oder Schulleitung frei haben.</p></div>
+
+  <h2 id="k9-2">Die Übersicht je Person</h2>
+  <figure id="abb-az-uebersicht"><div class="rahmen"><img src="../bilder/k09-uebersicht.jpg" alt="Arbeitszeit je Person"></div><figcaption>Reiter „Übersicht je Person“ in der Ansicht „Alle Bestandteile“.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Bestandteile:</b> Unterricht, Vorbereitung, Co-Einsatz, Co-Vorbereitung, Klassenleitung, Aufgaben, GTA und Aufsicht je Person (in Stunden).</li>
+    <li><b>Summe</b> (h) und die eingetragene <b>Wochenarbeitszeit</b> (hier direkt editierbar).</li>
+    <li><b>Differenz</b> mit Farbmarke (siehe unten); dazu „höchster Tag“ und „max. h/Tag“.</li>
+    <li>Ansichten: <span class="ui">Kompakt</span> (Standard), <span class="ui">Alle Bestandteile</span> und <span class="ui">Einsätze &amp; Anwesenheit</span> (Früh, Spät, Springer, durchschnittliche und maximale Anwesenheit, Lücken je Woche). <span class="ui">Drucken</span> gibt die Tabelle aus.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:18%">Farbmarke</th><th>Bedeutung</th></tr></thead>
+    <tr><td><b style="color:#1f8a4c">✓ grün</b></td><td>Passt (höchstens 1 h darunter und nicht darüber).</td></tr>
+    <tr><td><b style="color:#9a6a00">↓ gelb</b></td><td>Mehr als 1 h darunter – es ist noch Arbeitszeit frei (z. B. für Aufsichten, Vertretungen).</td></tr>
+    <tr><td><b style="color:#d92d20">✕ rot</b></td><td>Über der Wochenarbeitszeit.</td></tr>
+    <tr><td>– grau</td><td>Keine Wochenarbeitszeit eingetragen.</td></tr>
+  </table>
+  <p>Bei begrenztem Deputat zeigt die Unterrichtsstunden-Marke „ist / max.“; sie ist grün, wenn das Deputat ausgeschöpft ist, und rot, wenn es überschritten wird.</p>
+  <h3>Der Nachweis je Person</h3>
+  <p>Ein Klick auf einen Namen öffnet „Arbeitszeit im Detail“ mit der vollständigen Rechnung.</p>
+  <figure id="abb-az-detail"><div class="rahmen"><img src="../bilder/k09-detail.jpg" alt="Arbeitszeit im Detail"></div><figcaption>Der Dialog „Arbeitszeit im Detail“ mit Tabellen je Anteil.</figcaption></figure>
+  <p>Er listet Unterricht, Co-Einsätze, Aufgaben, Aufsichten und GTAs einzeln mit Dauer und Anrechnung, das Unterrichtsdeputat und den Einsatz je Tag. Die Knöpfe <span class="ui">Drucken</span> (Arbeitszeitnachweis), <span class="ui">Lehrerplan öffnen</span> und <span class="ui">Schließen</span> stehen am Fuß.</p>
+</section>
