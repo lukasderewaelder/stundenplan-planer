@@ -2,11 +2,11 @@
 
 # Stundenplaner
 
-Stundenplan-Generator für Schulen: Wochenstundenplan erzeugen, von Hand nachbearbeiten und druckfertig ausgeben – offline, **eine** Datei (`index.html`). Veröffentlicht über GitHub Pages: https://lukasderewaelder.github.io/stundenplan-planer/
+Ein privates Hobbyprojekt: ein Generator für Wochenstundenpläne an Schulen, den ich für mich baue und ausprobiere. Er läuft komplett im Browser, ohne Server und ohne Konto – das Ganze steckt in **einer** Datei (`index.html`). Zum Ansehen und Ausprobieren liegt der aktuelle Stand auf GitHub Pages: https://lukasderewaelder.github.io/stundenplan-planer/
 
 ## Zum Projekt
 
-Der Stundenplaner ist ein privates Projekt ohne Gewinnabsicht. Er wurde mit Hilfe künstlicher Intelligenz (KI) erstellt und wird ohne Gewähr bereitgestellt; Pläne und Berechnungsergebnisse sind vor der Verwendung selbst zu prüfen.
+Das hier ist kein fertiges Produkt und kein Angebot an Schulen, sondern ein Bastelprojekt ohne Gewinnabsicht und ohne Support. Es entsteht in meiner Freizeit, mit Hilfe künstlicher Intelligenz (KI), und wird ohne Gewähr bereitgestellt. Wer den Plan einer echten Schule damit erstellen will, muss Pläne und Berechnungsergebnisse selbst gründlich prüfen. Anregungen und Hinweise sind willkommen, einen Anspruch auf Änderungen gibt es aber nicht.
 
 ## Aufbau
 
