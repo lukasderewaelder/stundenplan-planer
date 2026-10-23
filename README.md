@@ -1,3 +1,5 @@
+<img src="icons/icon-192.png" alt="Stundenplaner-Icon" width="96" align="right">
+
 # Stundenplaner
 
 Stundenplan-Generator für Schulen: Wochenstundenplan erzeugen, von Hand nachbearbeiten und druckfertig ausgeben – offline, **eine** Datei (`index.html`). Veröffentlicht über GitHub Pages: https://lukasderewaelder.github.io/stundenplan-planer/
