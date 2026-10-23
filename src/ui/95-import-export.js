@@ -9,13 +9,13 @@ function herunterladen(text, name, typ) {
   document.body.append(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
 }
-// PDF-Anleitung: liegt neben index.html (GitHub Pages). Bei einer lokal geöffneten Kopie (file://) verweist der Link auf die Webseite.
+// PDF-Handbuch: liegt neben index.html (GitHub Pages). Bei einer lokal geöffneten Kopie (file://) verweist der Link auf die Webseite.
 // Sie wird nur auf Klick geöffnet bzw. geladen – die App selbst lädt nichts nach.
-const ANLEITUNG_PDF = 'anleitung/Stundenplaner-Anleitung.pdf';
-const ANLEITUNG_WEB = 'https://lukasderewaelder.github.io/stundenplan-planer/' + ANLEITUNG_PDF;
-function anleitungUrl() { return location.protocol === 'file:' ? ANLEITUNG_WEB : ANLEITUNG_PDF; }
-function anleitungLink(text, klasse) { return h('a', { href: anleitungUrl(), download: 'Stundenplaner-Anleitung.pdf', target: '_blank', rel: 'noopener', class: klasse || undefined }, text || 'Anleitung als PDF herunterladen'); }
-function anleitungOeffnen() { const a = anleitungLink(); a.hidden = true; document.body.append(a); a.click(); setTimeout(() => a.remove(), 500); }
+const HANDBUCH_PDF = 'handbuch/Stundenplaner-Handbuch.pdf';
+const HANDBUCH_WEB = 'https://lukasderewaelder.github.io/stundenplan-planer/' + HANDBUCH_PDF;
+function handbuchUrl() { return location.protocol === 'file:' ? HANDBUCH_WEB : HANDBUCH_PDF; }
+function handbuchLink(text, klasse) { return h('a', { href: handbuchUrl(), download: 'Stundenplaner-Handbuch.pdf', target: '_blank', rel: 'noopener', class: klasse || undefined }, text || 'Handbuch als PDF herunterladen'); }
+function handbuchOeffnen() { const a = handbuchLink(); a.hidden = true; document.body.append(a); a.click(); setTimeout(() => a.remove(), 500); }
 async function inZwischenablage(text) {
   try { await navigator.clipboard.writeText(text); return true; }
   catch (e) {

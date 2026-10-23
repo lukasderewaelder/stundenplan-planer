@@ -1,0 +1,118 @@
+<section class="kapitel" id="kap-regeln">
+  <h1>Regeln &amp; Gewichte</h1>
+  <p class="einstieg">Jeder Plan wird mit einem festen Regelkatalog bewertet. <b>Pflichtregeln</b> (H01–H16) müssen erfüllt sein. <b>Wünsche</b> (W01–W18) beschreiben Qualitätsmerkmale; jeder Verstoß kostet Strafpunkte. Daneben gibt es eigene Regeln für die Aufsichten (D01–D12 und Wünsche DW01–DW11). Die Seite „Regeln &amp; Gewichte“ steht im <b>Expertenmodus</b> zur Verfügung (<span class="ui">Menü → Einstellungen → Expertenmodus</span>).</p>
+  <div class="formel">Strafpunkte K(P) = Σ Wichtigkeit der Regel × Anzahl ihrer Verstöße</div>
+  <div class="kasten merke"><p><span class="titel">Gut zu wissen:</span> Die Kennungen (H01, W17 …) erscheinen in der Oberfläche nur im Info-Popover einer Regel als „Technische Kennung“. In den Seiten selbst stehen die Namen der Regeln. Dieses Handbuch nennt beides.</p></div>
+
+  <h2 id="k4-1">Pflichtregeln</h2>
+  <p>Pflichtregeln heißen auf der Seite „Pflicht“; sie gelten immer. Ein Plan mit Pflichtverstößen ist nicht verwendbar. Vier Regeln (H11, H12, H15 und H16) lassen sich auf Wunsch auf „Wunsch“ umstellen; sie sind in der Tabelle fett markiert.</p>
+  <table>
+    <thead><tr><th class="kennung">Nr.</th><th style="width:30%">Regel</th><th>Bedeutung / was gezählt wird</th></tr></thead>
+    <tr><td class="kennung">H01</td><td>Lehrkraft nicht doppelt belegt</td><td>Gilt für Fach- und Co-Lehrkräfte, auch bei echten Uhrzeiten. Gekoppelte Unterrichte dürfen dieselbe Lehrkraft nicht beide verlangen.</td></tr>
+    <tr><td class="kennung">H02</td><td>Klasse und Gruppe nicht doppelt belegt</td><td>Eine Gruppe kollidiert mit der ganzen Klasse und mit derselben Gruppe, nicht mit einer anderen Gruppe der Klasse.</td></tr>
+    <tr><td class="kennung">H03</td><td>Raum nicht doppelt belegt</td><td>Ausnahme: teilbare Räume nehmen bis zu „teilbar“ Unterrichte gleichzeitig auf.</td></tr>
+    <tr><td class="kennung">H04</td><td>Sollstunden erfüllt</td><td>Jeder Unterricht liegt mit genau seinen Wochenstunden im Plan (je fehlender Stunde ein Verstoß).</td></tr>
+    <tr><td class="kennung">H05</td><td>Sperrzeiten eingehalten</td><td>Keine Belegung gesperrter Slots von Lehrkraft oder Raum, einschließlich Teilzeit- und Ausbildungstagen.</td></tr>
+    <tr><td class="kennung">H06</td><td>Raum passend</td><td>Raumtyp passt zum Fach, Kapazität reicht für die Teilnehmer; feste Räume des Unterrichts haben Vorrang.</td></tr>
+    <tr><td class="kennung">H07</td><td>Blockstruktur</td><td>Blöcke nach Vorgabe; Doppelblöcke nur ab Stunden mit „Doppelstunde darf beginnen“ und nie über eine Pause; zwei Blöcke eines Unterrichts nicht am selben Tag. Aufgaben sind ausgenommen.</td></tr>
+    <tr><td class="kennung">H08</td><td>Kopplung eingehalten</td><td>Gekoppelte Unterrichte liegen im selben Slot mit gleicher Dauer.</td></tr>
+    <tr><td class="kennung">H09</td><td>Fixierungen bleiben</td><td>Fixierte Blöcke werden nicht verschoben.</td></tr>
+    <tr><td class="kennung">H10</td><td>Keine Pausen, Unterrichtsschluss</td><td>In als Pause markierten Zeilen und nach dem Tagesschluss findet kein Unterricht statt.</td></tr>
+    <tr><td class="kennung"><b>H11</b></td><td><b>Klassenkorridor</b> (umschaltbar)</td><td>Kein Unterricht vor „frühestens“ oder nach „spätestens“; höchstens „max. UStd. je Tag“.</td></tr>
+    <tr><td class="kennung"><b>H12</b></td><td><b>Lehrkraft-Tagesgrenzen</b> (umschaltbar)</td><td>Überschreitung von „max.“ oder Unterschreitung von „min. UStd./Tag“. Aufgaben zählen nicht.</td></tr>
+    <tr><td class="kennung">H13</td><td>Fach je Tag begrenzt</td><td>Überschreitung von „max./Tag“ des Fachs (je Klasse änderbar über „Höchstens je Tag“).</td></tr>
+    <tr><td class="kennung">H14</td><td>Wochenrhythmus</td><td>A/B-Unterricht an einer Schule ohne A/B-Rhythmus.</td></tr>
+    <tr><td class="kennung"><b>H15</b></td><td><b>Klassen ohne Freistunden</b> (umschaltbar)</td><td>Je Lücke im Klassentag. Bei „Wunsch“ zählen die Lücken über den Wunsch „Freistunden der Klassen vermeiden“ (W02).</td></tr>
+    <tr><td class="kennung"><b>H16</b></td><td><b>Arbeitszeitgrenzen</b> (umschaltbar)</td><td>Je angefangener Unterrichtsstunde über der Wochen- oder Tagesgrenze der Arbeitszeit. Priorität: Fachunterricht, dann Co-Unterricht, dann Aufsichten.</td></tr>
+  </table>
+  <p>Bei „Wunsch“ erscheint für H11, H12 und H16 ein eigener Regler (Standard 8); H15 hat keinen, weil W02 die Lücken bewertet.</p>
+
+  <h2 id="k4-2">Wünsche</h2>
+  <table>
+    <thead><tr><th class="kennung">Nr.</th><th style="width:27%">Wunsch</th><th style="width:9%" class="zahl">Std.-Gew.</th><th>Gezählt wird …</th></tr></thead>
+    <tr><td class="kennung">W01</td><td>Freistunden der Lehrkräfte vermeiden</td><td class="zahl">8</td><td>jede Freistunde; jede über „max. Freistd./Tag“ zusätzlich doppelt.</td></tr>
+    <tr><td class="kennung">W02</td><td>Freistunden der Klassen vermeiden</td><td class="zahl">10</td><td>jede Lücke im Klassenplan – <b>wirkt nur, wenn H15 auf „Wunsch“ steht</b>.</td></tr>
+    <tr><td class="kennung">W03</td><td>Ungern-Slots der Lehrkräfte meiden</td><td class="zahl">5</td><td>jede Stunde in einem „ungern“-Slot.</td></tr>
+    <tr><td class="kennung">W04</td><td>Gewünschte Slots nutzen</td><td class="zahl">2</td><td>jede Stunde außerhalb gewünschter Slots (wenn die Person welche hat).</td></tr>
+    <tr><td class="kennung">W05</td><td>Freie Tage der Lehrkräfte</td><td class="zahl">6</td><td>jede Stunde an einem Wunsch-frei-Tag.</td></tr>
+    <tr><td class="kennung">W06</td><td>Fächer gleichmäßig über die Woche</td><td class="zahl">4</td><td>je Klasse und Fach jeder fehlende verschiedene Tag.</td></tr>
+    <tr><td class="kennung">W07</td><td>Kernfächer früh</td><td class="zahl">3</td><td>jede Kernfachstunde nach der Grenzstunde (Standard 4.).</td></tr>
+    <tr><td class="kennung">W08</td><td>Doppelstunden nach Fachregel</td><td class="zahl">4</td><td>„bevorzugt“ ohne Doppelblock bzw. „vermeiden“ mit Doppelblock.</td></tr>
+    <tr><td class="kennung">W09</td><td>Fächerfolge</td><td class="zahl">2</td><td>jeder Verstoß gegen eine Paarregel.</td></tr>
+    <tr><td class="kennung">W10</td><td>Wenig Raumwechsel</td><td class="zahl">2</td><td>jeder Raumwechsel einer Klasse zwischen zwei direkt folgenden Stunden.</td></tr>
+    <tr><td class="kennung">W11</td><td>Gleichmäßige Tagesbelastung</td><td class="zahl">3</td><td>Abweichung der Tagesstunden einer Lehrkraft vom Wochendurchschnitt.</td></tr>
+    <tr><td class="kennung">W12</td><td>Später Tag, später Beginn</td><td class="zahl">2</td><td>erste Stunde am Tag nach einem Tag mit Unterricht ab der 7. Stunde (einstellbar).</td></tr>
+    <tr><td class="kennung">W13</td><td>Wenig Nachmittag in der Unterstufe</td><td class="zahl">5</td><td>jede Stunde ab der 7. bei Jahrgängen bis 6 (beides einstellbar).</td></tr>
+    <tr><td class="kennung">W14</td><td>Co-Anteil einhalten</td><td class="zahl">6</td><td>jeder Block, in dem eine anteilig geplante Co-Lehrkraft fehlt (wirkt 8-fach).</td></tr>
+    <tr><td class="kennung">W15</td><td>Klassenleitung präsent</td><td class="zahl">1</td><td>jeder Tag ohne Unterricht der Klassenleitung in ihrer Klasse; +1, wenn nie in der 1. Stunde.</td></tr>
+    <tr><td class="kennung">W16</td><td>Stabilität bei Neuberechnung</td><td class="zahl">3</td><td>jede verschobene Platzierung – <b>nur bei „Änderungen minimal halten“</b>.</td></tr>
+    <tr><td class="kennung">W17</td><td>Halbgruppen nebeneinander</td><td class="zahl">10</td><td>jede Stunde, in der nur eine Halbgruppe Unterricht hat (ohne Parallelpartner).</td></tr>
+    <tr><td class="kennung">W18</td><td>Klassenleitung unterrichtet die Kernfächer</td><td class="zahl">8</td><td>jede Wochenstunde eines Kernfachs, das nicht die Klassenleitung unterrichtet, obwohl sie es könnte (nur bei automatischer Lehrkraftwahl; eine feste Vorgabe geht vor).</td></tr>
+  </table>
+
+  <h2 id="k4-3">Die Seite „Regeln &amp; Gewichte“</h2>
+  <figure id="abb-regeln"><div class="rahmen"><img src="../bilder/k04-regeln.jpg" alt="Seite Regeln und Gewichte, Reiter Stundenplan"></div><figcaption>Die Seite „Regeln &amp; Gewichte“ (Reiter „Stundenplan“).</figcaption></figure>
+  <ol class="legende">
+    <li>Die Reiter <span class="ui">Stundenplan</span>, <span class="ui">Aufsichten</span> und <span class="ui">Co-Lehrkräfte</span>.</li>
+    <li><span class="ui">Ausgewogen</span> setzt alle Wünsche auf ihre Standardgewichte zurück.</li>
+    <li><span class="ui">Lehrkräfte zuerst</span> setzt die Wünsche auf ihre Standards und erhöht danach W01 bis W05 und W12 auf 9.</li>
+    <li><span class="ui">Schülerwohl zuerst</span> erhöht entsprechend W02, W06, W07 und W13 auf 9.</li>
+  </ol>
+  <p>Darunter folgen fünf Themenkarten – Lehrkräfte, Klassen, Räume, Fächer und Allgemein –, jeweils mit „N Pflichtregeln · M Wünsche“. Jede Zeile zeigt links den Namen mit Info-Popover, in der Mitte die Einstellung und rechts den Zähler „n Verstöße“ im aktuellen Plan (ohne Plan „–“; rot bei Pflichtregeln, gelb bei Wünschen).</p>
+  <figure id="abb-regeln-mitte"><div class="rahmen"><img src="../bilder/k04-regeln-mitte.jpg" alt="Regler der Wünsche"></div><figcaption>Pflichtregeln zeigen ein Schloss, Wünsche einen Regler von 0 bis 10.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Regler:</b> 0 = aus, 1–3 weniger wichtig, 4–6 wichtig, 7–9 sehr wichtig, 10 fast Pflicht. Die Strafpunkte einer Regel sind Wichtigkeit × Verstöße.</li>
+  </ol>
+  <p>Profile setzen mehrere Gewichte auf einmal; danach ist jeder Regler einzeln nachjustierbar. Schwellen, Paarregeln und die Gewichte von H11/H12/H16 setzen sie nicht zurück.</p>
+  <h3>Schwellen und Paarregeln</h3>
+  <figure id="abb-schwellen"><div class="rahmen"><img src="../bilder/k04-schwellen.jpg" alt="Schwellen und Paarregeln"></div><figcaption>Schwellenwerte einzelner Wünsche und die Paarregeln für die Fächerfolge.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Schwellen:</b> „Kernfach bis Stunde“ (W07, Standard 4), „Später Tag ab Stunde“ (W12, 7), „Unterstufe bis Jahrgang“ (W13, 6) und „Nachmittag ab Stunde“ (W13, 7). Bei H15 gibt es das Kästchen „Späterer Tagesbeginn erlaubt (nur Lücken zwischen zwei Stunden zählen)“.</li>
+    <li><b>Paarregeln für die Fächerfolge (W09):</b> „Zwei Kernfächer nicht direkt hintereinander“ (Standard), „Fach A nicht direkt vor der Mittagspause“, „Fach A nicht direkt nach Fach B“. <span class="ui">+ Paarregel</span> legt weitere an.</li>
+  </ol>
+  <div class="kasten tipp"><p><span class="titel">Tipp:</span> Stellen Sie die Gewichte zuerst mit einem Profil grob ein, berechnen Sie und sehen Sie unter „Ergebnis &amp; Auswertung“ nach, welche Regeln die meisten Strafpunkte verursachen (<a data-ref="k10-3"></a>). Erst dann einzelne Regler verändern und neu berechnen.</p></div>
+  <div class="kasten wichtig"><p><span class="titel">Hinweise zu Einstellungen:</span> W02 wirkt nur, wenn „Klassen ohne Freistunden“ auf „Wunsch“ steht. W16 wirkt nur bei „Änderungen minimal halten“ in der Berechnung. W18 gilt nur bei automatischer Wahl der Fachlehrkraft; Kernfächer werden auf der Seite „Fächer“ markiert.</p></div>
+
+  <h2 id="k4-4">Co-Lehrkräfte in der Berechnung</h2>
+  <figure id="abb-regeln-co"><div class="rahmen"><img src="../bilder/k04-regeln-co.jpg" alt="Reiter Co-Lehrkräfte"></div><figcaption>Reiter „Co-Lehrkräfte“.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Ausgebildete Lehrkräfte als Co-Lehrkraft:</b> „nur wenn keine Co-Kraft passt“ (Standard), „nie“ oder „gleichberechtigt mit Co-Kräften (Klassenleitung zuerst)“.</li>
+    <li><b>Wichtung</b> (0 bis 10, Standard 3): zwischen „Fachlehrkraft in anderen Klassen“ und „Co in eigener Klasse“. Ist das Unterrichtsdeputat begrenzt, gibt n höchstens n·10 % des offenen Deputats für Co-Einsätze frei. Bei „nie“ ist der Regler gesperrt.</li>
+  </ol>
+  <p>Darunter steht die Rangfolge: Co-Kräfte zuerst; ausgebildete Lehrkräfte nur, wenn keine Co-Kraft passt; das Klassenteam vor anderen. Mehrere Co-Personen dürfen sich einen Kurs blockweise teilen. Die Automatik für Fachlehrkräfte folgt der Reihenfolge Klassenleitung, Klassenteam, übrige und geht nie über Deputat, Arbeitszeit oder freie Stunden hinaus.</p>
+
+  <h2 id="k4-5">Regeln für Aufsichten</h2>
+  <figure id="abb-regeln-aufsichten"><div class="rahmen"><img src="../bilder/k04-regeln-aufsichten.jpg" alt="Reiter Aufsichten der Regeln"></div><figcaption>Reiter „Aufsichten“: Einstellungen, Pflichtregeln und Wünsche der Aufsichtsplanung.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Schwellen:</b> „sehr früh vor“ (07:00), „sehr spät nach“ (16:00), „lange Anwesenheit ab“ (10 h), „lange Lücke ab“ (90 min) sowie „Gesamtansicht von“ (06:30) und „bis“ (17:00).</li>
+    <li>Darunter stehen die Pflichtregeln und die Wünsche mit Reglern. Verstöße werden hier nicht gezählt (Zähler „–“); sie erscheinen in der Auswertung der Aufsichten.</li>
+  </ol>
+  <table>
+    <thead><tr><th class="kennung">Nr.</th><th style="width:35%">Pflichtregel</th><th>Bedeutung</th></tr></thead>
+    <tr><td class="kennung">D01</td><td>Keine Zeitüberschneidung</td><td>Eine Person ist nie an zwei Orten gleichzeitig (auch nicht mit Unterricht, Co-Unterricht oder Aufgaben).</td></tr>
+    <tr><td class="kennung">D02</td><td>Tatsächliche Anwesenheit</td><td>Aufsicht nur, wenn die Person im Haus ist.</td></tr>
+    <tr><td class="kennung">D03</td><td>Mindestbesetzung</td><td>Das Minimum jedes Abschnitts ist besetzt.</td></tr>
+    <tr><td class="kennung">D04</td><td>Fixierte Einsätze bleiben</td><td>Fixierte Aufsichten werden nicht verändert.</td></tr>
+    <tr><td class="kennung">D05</td><td>Ausschluss</td><td>Ausdrückliche persönliche und Abschnitts-Ausschlüsse gelten hart.</td></tr>
+    <tr><td class="kennung">D06</td><td>Exklusiver Bereich</td><td>In einem exklusiven Bereich nie zwei Personen gleichzeitig.</td></tr>
+    <tr><td class="kennung">D07</td><td>Pflichtqualifikation</td><td>Fehlende erforderliche Qualifikation schließt aus.</td></tr>
+    <tr><td class="kennung">D10</td><td>Gültige Zeiten</td><td>Beginn vor Ende, Zeiten im gültigen Bereich.</td></tr>
+    <tr><td class="kennung">D11</td><td>Arbeitszeitgrenzen</td><td>Folgt der Einstellung bei H16 (Springer ausgenommen).</td></tr>
+    <tr><td class="kennung">D12</td><td>Springer ist eine andere Person</td><td>Springer und feste Aufsicht derselben Pause sind verschiedene Personen.</td></tr>
+  </table>
+  <table>
+    <thead><tr><th style="width:40%">Wunsch (Aufsichten)</th><th style="width:9%" class="zahl">Std.-Gew.</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Sollbesetzung erreichen (DW01)</td><td class="zahl">8</td><td>Das Soll des Bedarfs soll besetzt sein.</td></tr>
+    <tr><td>Arbeitszeit ausgleichen (DW02)</td><td class="zahl">9</td><td>Wer die meisten Minusstunden hat, bekommt zuerst eine Aufsicht. Bei Gleichstand: weiteres Personal, dann Co-Kräfte, dann Lehrkräfte.</td></tr>
+    <tr><td>Anwesenheit verlängern (DW03)</td><td class="zahl">3</td><td>Aufsichten sollen Anwesenheitstage nicht unnötig verlängern.</td></tr>
+    <tr><td>Lücken vermeiden (DW04)</td><td class="zahl">3</td><td>Keine langen Lücken zwischen Einsätzen.</td></tr>
+    <tr><td>Frühaufsichten / Spätaufsichten fair verteilen (DW05, DW06)</td><td class="zahl">4</td><td>Gleichmäßige Verteilung auf die Personen.</td></tr>
+    <tr><td>Sehr frühe/späte Einsätze (DW07)</td><td class="zahl">3</td><td>Einsätze vor „sehr früh“ oder nach „sehr spät“ meiden.</td></tr>
+    <tr><td>Früh + spät vermeiden (DW08)</td><td class="zahl">5</td><td>Früh- und Spätaufsicht derselben Person am selben Tag meiden.</td></tr>
+    <tr><td>Kontinuität (DW09)</td><td class="zahl">4</td><td>Dieselbe Person betreut denselben Bereich möglichst an mehreren Tagen.</td></tr>
+    <tr><td>Persönliche Wünsche (DW10)</td><td class="zahl">3</td><td>Früh-/Spätpräferenzen, Wunschzeiten.</td></tr>
+    <tr><td>Stabilität (DW11)</td><td class="zahl">3</td><td>Bestehende Einsätze nur ändern, wenn nötig.</td></tr>
+    <tr><td>Höchstzahl Früh-/Spätaufsichten (D08)</td><td class="zahl">9</td><td>Die persönliche Höchstzahl je Woche soll eingehalten werden.</td></tr>
+    <tr><td>Früh und spät am selben Tag (D09)</td><td class="zahl">9</td><td>Die persönliche Einstellung dazu soll eingehalten werden.</td></tr>
+  </table>
+</section>

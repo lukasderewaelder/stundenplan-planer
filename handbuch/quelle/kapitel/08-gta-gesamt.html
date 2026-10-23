@@ -1,0 +1,47 @@
+<section class="kapitel" id="kap-gta">
+  <h1>GTA-Planer und Gesamtansicht</h1>
+  <p class="einstieg">Zwei Zusatzseiten (Schritte 8 und 9 der Seitenleiste) für Schulen mit Ganztagsangebot oder dem Wunsch nach einem Überblick über alle Personen eines Tages.</p>
+
+  <h2 id="k8-1">GTA-Planer</h2>
+  <p>GTA steht für <b>Ganztagsangebot</b>: Arbeitsgemeinschaften und Betreuung am Nachmittag. Der GTA-Planer legt sie in den <i>fertigen</i> Plan – von Hand, per Ziehen und Ablegen. GTAs sind frei benannt, haben keine Klasse und zählen zur Arbeitszeit der beteiligten Personen, aber nicht zur Verteilung des Unterrichts.</p>
+  <figure id="abb-gta"><div class="rahmen"><img src="../bilder/k08-gta.jpg" alt="GTA-Planer"></div><figcaption>Der GTA-Planer mit freier Kapazität und Wochenraster.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Freie Kapazität:</b> Personen mit mindestens 60 Minuten freier Arbeitszeit; ein Balken zeigt, wie viel noch frei ist. Ein Klick auf eine Person zeigt ihre Belegung im Raster (schraffiert).</li>
+    <li><span class="ui">Neue GTA</span> legt ein Angebot an.</li>
+  </ol>
+  <figure id="abb-gta-dialog" class="klein"><div class="rahmen"><img src="../bilder/k08-gta-dialog.jpg" alt="Dialog Neue GTA"></div><figcaption>Der Dialog „Neue GTA“.</figcaption></figure>
+  <ul>
+    <li>Ein Angebot hat einen Namen und eine oder mehrere Personen – oder „Extern“ mit Namen. Externe GTAs zählen nirgends zur Arbeitszeit.</li>
+    <li>Ziehen Sie das Angebot in das Wochenraster: auf Rasterstunden oder zu eigenen Zeiten, auf Wunsch mit Raum (freie Räume stehen zur Wahl).</li>
+    <li>Passt eine GTA nach einer Neuberechnung nicht mehr (z. B. wegen Arbeitszeit), erscheint „GTA nicht mehr möglich“ mit Grund; die Plan-Ampel wird dann gelb.</li>
+    <li>Der GTA-Plan steht unter <span class="ui">Druck &amp; Export</span>. Im GTA-Planer gelten <kbd>Enter</kbd> zum Bearbeiten und <kbd>Entf</kbd> zum Löschen.</li>
+  </ul>
+
+  <h2 id="k8-2">Gesamtansicht</h2>
+  <p>Die Gesamtansicht zeigt alle Personen eines Tages mit Unterricht, Aufgaben, GTAs und Aufsichten auf einer Zeitleiste in echten Uhrzeiten – der schnellste Weg, Lücken und Doppelbelastungen zu erkennen und Aufsichten zu verschieben.</p>
+  <figure id="abb-gesamt"><div class="rahmen"><img src="../bilder/k08-gesamt.jpg" alt="Gesamtansicht Tag mal Personen"></div><figcaption>Gesamtansicht „Tag × Personen“.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Tag × Personen</span>: alle Personen eines Tages nebeneinander; die Tagknöpfe (Mo–Fr) wechseln den Tag, ein Punkt markiert offene Schichten.</li>
+    <li><span class="ui">Person × Woche</span>: eine einzelne Person über die Woche.</li>
+    <li><b>Fein verschieben:</b> verschiebt in 5- statt 15-Minuten-Schritten (mit <kbd>Alt</kbd> sogar 1 Minute).</li>
+    <li><span class="ui">Drucken / PDF</span> öffnet das Druckmenü der Gesamtansicht.</li>
+    <li><span class="ui">+ Aufsicht</span> legt eine Aufsicht an.</li>
+  </ol>
+  <p>Außerdem gibt es Filter („einplanbare Personen“, „alle Personen“, „nur mit Aufsichten“, „nur Lehrkräfte“, „nur Co-Kräfte“), die Suche „Person suchen …“, „Unterricht zeigen“, die Zoomstufen (0,6 bis 3) und „Leeren“. Die Seitenleiste „Besetzung &lt;Tag&gt;“ nennt je Aufsicht „Ist/Soll“; „Offene Schichten“ lassen sich per Ziehen auf eine Person legen (Rot = Minimum fehlt, gelb = Soll fehlt).</p>
+  <h3>Aufsichten ziehen und bearbeiten</h3>
+  <ul>
+    <li><b>Ziehen</b> verschiebt Person, Zeit und – über einen Tagknopf – den Tag; die Kanten einer Kachel ändern Beginn und Ende (Raster 15 Minuten). Beim Ziehen zeigt ✓ „möglich“, ~ „ungünstig“, ✕ „Konflikt“ (wird nicht übernommen); <kbd>Esc</kbd> bricht ab.</li>
+    <li><b>Doppelklick</b> auf eine freie Stelle legt eine Aufsicht von 30 Minuten an; ein Doppelklick auf eine Kachel öffnet den Dialog „Aufsicht bearbeiten“.</li>
+    <li>Das <b>Kachelmenü</b> bietet „Bearbeiten / verschieben …“ (<kbd>Enter</kbd>), „Person tauschen …“, „Zeit ändern …“, „Mit anderer Aufsicht tauschen …“, „Fixieren“ bzw. „Fixierung lösen“ (<kbd>F</kbd>), „Duplizieren (andere Person) …“, „Auf weitere Tage übertragen …“ und „Löschen“ (<kbd>Entf</kbd>).</li>
+    <li>Markierungen: rotes „!“ bei akzeptiertem Fehler, Pin bei fixiert, Kürzel für den Rhythmus (A/B, 2W, M, R, 1×).</li>
+  </ul>
+  <figure id="abb-aufsicht-dialog" class="klein"><div class="rahmen"><img src="../bilder/k08-aufsicht-dialog.jpg" alt="Dialog Aufsicht bearbeiten"></div><figcaption>Der Dialog „Aufsicht bearbeiten“.</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:24%">Feld</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Person, Tag, Bezeichnung, Bereich, Beginn, Ende</td><td>Die Person wird mit ✓/~/✕ nach Eignung angezeigt.</td></tr>
+    <tr><td>Rhythmus</td><td>wöchentlich, bestimmte Wochentage, nur A-Woche, nur B-Woche, alle zwei Wochen, einmal im Monat, Rotation oder Einzeltermin.</td></tr>
+    <tr><td>Springer/Reserve, zählt zur Arbeitszeit, Qualifikation</td><td>Wie bei der Bedarfsplanung (<a data-ref="k7-3"></a>).</td></tr>
+    <tr><td>fixiert, Notiz</td><td>Fixierte Einsätze bleiben bei jeder Neuverteilung; die Notiz hat bis zu 200 Zeichen.</td></tr>
+  </table>
+  <p>Bei hartem Konflikt erscheint „Trotzdem speichern“. Das Programm weist solche Fälle in den offenen Punkten und in der Plan-Ampel aus.</p>
+</section>

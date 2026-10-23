@@ -1,0 +1,59 @@
+<section class="kapitel" id="kap-berechnen">
+  <h1>Plan berechnen</h1>
+  <p class="einstieg">Die Berechnung legt Unterricht, Fachlehrkräfte, Räume, Co-Lehrkräfte und Aufsichten auf die Woche. Sie läuft im Hintergrund; die Oberfläche bleibt bedienbar. Gestartet wird sie mit dem Knopf <span class="ui">Plan berechnen</span> in der Kopfleiste oder auf dieser Seite (Schritt 6 der Seitenleiste). Voraussetzung ist eine Prüfung ohne Fehler (<a data-ref="k3-14"></a>).</p>
+
+  <h2 id="k5-1">Einstellungen</h2>
+  <figure id="abb-berechnen-einstellungen"><div class="rahmen"><img src="../bilder/k05-einstellungen.jpg" alt="Seite Plan berechnen"></div><figcaption>Die Seite „Plan berechnen“ mit den Einstellungen.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Rechenzeit:</b> 5, 15, 30 oder 60 Sekunden bzw. 2, 5, 10 oder 30 Minuten (Standard 60 Sekunden). Für einen ersten Blick genügen 30 bis 60 Sekunden; ein längerer Lauf lohnt sich meist nur für die endgültige Fassung. Die Berechnung kann früher enden, wenn keine Verbesserung mehr gefunden wird.</li>
+    <li><b>Ausgangspunkt:</b> „leerer Plan“ (Standard) beginnt von vorn; „aktueller Plan (verbessern)“ übernimmt den bestehenden Plan und verbessert ihn – ideal nach kleinen Änderungen. Wird dabei mehr als vorher verletzt, rechnet das Programm zusätzlich einen vorsichtigen Vergleichslauf („Sicherheitsprüfung“) und nimmt den besseren Plan. Gibt es schon einen Plan und steht die Einstellung auf „leer“, erscheint ein Hinweis mit dem Knopf „Auf ‚verbessern‘ stellen“.</li>
+    <li><b>Änderungen minimal halten:</b> Standard aus. Jede Verschiebung kostet Strafpunkte (Wunsch „Stabilität bei Neuberechnung“, siehe <a data-ref="k4-2"></a>).</li>
+    <li><b>Teilneuplanung:</b> „aus (ganzer Plan)“, „nur eine Klasse“, „nur eine Lehrkraft“ oder „nur ein Tag“, mit einem Feld „Auswahl“. Alles andere bleibt dabei vorübergehend fixiert. Ohne Auswahl ist der Start gesperrt. Im Plan-Editor setzt der Eintrag „Nur diese Klasse neu berechnen“ die Teilneuplanung automatisch.</li>
+    <li><span class="ui">Plan berechnen</span> bzw. nach einem Ergebnis <span class="ui">Erneut berechnen</span> startet den Lauf. Bei Fehlern in den Daten heißt der Knopf stattdessen „Fehler ansehen“.</li>
+  </ol>
+  <p>Alle Felder sind während der Berechnung gesperrt. Die Einstellungen gehören zu den Programmeinstellungen, nicht zum Projekt.</p>
+
+  <h2 id="k5-2">Ablauf der Berechnung</h2>
+  <p>Die Berechnung geht in vier Schritten vor, und die Priorität ist strikt: <b>1.</b> Fachunterricht und Fachlehrkräfte werden gekoppelt optimiert; eine vollständige Kursbesetzung geht vor Klassenleitung und Klassenteam als Wunsch. Problematische automatische Zuteilungen werden verworfen und mit Alternativen neu berechnet. <b>2.</b> Auf dem fertigen Fachunterrichtsplan wird der konfigurierte Co-Bedarf anhand der tatsächlich freien Zeiten ergänzt. <b>3.</b> Erst gegen den fertigen Fach- und Co-Unterricht werden die Aufsichten geplant; freie Soll-Arbeitszeit wird damit aufgefüllt. <b>4.</b> Eine abschließende Prüfung bewertet den ganzen Plan.</p>
+  <figure id="abb-berechnung-laeuft"><div class="rahmen"><img src="../bilder/k05-laeuft.jpg" alt="Laufende Berechnung"></div><figcaption>Die Berechnung läuft: Fortschritt, vier Schritte und Stopp-Knopf.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Stoppen und besten Plan übernehmen:</b> bricht die Suche ab und übernimmt den bisher besten Stand. Ein Stopp-Knopf steht währenddessen auch in der Kopfleiste.</li>
+    <li><b>Die vier Schritte:</b> Fachunterricht und Personal → Co-Lehrkräfte → Aufsichten → Prüfung. Der aktive Schritt ist hervorgehoben.</li>
+    <li><b>Fortschritt:</b> Überschrift, Prozentanzeige, Phase mit Erklärtext und geschätzter Restzeit.</li>
+  </ol>
+  <table>
+    <thead><tr><th style="width:22%">Phase</th><th>Bedeutung</th></tr></thead>
+    <tr><td>Konstruktion</td><td>Die Stunden werden in den Plan gesetzt.</td></tr>
+    <tr><td>Reparatur</td><td>Überschneidungen werden aufgelöst.</td></tr>
+    <tr><td>Verbesserung</td><td>Der Plan steht – jetzt werden die Wünsche berücksichtigt.</td></tr>
+    <tr><td>Co-Lehrkräfte</td><td>Die Co-Lehrkräfte werden eingeteilt.</td></tr>
+    <tr><td>Aufsichten</td><td>Die Aufsichten werden geplant.</td></tr>
+    <tr><td>Endvalidierung</td><td>Der ganze Plan wird geprüft.</td></tr>
+    <tr><td>Sicherheitsprüfung</td><td>Ein vorsichtiger Vergleichslauf wird gerechnet, damit der Plan nicht schlechter wird.</td></tr>
+  </table>
+
+  <h2 id="k5-3">Ergebnis</h2>
+  <figure id="abb-berechnung-ergebnis"><div class="rahmen"><img src="../bilder/k05-ergebnis.jpg" alt="Ergebniskarte"></div><figcaption>Ergebnis der Berechnung: Plan fertig, vier Schritte abgehakt.</figcaption></figure>
+  <ol class="legende">
+    <li><span class="ui">Im Editor öffnen</span> bringt Sie zum Plan (<a data-ref="kap-editor"></a>).</li>
+    <li><span class="ui">Offene Punkte</span> (mit Zahl) springt zur Liste dessen, was noch zu klären ist (<a data-ref="k10-2"></a>).</li>
+    <li><span class="ui">Erneut berechnen</span> startet einen neuen Lauf.</li>
+  </ol>
+  <p>Die Karte nennt „Plan fertig“, „Plan berechnet – mit Problemen · N harte Fehler“ oder „Gestoppt – bester Plan übernommen“. Jeder der vier Schritte bekommt einen Satz, z. B. „alle Stunden platziert“, „N Kurse besetzt, M offen“, „N Einsätze geplant“ oder „keine harten Fehler“. Der Plan wurde automatisch übernommen und lässt sich mit <kbd>Strg</kbd>+<kbd>Z</kbd> zurücknehmen. Anschließend werden die Aufsichten automatisch verteilt.</p>
+  <p>Bleiben harte Fehler oder nicht platzierte Stunden übrig, zeigt die Karte „Diagnose der Berechnung“: die nicht platzierten Unterrichte mit den Gründen (welche Regeln wie oft im Weg waren, mit Beispiel) und einem konkreten Vorschlag. Bei harten Fehlern bietet <b>Regel probeweise lockern und neu rechnen</b> an, die gewählte Regel (z. B. „Klassen ohne Freistunden“) für einen Lauf wie einen Wunsch zu behandeln – so wird sichtbar, welche Regel den Plan blockiert. Nach dem Lauf erscheint außerdem ein Banner („Berechnung fertig: …“) mit dem Knopf „Probleme ansehen“ bzw. „Im Editor öffnen“; es ist rot bei harten Fehlern, gelb bei offenen Punkten und grün sonst.</p>
+  <div class="kasten merke"><p><span class="titel">Gut zu wissen:</span> Hat sich der Datenstand während der Berechnung geändert, weist ein Banner darauf hin und bietet „Neu berechnen“ an. Sind Ganztagsangebote (GTA) nach der Berechnung nicht mehr möglich, meldet ein Banner „GTA nicht mehr möglich“ mit dem Knopf „GTA-Planer öffnen“.</p></div>
+
+  <h2 id="k5-4">Details für Fortgeschrittene</h2>
+  <p>Ein aufklappbarer Block („Verlauf der Suche, Verstöße je Regel, Statistik, Seed“) enthält die technischen Einstellungen und Auswertungen; sein Zustand wird gemerkt.</p>
+  <figure id="abb-berechnung-details"><div class="rahmen"><img src="../bilder/k05-details.jpg" alt="Details für Fortgeschrittene"></div><figcaption>„Details für Fortgeschrittene“: Iterationslimit, Seed und Kennzahlen.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Iterationslimit</b> (Standard 0 = aus): ersetzt das Zeitlimit durch eine feste Zahl von Suchschritten.</li>
+    <li><b>Seed</b> (Standard 20260929) mit dem Knopf „Neuen Seed würfeln“: der Startwert des Zufallsgenerators.</li>
+  </ol>
+  <ul>
+    <li><b>Kennzahlen:</b> Phase, Zeit, Iterationen, „Zwischenstand: harte Verstöße“ (nach Ende „Harte Fehler (Endvalidierung)“), „Zwischenstand: Strafpunkte“ (nach Ende „Strafpunkte“) und „Unplatziert“.</li>
+    <li><b>Kurve:</b> logarithmischer Verlauf der besten Kosten (hart × 1000 + weich); die gestrichelte Linie trägt die Beschriftung „darüber: harte Verstöße“.</li>
+    <li><b>Verstöße je Regel:</b> Tabelle der Stundenplanregeln mit Verstößen oder aktiver Pflicht; außerdem Ausgleich der Arbeitszeit, Blockaufteilung und die einzelnen Läufe.</li>
+  </ul>
+  <div class="kasten beispiel"><p><span class="titel">Reproduzierbar rechnen:</span> Gleicher Datenstand + gleicher Seed + Iterationslimit (statt Zeitlimit) ergibt denselben Plan – auch auf einem anderen Rechner. Mit Zeitlimit hängt das Ergebnis von der Rechengeschwindigkeit ab. Es laufen bis zu vier Suchläufe parallel (Zahl der Prozessorkerne minus eins) mit unterschiedlichen Seeds und Strategien; das beste Ergebnis gewinnt. Die Reproduzierbarkeit gilt deshalb nur bei gleicher Läuferzahl.</p></div>
+</section>

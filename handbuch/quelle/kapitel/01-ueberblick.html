@@ -1,0 +1,116 @@
+<section class="kapitel" id="kap-ueberblick">
+  <h1>Überblick</h1>
+  <p class="einstieg">Der Stundenplaner erzeugt aus Klassen, Lehrkräften, Räumen, Fächern und der Unterrichtsverteilung einen vollständigen Wochenstundenplan. Der Plan lässt sich anschließend von Hand nachbearbeiten, mit Aufsichten und Ganztagsangeboten ergänzen und druckfertig ausgeben. Das Programm besteht aus einer einzigen HTML-Datei und läuft vollständig im Browser, ohne Installation und ohne Internetverbindung.</p>
+
+  <h2 id="k1-1">Was der Stundenplaner kann</h2>
+  <div class="spalten2">
+    <ul>
+      <li><b>Stammdaten verwalten:</b> Schule und Zeitraster, Fächer, Räume, Klassen mit Gruppen und Klassenteams, Mitarbeitende (Lehrkräfte, Co-Kräfte, weiteres Personal) mit Verfügbarkeiten, Aufgaben.</li>
+      <li><b>Unterricht verteilen:</b> aus Stundentafeln automatisch erzeugen, Fachlehrkräfte zuordnen lassen oder von Hand festlegen, Co-Lehrkräfte automatisch ergänzen.</li>
+      <li><b>Plan berechnen:</b> 16 Pflichtregeln und 18 Wünsche mit einstellbaren Gewichten; Berechnung im Hintergrund, reproduzierbar über einen Startwert (Seed).</li>
+      <li><b>Plan bearbeiten:</b> Stunden per Ziehen und Ablegen verschieben oder tauschen – mit sofortiger Anzeige, ob das Ziel regelkonform ist.</li>
+    </ul>
+    <ul>
+      <li><b>Aufsichten planen:</b> Bedarf je Pause und Bereich, Früh- und Spätaufsichten, Springer; die Verteilung füllt die Wochenarbeitszeit der Mitarbeitenden auf.</li>
+      <li><b>Arbeitszeit:</b> Unterricht, Vorbereitung, Co-Einsätze, Klassenleitung, Aufgaben, Aufsichten und GTAs werden je Person gegen die Wochenarbeitszeit gerechnet.</li>
+      <li><b>A/B-Wochen und Teilungen:</b> 14-tägiger Rhythmus, Doppelstunden im Wechsel, Halbgruppen parallel oder im Wechsel.</li>
+      <li><b>Ausgabe:</b> Klassen-, Lehrer-, Raum-, Gesamt- und Aufsichtspläne als PDF; Export als Projektdatei, CSV und HTML.</li>
+    </ul>
+  </div>
+
+  <h2 id="k1-2">Voraussetzungen und Start</h2>
+  <p>Benötigt wird nur ein aktueller Browser (Chrome, Edge, Firefox oder Safari). Die Datei <code>index.html</code> wird per Doppelklick geöffnet, oder Sie rufen die Webseite <a href="https://lukasderewaelder.github.io/stundenplan-planer/">lukasderewaelder.github.io/stundenplan-planer</a> auf. Es gibt keine Anmeldung, keinen Server und keine Nachladevorgänge – das Programm funktioniert auch ohne Internet.</p>
+  <div class="kasten tipp"><p><span class="titel">Tipp:</span> Die Datei an einem festen Ort ablegen (z. B. im Ordner „Stundenplan“) und immer von dort öffnen. Die Arbeitsdaten hängen am Browser und am Speicherort der Datei: Wer die Datei verschiebt oder einen anderen Browser nutzt, sieht zunächst einen leeren Stand. Mit „Projekt exportieren“ und „Projekt importieren“ lässt sich ein Projekt jederzeit mitnehmen (siehe <a data-ref="k12-2"></a>).</p></div>
+
+  <h2 id="k1-3">Datenschutz und Speicherung</h2>
+  <p>Alle Eingaben bleiben lokal im Browser. Das Programm sendet nichts an einen Server und lädt nichts nach. Gespeichert wird automatisch etwa eine Sekunde nach jeder Änderung im Speicher des Browsers (localStorage, bei sehr großen Datenständen IndexedDB). Es gibt deshalb keinen „Speichern“-Knopf; ein Punkt hinter dem Schulnamen in der Kopfleiste zeigt, dass gespeichert wurde.</p>
+  <div class="kasten wichtig"><p><span class="titel">Wichtig:</span> Beim Löschen des Browserverlaufs („Websitedaten löschen“) gehen die gespeicherten Daten verloren. Deshalb regelmäßig über <span class="ui">Menü → Projekt exportieren</span> eine Projektdatei sichern. Nach sieben Tagen ohne Export erscheint ein Hinweis. Lehrernamen und Verfügbarkeiten sind personenbezogene Daten – die Projektdatei bitte entsprechend sicher aufbewahren und für die Weitergabe von Beispielen den anonymisierten Export verwenden.</p></div>
+
+  <h2 id="k1-4">Die Oberfläche</h2>
+  <p>Das Fenster besteht aus drei Bereichen: der <b>Kopfleiste</b> oben, der <b>Seitenleiste</b> links und der <b>Arbeitsfläche</b> in der Mitte. Die Arbeitsfläche zeigt immer die gewählte Seite; ihre Reiter (z. B. „Allgemein“ und „Zeitraster &amp; Pausen“) stehen oben auf der Seite.</p>
+  <h3>Die Kopfleiste</h3>
+  <figure id="abb-kopfleiste"><div class="rahmen"><img src="../bilder/k01-kopfleiste.jpg" alt="Kopfleiste"></div><figcaption>Die Kopfleiste mit Projektname, Rückgängig/Wiederholen, Suche, Plan-Status, „Plan berechnen“ und Menü.</figcaption></figure>
+  <ol class="legende zwei">
+    <li><b>Schulname und Schuljahr</b> aus „Schule &amp; Zeiten“; sie erscheinen auch auf allen Ausdrucken. Der Punkt dahinter zeigt den Speicherstatus (grün = gespeichert; der Tooltip nennt die Uhrzeit).</li>
+    <li><b>Rückgängig / Wiederholen:</b> bis zu 60 Schritte, auch mit <kbd>Strg</kbd>+<kbd>Z</kbd> und <kbd>Strg</kbd>+<kbd>Y</kbd>. Der Tooltip nennt den jeweiligen Schritt.</li>
+    <li><b>Suchen und springen</b> (<kbd>Strg</kbd>+<kbd>K</kbd>): findet Seiten, Klassen, Lehrkräfte, Räume und die wichtigsten Aktionen (siehe unten).</li>
+    <li><b>Plan-Status:</b> „Noch kein Plan“, „n Fehler in den Daten“, „Plan vollständig“, „Plan in Ordnung“, „n offene Punkte“ oder „n Probleme“. Ein Klick führt zur Auswertung.</li>
+    <li><b>Plan berechnen</b> startet die Berechnung mit den Einstellungen der Seite „Plan berechnen“. Meldet die Prüfung Fehler, springt der Knopf stattdessen zur Prüfung. Während der Berechnung zeigt die Kopfleiste Phase, Fortschritt und einen Stopp-Knopf.</li>
+    <li><b>Menü:</b> Projektdatei, Beispieldaten, Suche, Einstellungen, Hilfe und Handbuch.</li>
+  </ol>
+  <h3>Das Menü</h3>
+  <figure id="abb-menue" class="klein"><div class="rahmen"><img src="../bilder/k01-menue.jpg" alt="Geöffnetes Menü"></div><figcaption>Das geöffnete Menü. Die Nummern stehen links vor den Einträgen.</figcaption></figure>
+  <ol class="legende zwei">
+    <li><span class="ui">Projekt importieren …</span> lädt eine zuvor exportierte Projektdatei (siehe <a data-ref="k12-2"></a>).</li>
+    <li><span class="ui">Projekt exportieren</span> speichert alle Daten in eine Datei. Rechts steht, wann zuletzt exportiert wurde.</li>
+    <li><span class="ui">Anonymisiert exportieren</span> ersetzt Namen durch Kürzel und leert Notizen – für Beispiele und Rückfragen.</li>
+    <li><span class="ui">Beispieldaten laden</span> füllt das Programm mit der Beispielschule (siehe <a data-ref="k2-2"></a>).</li>
+    <li><span class="ui">Neues leeres Projekt …</span> beginnt von vorn (rückgängig mit <kbd>Strg</kbd>+<kbd>Z</kbd>; vorher am besten exportieren).</li>
+    <li><span class="ui">Suchen und springen …</span> öffnet die Suche (<kbd>Strg</kbd>+<kbd>K</kbd>).</li>
+    <li><span class="ui">Einstellungen …</span>: Darstellung, Größe der Plankacheln, Expertenmodus.</li>
+    <li><span class="ui">Hilfe und Datenschutz</span> öffnet die Kurzhilfe im Programm (siehe <a data-ref="k14-3"></a>).</li>
+    <li><span class="ui">Handbuch (PDF)</span> lädt dieses Handbuch herunter. Es wird nur auf Klick geöffnet.</li>
+  </ol>
+  <h3>Die Seitenleiste</h3>
+  <div class="seitlich">
+    <figure id="abb-seitenleiste"><div class="rahmen"><img src="../bilder/k01-seitenleiste.jpg" alt="Seitenleiste"></div><figcaption>Die Seitenleiste.</figcaption></figure>
+    <div>
+      <p>Die Seitenleiste ist nach Arbeitsschritten gegliedert. Ab 1280 Pixel Fensterbreite ist sie ausgeklappt; darunter zeigt sie nur Symbole, unter 900 Pixeln öffnet der Menü-Knopf oben links eine Schublade.</p>
+      <ol class="legende">
+        <li><span class="ui">Einklappen</span> macht die Leiste schmal; die Wahl bleibt gespeichert.</li>
+        <li><span class="ui">Übersicht</span>: Stand der sieben Schritte und der nächste Schritt (siehe unten).</li>
+        <li><span class="ui">In neun Schritten</span>: Schritte 1 bis 7 führen zum fertigen Plan.</li>
+        <li>Kleine Marken zeigen den Zustand: ein Haken (✓) bedeutet in Ordnung, eine Zahl zählt Warnungen oder offene Punkte (gelb) bzw. Fehler (rot).</li>
+        <li><span class="ui">8. GTA-Planer</span> und <span class="ui">9. Gesamtansicht</span> sind Zusätze für Ganztagsangebote und den Überblick über alle Personen eines Tages.</li>
+      </ol>
+    </div>
+  </div>
+  <p>Mehrere Seiten gehören zu einem Schritt und sind als Reiter erreichbar: Schritt 1 enthält „Schule &amp; Zeiten“, „Fächer“ und „Räume“; Schritt 2 „Mitarbeitende“, „Arbeitszeit &amp; Deputat“ und „Aufgaben“; Schritt 3 „Klassen“ und „Stundentafeln“; Schritt 7 „Plan bearbeiten“, „Ergebnis &amp; Auswertung“, „Druck &amp; Export“ und „Stände“.</p>
+  <h3>Die Übersicht</h3>
+  <figure id="abb-uebersicht"><div class="rahmen"><img src="../bilder/k01-uebersicht.jpg" alt="Übersicht"></div><figcaption>Die Übersicht der Beispielschule nach der Berechnung.</figcaption></figure>
+  <ol class="legende">
+    <li><b>Nächster Schritt:</b> Das Programm sagt, was als Nächstes zu tun ist, und bietet den passenden Knopf an. Bei einem neuen Projekt sind das nacheinander: Fächer anlegen, Räume anlegen, Mitarbeitende anlegen, Klassen anlegen, Stundentafel ausfüllen, Fehler beheben, Plan berechnen, offene Punkte klären, Pläne drucken und weitergeben.</li>
+    <li><b>Plan-Ampel:</b> zeigt nach der Berechnung die Qualität des Plans – grün, gelb oder rot (siehe <a data-ref="k10-1"></a>).</li>
+    <li><b>In sieben Schritten zum Plan:</b> jede Zeile zeigt, ob ein Bereich <i>fertig</i>, <i>offen</i> oder fehlerhaft ist. Ein Klick springt dorthin.</li>
+  </ol>
+  <h3>Einstellungen</h3>
+  <figure id="abb-einstellungen" class="klein"><div class="rahmen"><img src="../bilder/k01-einstellungen.jpg" alt="Dialog Einstellungen"></div><figcaption>Der Dialog „Einstellungen“ (Menü → Einstellungen …).</figcaption></figure>
+  <ol class="legende">
+    <li><b>Darstellung:</b> „Wie das System“, „Hell“ oder „Dunkel“. Gedruckt wird immer hell.</li>
+    <li><b>Plan-Editor: Größe der Kacheln:</b> „Kompakt“, „Normal“ (Standard) oder „Groß“.</li>
+    <li><b>Expertenmodus:</b> blendet drei zusätzliche Bereiche ein – „Unterrichtsversorgung“ (<a data-ref="k3-10"></a>), „Regeln &amp; Gewichte“ (<a data-ref="kap-regeln"></a>) und den „Selbsttest“ (<a data-ref="kap-selbsttest"></a>). Auch „Nach der Berechnung: Offene Punkte zusätzlich als Fenster öffnen“ steht hier. Die Einstellungen gelten nur für diesen Browser und stehen nicht in der Projektdatei.</li>
+  </ol>
+  <h3>Suchen und springen</h3>
+  <figure id="abb-suche" class="klein"><div class="rahmen"><img src="../bilder/k01-suche.jpg" alt="Suchfenster mit Treffern"></div><figcaption>Die Suche (<kbd>Strg</kbd>+<kbd>K</kbd>) mit der Eingabe „5a“.</figcaption></figure>
+  <p>Mit <kbd>Strg</kbd>+<kbd>K</kbd> (auf dem Mac <kbd>Cmd</kbd>+<kbd>K</kbd>) öffnet sich eine Suche über Seiten, Klassen, Lehrkräfte, Räume und Aktionen (z. B. „Plan berechnen“, „Beispieldaten laden“, „Expertenmodus einschalten“). Mit <kbd>↑</kbd> <kbd>↓</kbd> wählen Sie, <kbd>Enter</kbd> springt – bei Klassen, Lehrkräften und Räumen zum Plan, mit <kbd>Umschalt</kbd>+<kbd>Enter</kbd> zu den Stammdaten. <kbd>Esc</kbd> schließt.</p>
+  <div class="kasten tipp"><p><span class="titel">Tipp:</span> Die meisten Felder haben Hilfetexte: Ein Klick auf das kleine <b>ⓘ</b> neben einer Beschriftung oder <kbd>F1</kbd> in einem Eingabefeld erklärt das Feld.</p></div>
+
+  <h2 id="k1-5">Der typische Ablauf</h2>
+  <div class="ablauf">
+    <div class="schritt"><div class="n">1</div><b>Einrichten</b><span>Stammdaten und Unterricht</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">2</div><b>Prüfen</b><span>Vorprüfung: Fehler beheben</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">3</div><b>Berechnen</b><span>Rechner im Hintergrund</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">4</div><b>Nachbearbeiten</b><span>Plan-Editor: Ziehen &amp; Ablegen</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">5</div><b>Aufsichten</b><span>verteilen, prüfen</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">6</div><b>Ausgeben</b><span>Drucken, PDF, Export</span></div>
+  </div>
+  <p>Die Schritte müssen nicht streng nacheinander erfolgen. Stammdaten lassen sich jederzeit ändern; der Plan wird dann erneut berechnet oder – bei kleinen Änderungen – im Editor angepasst. Aufsichten werden nach jeder Änderung am Plan automatisch nachgeführt (siehe <a data-ref="kap-aufsichten"></a>).</p>
+
+  <h2 id="k1-6">Grundbegriffe</h2>
+  <table>
+    <thead><tr><th style="width:22%">Begriff</th><th>Bedeutung</th></tr></thead>
+    <tr><td><b>Unterricht</b></td><td>Ein Kurs: ein Fach mit einer oder mehreren Klassen (oder Gruppen), einer Wochenstundenzahl und den beteiligten Lehrkräften, z. B. „Ma 7a, 4 Stunden, Mü“.</td></tr>
+    <tr><td><b>Block</b></td><td>Ein zusammenhängender Teil eines Unterrichts im Plan: Einzelstunde (1) oder Doppelstunde (2). Vier Wochenstunden können z. B. als 2+2 oder 1+1+1+1 geplant werden.</td></tr>
+    <tr><td><b>Slot</b></td><td>Eine Stunde an einem Tag, z. B. „Di, 3. Stunde“.</td></tr>
+    <tr><td><b>Fachlehrkraft</b></td><td>Verantwortliche, ausgebildete Lehrkraft eines Unterrichts.</td></tr>
+    <tr><td><b>Co-Lehrkraft</b></td><td>Zweite Person im Unterricht (Doppelbesetzung, Assistenz). Das kann eine Co-Kraft oder – wenn nötig – eine ausgebildete Lehrkraft sein.</td></tr>
+    <tr><td><b>Co-Kraft</b></td><td>Person ohne Lehrbefähigung im Sinne des Programms (z. B. pädagogische Fachkraft, Schulbegleitung). Darf nur als Co-Lehrkraft eingesetzt werden.</td></tr>
+    <tr><td><b>Weiteres Personal</b></td><td>Unterrichtet nicht (auch nicht als Co), übernimmt aber Aufsichten und Aufgaben.</td></tr>
+    <tr><td><b>Kopplung</b></td><td>Mehrere Unterrichte, die zeitgleich liegen müssen (Band, Wahlpflicht, Religion/Ethik, Teilung parallel). Erkennbar an derselben Kopplungs-ID.</td></tr>
+    <tr><td><b>Pflichtregel (hart)</b></td><td>Muss eingehalten werden (z. B. keine Lehrkraft doppelt belegt). Ein Plan mit Pflichtverstößen ist nicht verwendbar.</td></tr>
+    <tr><td><b>Wunsch (weich)</b></td><td>Qualitätsmerkmal (z. B. wenige Freistunden). Jeder Verstoß kostet Strafpunkte nach seiner Wichtigkeit.</td></tr>
+    <tr><td><b>Strafpunkte</b></td><td>Summe aus Wichtigkeit × Anzahl der Verstöße aller Wünsche. Kleiner ist besser.</td></tr>
+    <tr><td><b>A/B-Woche</b></td><td>14-täglicher Wechsel: Unterricht oder einzelne Blöcke finden nur in Woche A oder nur in Woche B statt.</td></tr>
+    <tr><td><b>Stand</b></td><td>Benannte Momentaufnahme des Plans (siehe <a data-ref="kap-staende"></a>).</td></tr>
+  </table>
+</section>
