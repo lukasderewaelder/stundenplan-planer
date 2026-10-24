@@ -2,15 +2,11 @@
 
 # Stundenplaner
 
-Ein Programm, das Stundenpläne für Schulen erstellt. Man gibt Klassen, Lehrkräfte, Fächer und Räume ein, lässt den Plan berechnen und kann ihn danach von Hand anpassen und ausdrucken.
-
-Ausprobieren lässt es sich hier: https://lukasderewaelder.github.io/stundenplan-planer/
+Ein privates, nicht kommerzielles Projekt: Stundenplan-Generator für Schulen, der Wochenpläne unter Berücksichtigung von Lehrkräften, Räumen und Klassen berechnet, die Nachbearbeitung von Hand erlaubt und die Pläne druckfertig ausgibt. Er läuft vollständig im Browser, braucht weder Server noch Konto und besteht aus einer einzigen Datei. Der aktuelle Stand ist über GitHub Pages erreichbar: https://lukasderewaelder.github.io/stundenplan-planer/
 
 ## Zum Projekt
 
-Ich arbeite aus eigenem Interesse an diesem Programm. Es ist kein Angebot an Schulen und nichts, womit Geld verdient werden soll. Dabei hilft mir künstliche Intelligenz (KI); große Teile des Codes sind damit entstanden.
-
-Die Pläne und Ergebnisse sind ohne Gewähr. Wer das Programm für eine echte Stundenplanung nutzt, sollte alles selbst noch einmal prüfen. Support gibt es nicht, über Rückmeldungen freue ich mich aber.
+Der Stundenplaner ist ein privates Projekt ohne Gewinnabsicht und richtet sich nicht als Angebot an Schulen. Ich entwickle ihn aus eigenem Interesse, mit Unterstützung von künstlicher Intelligenz (KI). Er wird ohne Gewähr und ohne Support bereitgestellt; Pläne und Berechnungsergebnisse sollten vor einer Verwendung selbst geprüft werden. Rückmeldungen sind willkommen, ein Anspruch auf Änderungen besteht aber nicht.
 
 ## Aufbau
 
