@@ -2,7 +2,7 @@
 
 # Stundenplaner
 
-Ein privates, nicht kommerzielles Projekt: Stundenplan-Generator für Schulen, der Wochenpläne unter Berücksichtigung von Lehrkräften, Räumen und Klassen berechnet, die Nachbearbeitung von Hand erlaubt und die Pläne druckfertig ausgibt. Er läuft vollständig im Browser, braucht weder Server noch Konto und besteht aus einer einzigen Datei. Der aktuelle Stand ist über GitHub Pages erreichbar: https://lukasderewaelder.github.io/stundenplan-planer/
+Der Stundenplaner ist ein privates, nicht kommerzielles Projekt. Er ist ein Stundenplan-Generator für Schulen, der Wochenpläne unter Berücksichtigung von Lehrkräften, Räumen und Klassen berechnet, die Nachbearbeitung von Hand erlaubt und die Pläne druckfertig ausgibt. Er läuft vollständig im Browser, braucht weder Server noch Konto und besteht aus einer einzigen Datei. Der aktuelle Stand ist über GitHub Pages erreichbar: https://lukasderewaelder.github.io/stundenplan-planer/
 
 ## Zum Projekt
 
