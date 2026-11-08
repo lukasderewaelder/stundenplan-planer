@@ -192,7 +192,7 @@ function nKlasse(k, nL) {
     maxProTag: (() => { const o = {}, q = k.maxProTag && typeof k.maxProTag === 'object' ? k.maxProTag : {}; Object.keys(q).sort().forEach(f => { const n = _int(q[f], 0); if (n >= 1) o[f] = Math.min(n, 20); }); return o; })()
   };
 }
-function nLehrer(l, D, H, stdAz, stdTag, vorlagen) {
+function nLehrer(l, D, H, stdAz, stdTag, vorlagen, vsAlt) {
   l = l || {};
   const anw = ['vollzeit', 'teilzeit', 'ausbildungstag'].includes(l.anwesenheit) ? l.anwesenheit : 'vollzeit';
   const tage = arr => _arr(arr).map(x => _int(x, -1)).filter((x, i, a) => x >= 0 && x < D && a.indexOf(x) === i).sort((a, b) => a - b);
@@ -224,13 +224,20 @@ function nLehrer(l, D, H, stdAz, stdTag, vorlagen) {
     dienstPraeferenzen: nDienstPraeferenzen(l.dienstPraeferenzen),
     // Ausschlüsse für Aufsichten, für die die Person nicht eingeteilt wird (Art, Tag, Zeitfenster)
     dienstAusschluss: nDienstAusschluss(l.dienstAusschluss, D, vorlagen),
-    qualifikationen: _arr(l.qualifikationen).map(x => _str(x).trim().toLowerCase()).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 20)
+    qualifikationen: _arr(l.qualifikationen).map(x => _str(x).trim().toLowerCase()).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 20),
+    // Rolle im Vorschulbereich: 'nein' (nicht zugelassen), 'stamm' (Stammkraft: nur Vorschule/Betreuung, kein Unterricht), 'reserve' (hilft nur beim Mindestbedarf).
+    // Ältere Stände speicherten die Rollen unter dienste.vorschuleRollen (Person-ID → Rolle); sie werden hier übernommen.
+    vorschule: VORSCHULROLLEN.includes(l.vorschule) ? l.vorschule : (VORSCHULROLLEN.includes(vsAlt && vsAlt[l.id]) ? vsAlt[l.id] : 'nein')
   };
 }
+const VORSCHULROLLEN = ['nein', 'stamm', 'reserve'];
+// Stammkräfte der Vorschule unterrichten nie (wie weiteres Personal): weder als Fach- noch als Co-Lehrkraft, weder automatisch noch von Hand.
+function vorschuleStamm(l) { return !!l && l.vorschule === 'stamm'; }
+function unterrichtetNicht(l) { return !l || l.art === 'personal' || l.vorschule === 'stamm'; }
 // Darf die Person im Fach als Fachlehrkraft (Lehrbefähigung) bzw. als Co-Lehrkraft eingesetzt werden?
-function fachBefaehigt(l, fach) { return !!(l && l.art !== 'personal' && l.faecher && l.faecher.includes(fach)); }
+function fachBefaehigt(l, fach) { return !!(l && !unterrichtetNicht(l) && l.faecher && l.faecher.includes(fach)); }
 function coBefaehigt(l, fach) {
-  if (!l || l.art === 'personal') return false; // weiteres Personal unterrichtet nicht, auch nicht als Co
+  if (unterrichtetNicht(l)) return false; // weiteres Personal und Stammkräfte der Vorschule unterrichten nicht, auch nicht als Co
   const f = l.faecher || [], c = l.coFaecher || [];
   if (c.includes(fach)) return true;
   return l.ausgebildet === false && !f.length && !c.length; // Co-Kraft ohne eingetragene Fächer: in allen Fächern
@@ -342,7 +349,7 @@ function normalisiere(d) {
     faecher: _arr(d.faecher).map(nFach),
     raeume: _arr(d.raeume).map(r => nRaum(r, D, H)),
     klassen: _arr(d.klassen).map(k => nKlasse(k, nL)),
-    lehrer: _arr(d.lehrer).map(l => nLehrer(l, D, H, azm.standardStunden, azm.maxTagStunden, d.dienste && d.dienste.schichtvorlagen)),
+    lehrer: _arr(d.lehrer).map(l => nLehrer(l, D, H, azm.standardStunden, azm.maxTagStunden, d.dienste && d.dienste.schichtvorlagen, d.dienste && d.dienste.vorschuleRollen)),
     unterrichte: _arr(d.unterrichte).map(nUnterricht).map(u => {
       if (u.ohneAuto.length) { const ids = new Set(_arr(d.lehrer).map(l => l && String(l.id))); u.ohneAuto = u.ohneAuto.filter(id => ids.has(id)); } // gelöschte Personen fallen heraus
       // Aufgaben in Zeitstunden: die geplanten Rasterstunden folgen dem aktuellen Zeitraster (ändert sich die Stundenlänge, wird neu umgerechnet)

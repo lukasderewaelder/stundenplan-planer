@@ -1667,7 +1667,7 @@ function nKlasse(k, nL) {
     maxProTag: (() => { const o = {}, q = k.maxProTag && typeof k.maxProTag === 'object' ? k.maxProTag : {}; Object.keys(q).sort().forEach(f => { const n = _int(q[f], 0); if (n >= 1) o[f] = Math.min(n, 20); }); return o; })()
   };
 }
-function nLehrer(l, D, H, stdAz, stdTag, vorlagen) {
+function nLehrer(l, D, H, stdAz, stdTag, vorlagen, vsAlt) {
   l = l || {};
   const anw = ['vollzeit', 'teilzeit', 'ausbildungstag'].includes(l.anwesenheit) ? l.anwesenheit : 'vollzeit';
   const tage = arr => _arr(arr).map(x => _int(x, -1)).filter((x, i, a) => x >= 0 && x < D && a.indexOf(x) === i).sort((a, b) => a - b);
@@ -1699,13 +1699,20 @@ function nLehrer(l, D, H, stdAz, stdTag, vorlagen) {
     dienstPraeferenzen: nDienstPraeferenzen(l.dienstPraeferenzen),
     // Ausschlüsse für Aufsichten, für die die Person nicht eingeteilt wird (Art, Tag, Zeitfenster)
     dienstAusschluss: nDienstAusschluss(l.dienstAusschluss, D, vorlagen),
-    qualifikationen: _arr(l.qualifikationen).map(x => _str(x).trim().toLowerCase()).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 20)
+    qualifikationen: _arr(l.qualifikationen).map(x => _str(x).trim().toLowerCase()).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 20),
+    // Rolle im Vorschulbereich: 'nein' (nicht zugelassen), 'stamm' (Stammkraft: nur Vorschule/Betreuung, kein Unterricht), 'reserve' (hilft nur beim Mindestbedarf).
+    // Ältere Stände speicherten die Rollen unter dienste.vorschuleRollen (Person-ID → Rolle); sie werden hier übernommen.
+    vorschule: VORSCHULROLLEN.includes(l.vorschule) ? l.vorschule : (VORSCHULROLLEN.includes(vsAlt && vsAlt[l.id]) ? vsAlt[l.id] : 'nein')
   };
 }
+const VORSCHULROLLEN = ['nein', 'stamm', 'reserve'];
+// Stammkräfte der Vorschule unterrichten nie (wie weiteres Personal): weder als Fach- noch als Co-Lehrkraft, weder automatisch noch von Hand.
+function vorschuleStamm(l) { return !!l && l.vorschule === 'stamm'; }
+function unterrichtetNicht(l) { return !l || l.art === 'personal' || l.vorschule === 'stamm'; }
 // Darf die Person im Fach als Fachlehrkraft (Lehrbefähigung) bzw. als Co-Lehrkraft eingesetzt werden?
-function fachBefaehigt(l, fach) { return !!(l && l.art !== 'personal' && l.faecher && l.faecher.includes(fach)); }
+function fachBefaehigt(l, fach) { return !!(l && !unterrichtetNicht(l) && l.faecher && l.faecher.includes(fach)); }
 function coBefaehigt(l, fach) {
-  if (!l || l.art === 'personal') return false; // weiteres Personal unterrichtet nicht, auch nicht als Co
+  if (unterrichtetNicht(l)) return false; // weiteres Personal und Stammkräfte der Vorschule unterrichten nicht, auch nicht als Co
   const f = l.faecher || [], c = l.coFaecher || [];
   if (c.includes(fach)) return true;
   return l.ausgebildet === false && !f.length && !c.length; // Co-Kraft ohne eingetragene Fächer: in allen Fächern
@@ -1817,7 +1824,7 @@ function normalisiere(d) {
     faecher: _arr(d.faecher).map(nFach),
     raeume: _arr(d.raeume).map(r => nRaum(r, D, H)),
     klassen: _arr(d.klassen).map(k => nKlasse(k, nL)),
-    lehrer: _arr(d.lehrer).map(l => nLehrer(l, D, H, azm.standardStunden, azm.maxTagStunden, d.dienste && d.dienste.schichtvorlagen)),
+    lehrer: _arr(d.lehrer).map(l => nLehrer(l, D, H, azm.standardStunden, azm.maxTagStunden, d.dienste && d.dienste.schichtvorlagen, d.dienste && d.dienste.vorschuleRollen)),
     unterrichte: _arr(d.unterrichte).map(nUnterricht).map(u => {
       if (u.ohneAuto.length) { const ids = new Set(_arr(d.lehrer).map(l => l && String(l.id))); u.ohneAuto = u.ohneAuto.filter(id => ids.has(id)); } // gelöschte Personen fallen heraus
       // Aufgaben in Zeitstunden: die geplanten Rasterstunden folgen dem aktuellen Zeitraster (ändert sich die Stundenlänge, wird neu umgerechnet)
@@ -4308,6 +4315,8 @@ function machbarkeit(data) {
     const U = M.U[i];
     u.lehrkraefte.forEach(z => { const l = M.data.lehrer.find(x => x.id === z.lehrer); if (l && z.rolle === 'fach' && z.zwang && l.ausgebildet === false) W('Co-Kraft ' + (l.kuerzel || l.name) + ' ist per Zwang als Fachlehrkraft in „' + U.name + '“ eingeteilt.', { seite: 'unterricht', id: u.id }); });
     if (u.aufgabe) return;
+    // Stammkräfte der Vorschule unterrichten nie (auch nicht als Co): von Hand eingetragen ist das ein harter Fehler vor der Berechnung
+    u.lehrkraefte.forEach(z => { const l = M.data.lehrer.find(x => x.id === z.lehrer); if (l && vorschuleStamm(l)) F((l.kuerzel || l.name) + ' ist Stammkraft der Vorschule und darf in „' + U.name + '“ nicht unterrichten (auch nicht als Co-Lehrkraft). Bitte die Lehrkraft austauschen oder die Rolle der Person ändern.', { seite: 'unterricht', id: u.id }); });
     U.fachL.forEach(t => { if (M.data.lehrer[t].ausgebildet === false) return; if (!M.data.lehrer[t].faecher.includes(u.fach)) W('Lehrkraft ' + M.lKz[t] + ' hat keine Lehrbefähigung für ' + (U.f >= 0 ? M.fKz[U.f] : '?') + ' (' + U.name + ').', { seite: 'unterricht', id: u.id }); });
     // Co-Lehrkräfte: Co-Fach und Klassenteam
     const team = new Set(); let teamDa = false;
@@ -4480,7 +4489,7 @@ function aufsichtKapazitaet(data) {
       ctx.personen.filter(p => !frei.includes(p)).forEach(p => {
         const g = dienstHartGruende(ctx, p, schichten[0], true)[0]; if (!g) return;
         const b = (p.basis[tag] || []).find(x => intervalleUeberschneiden(x, { start: von, end: bis }));
-        const name = b ? (b.art === 'aufgabe' ? 'Aufgabe „' + b.text + '“' : b.art === 'gesperrt' ? 'Sperrzeit (Verfügbarkeit)' : g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text) : (g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text);
+        const name = b ? (b.art === 'aufgabe' ? 'Aufgabe „' + b.text + '“' : b.art === 'gesperrt' ? 'Sperrzeit (Verfügbarkeit)' : g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.code === 'D13' ? 'nicht für diese Aufsicht der Vorschule zugelassen' : g.text) : (g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.code === 'D13' ? 'nicht für diese Aufsicht der Vorschule zugelassen' : g.text);
         gruende.set(name, (gruende.get(name) || 0) + 1);
       });
       const warum = [...gruende].sort((x, y) => y[1] - x[1]).slice(0, 3).map(([n, c]) => c + '× ' + n).join(', ');
@@ -6251,6 +6260,8 @@ function diagnoseErstellen(M, P, beweglich) {
 const PRAEF_WERTE = ['gern', 'neutral', 'ungern', 'nicht möglich'];
 const RHYTHMUS_ARTEN = { woechentlich: 'wöchentlich', wochentage: 'bestimmte Wochentage', A: 'nur A-Woche', B: 'nur B-Woche', zweiwoechentlich: 'alle zwei Wochen', monatlich: 'einmal im Monat', rotation: 'Rotation', einzel: 'Einzeltermin' };
 const DIENST_QUELLEN = ['auto', 'manuell'];
+// Kennung des Vorschulbereichs in älteren Ständen (vor dem Merkmal bereiche[].vorschule)
+const VORSCHULE_ALT_ID = 'a_vorschule_exklusiv';
 // Interne Aufsichtstypen: fest im Programm, nicht sichtbar und nicht gespeichert (Kategorie steuert Früh-/Spätaufsicht, Springer …)
 const DIENSTTYPEN = [
   { id: 'dt_dienst', name: 'Aufsicht', kuerzel: 'A', farbe: '#5f7597', kategorie: 'sonstige' },
@@ -6278,6 +6289,7 @@ const DIENST_REGELN = [
   { id: 'D10', hart: true, name: 'Gültige Zeiten', text: 'Beginn liegt vor dem Ende, der Tag gehört zur Schulwoche und die zugeordnete Person existiert.' },
   { id: 'D11', hart: true, name: 'Arbeitszeitgrenzen', text: 'Die Wochenarbeitszeit und die Höchstarbeitszeit je Tag werden nicht überschritten (wie „Arbeitszeitgrenzen“ im Stundenplan) – die Automatik besetzt keine Aufsicht über diese Grenzen hinaus. Gezählt wird ausschließlich der endgültige Plan (Unterricht, Co-Unterricht, Aufgaben, Aufsichten). Ist „Arbeitszeitgrenzen“ auf „weich“ gestellt, zählt nur noch die weiche Regel „Arbeitszeit ausgleichen“.' },
   { id: 'D12', hart: true, name: 'Springer ist eine andere Person', text: 'Wer in einer Pause (einem Zeitraum: z. B. Frühstück, Mittag, Spätaufsicht – jeweils getrennt) eine feste Aufsicht hat, ist in derselben Pause nie Springer – auch nicht vorher oder nachher. In einer anderen Pause desselben Tages ist beides möglich. Fehlt dafür Personal, hat die feste Aufsicht Vorrang; der Springer bleibt offen (gelb).' },
+  { id: 'D13', hart: true, name: 'Vorschulzulassung', text: 'Nicht zugelassene Personen arbeiten nie in einem Vorschul-Bereich. Stammkräfte der Vorschule sind nur dort sowie in Früh-, Spätaufsicht und Hort/Betreuung einsetzbar (und unterrichten nie). Die Reserve hilft in der Vorschule nur bei der Mindestbesetzung, nie bei der Sollbesetzung.' },
   { id: 'DW01', hart: false, std: 8, name: 'Sollbesetzung erreichen', text: 'Je Person, die zur Sollbesetzung fehlt (Minimum ist gedeckt).' },
   { id: 'DW02', hart: false, std: 9, name: 'Arbeitszeit ausgleichen', text: 'Aufsichten gehen zuerst an die Personen mit den meisten Minusstunden: Die Differenz Ist − Soll der Wochenarbeitszeit soll bei allen möglichst gleich sein (quadratisch gewichtet). Erst bei Gleichstand gilt die Rangfolge sonstiges Personal → Co-Lehrkräfte → Lehrkräfte; danach zählen Lücken, freie Zeiten und persönliche Wünsche.' },
   { id: 'DW03', hart: false, std: 3, name: 'Anwesenheit verlängern', text: 'Eine Aufsicht schließt nach Möglichkeit direkt an Unterricht oder andere Einsätze an. Dieses Komfortziel ist der vollständigen Besetzung und dem Auffüllen freier Soll-Arbeitszeit nachgeordnet.' },
@@ -6289,6 +6301,7 @@ const DIENST_REGELN = [
   { id: 'DW09', hart: false, std: 4, name: 'Kontinuität', text: 'Direkt anschließende Aufsichtsabschnitte möglichst bei derselben Person statt eines Wechsels alle 15 Minuten.' },
   { id: 'DW10', hart: false, std: 3, name: 'Persönliche Wünsche', text: 'Wunschzeiten sowie „gern/ungern/nicht möglich“ beeinflussen die Verteilung erst nach Unterricht, Mindestbesetzung und Soll-Arbeitszeit. Sie sind keine harte Sperre.' },
   { id: 'DW11', hart: false, std: 3, name: 'Stabilität', text: 'Bei „Änderungen gering halten“: bisherige Zuordnungen bevorzugen.' },
+  { id: 'DW12', hart: false, std: 8, name: 'Reserve in der Vorschule vermeiden', text: 'Die Reserve übernimmt Vorschuldienste erst, wenn keine Stammkraft frei ist. Je höher das Gewicht, desto strikter gilt „Stammkräfte zuerst“.' },
   // Persönliche Wünsche sind bei Aufsichten nur weich: Sie entscheiden zwischen mehreren möglichen Personen, verhindern aber keine notwendige Aufsicht.
   { id: 'D08', hart: false, std: 9, name: 'Höchstzahl Früh-/Spätaufsichten (Wunsch)', text: 'Die persönliche Höchstzahl an Früh- bzw. Spätaufsichten je Woche wird möglichst nicht überschritten. Der Wunsch entscheidet zwischen mehreren möglichen Personen; eine notwendige Aufsicht bleibt deswegen nie offen.' },
   { id: 'D09', hart: false, std: 9, name: 'Früh und spät am selben Tag (Wunsch)', text: 'Ist „Früh + spät am selben Tag erlaubt“ nicht gesetzt, bekommt die Person an einem Tag möglichst nicht beides. Der Wunsch entscheidet zwischen mehreren möglichen Personen; eine notwendige Aufsicht bleibt deswegen nie offen.' }
@@ -6475,7 +6488,10 @@ function nDienstRegeln(r) {
 function nDienste(x) {
   const neu = !x || typeof x !== 'object';
   x = neu ? {} : x;
-  const bereiche = _arr(x.bereiche).map(b => ({ id: _str(b && b.id) || neueId('a'), name: _str(b && b.name, 'Bereich').slice(0, 60), exklusiv: !!(b && b.exklusiv) }));
+  // vorschule: Bereich der Vorschule (Rollen siehe lehrer[].vorschule). Ältere Stände kannten das Merkmal nicht: Dort gilt die frühere Kennung
+  // (feste ID oder der Name „Vorschule“) einmalig beim Laden; danach steht das Merkmal fest und ein Umbenennen ändert nichts mehr.
+  const bereiche = _arr(x.bereiche).map(b => ({ id: _str(b && b.id) || neueId('a'), name: _str(b && b.name, 'Bereich').slice(0, 60), exklusiv: !!(b && b.exklusiv),
+    vorschule: b && b.vorschule !== undefined ? !!b.vorschule : !!(b && (b.id === VORSCHULE_ALT_ID || _str(b.name).trim().toLocaleLowerCase('de') === 'vorschule')) }));
   // Ältere Stände speicherten die Typen mit: Name und Farbe eines dort eigenen Typs gehen an den Eintrag, der Typ wird zur allgemeinen Aufsicht
   const alt = new Map(_arr(x.typen).filter(t => t && !DIENSTTYPEN.some(s => s.id === t.id)).map(t => [_str(t.id), t]));
   const typ = y => { const t = alt.get(_str(y && y.typ)); return t ? Object.assign({}, y, { typ: 'dt_dienst', name: y.name || t.name, farbe: y.farbe || t.farbe }) : y; };
@@ -6805,10 +6821,36 @@ function dienstGrundlagenSignatur(d) {
     d.schule.stunden.map(s => [s.beginn, s.ende, s.istPause]), d.schule.tage, d.schule.zeitprofile, d.klassen.map(k => [k.id, k.zeitprofil]),
     d.unterrichte.map(u => [u.id, u.fach, u.klassen, u.rhythmus, u.lehrkraefte.map(z => [z.lehrer, z.rolle, z.modus]), u.termine || []]),
     d.lehrer.map(l => [l.id, l.aufsicht, l.anwesenheit, l.anwesenheitTage, l.verfuegbarkeit, l.dienstVerfuegbarkeit, l.dienstPraeferenzen, l.qualifikationen, l.arbeitszeit]),
-    d.dienste.bedarfe.map(b => [b.tag, b.typ, b.bereich, b.abschnitte]), DIENSTTYPEN, d.dienste.bereiche,
+    d.dienste.bedarfe.map(b => [b.tag, b.typ, b.bereich, b.abschnitte]), DIENSTTYPEN, d.dienste.bereiche.map(b => b.vorschule ? b : { id: b.id, name: b.name, exklusiv: b.exklusiv }), // ohne Vorschule bleibt die Signatur wie früher
     d.dienste.plan.filter(x => x.fixiert).map(x => [x.id, x.lehrer, x.tag, x.typ, x.bereich, x.beginn, x.ende, x.rhythmus])
-  ].concat((d.plan.besetzung || []).length || (d.plan.frei || []).length ? [(d.plan.besetzung || []).map(b => [b.unterricht, b.blockNr, b.lehrer, b.rolle]), (d.plan.frei || []).map(a => [a.unterricht, a.blockNr, a.lehrer])] : [])); // Besetzung einzelner Stunden von Hand
+  ].concat((d.plan.besetzung || []).length || (d.plan.frei || []).length ? [(d.plan.besetzung || []).map(b => [b.unterricht, b.blockNr, b.lehrer, b.rolle]), (d.plan.frei || []).map(a => [a.unterricht, a.blockNr, a.lehrer])] : []).concat(d.lehrer.some(l => l.vorschule !== 'nein') ? [d.lehrer.map(l => [l.id, l.vorschule])] : [])); // Besetzung einzelner Stunden von Hand
   return _hash(t) + ':' + t.length;
+}
+// ---------- Vorschule: Bedarf und Wochenbilanz ----------
+// Wöchentlicher Mindestbedarf aller Vorschul-Bereiche in Personenminuten (Summe Minimum × Dauer der Abschnitte)
+function vorschuleMindestbedarf(d) {
+  const ids = new Set(d.dienste.bereiche.filter(b => b.vorschule).map(b => b.id));
+  let min = 0;
+  d.dienste.bedarfe.forEach(b => { if (!b.bereich || !ids.has(b.bereich)) return; b.abschnitte.forEach(a => { const iv = intervall(a.beginn, a.ende); if (iv && iv.end > iv.start) min += (iv.end - iv.start) * a.min; }); });
+  return min;
+}
+// Wochenbilanz je Stammkraft und Reserve: Minuten in der Vorschule, in Früh-/Spätaufsicht und Betreuung sowie in sonstigen Diensten
+// (Wochenrhythmus und Rotation anteilig), dazu Soll und Ist der Wochenarbeitszeit aus arbeitszeiten(d). Alle Werte in Minuten.
+function vorschuleBilanz(d) {
+  const ids = new Set(d.dienste.bereiche.filter(b => b.vorschule).map(b => b.id));
+  const az = new Map(arbeitszeiten(d).liste.map(x => [x.lehrer, x]));
+  const out = new Map(d.lehrer.filter(l => l.vorschule !== 'nein').map(l => [l.id, { lehrer: l.id, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', rolle: l.vorschule, soll: 0, ist: 0, vorschule: 0, betreuung: 0, sonstige: 0 }]));
+  d.dienste.plan.forEach(x => {
+    const iv = dienstIntervall(x); if (!iv) return;
+    const personen = x.rhythmus && x.rhythmus.art === 'rotation' && x.rhythmus.personen.length ? x.rhythmus.personen : [x.lehrer];
+    personen.forEach(pid => {
+      const o = out.get(pid); if (!o) return;
+      const min = (iv.end - iv.start) * dienstFaktor(x.rhythmus, pid);
+      if (x.bereich && ids.has(x.bereich)) o.vorschule += min; else if (VS_BETREUUNG.has(x.typ)) o.betreuung += min; else o.sonstige += min;
+    });
+  });
+  out.forEach((o, id) => { const a = az.get(id); if (a) { o.soll = a.soll; o.ist = a.summe; } });
+  return [...out.values()].sort((a, b) => (a.rolle === b.rolle ? 0 : a.rolle === 'stamm' ? -1 : 1) || String(a.kuerzel).localeCompare(String(b.kuerzel), 'de'));
 }
 function schichtenAusKurve(punkte) {
   const offen = [], out = [];
@@ -6970,8 +7012,8 @@ function dienstKontext(d, opt) {
   const az = arbeitszeiten(d, { ohneDienste: true });
   const azMap = new Map(az.liste.map(x => [x.lehrer, x]));
   const tagE = tagesEinsatz(d, idx); // Einsatzzeit je Tag ohne Aufsichten
-  const typen = new Map(DIENSTTYPEN.map(t => [t.id, t])), bereiche = new Map(DI.bereiche.map(b => [b.id, b]));
-  const ctx = { d, D, R, G: R.gewichte, typen, bereiche, fg: minVon(R.fruehGrenze), sg: minVon(R.spaetGrenze), personen: [], pI: new Map(), alle: [], stabil: null, grenzen: !(d.regeln && d.regeln.hartUmschaltbar && d.regeln.hartUmschaltbar.H16 === 'weich') };
+  const typen = new Map(DIENSTTYPEN.map(t => [t.id, t])), bereiche = new Map(DI.bereiche.map(b => [b.id, b])), vsBereiche = new Set(DI.bereiche.filter(b => b.vorschule).map(b => b.id));
+  const ctx = { d, D, R, G: R.gewichte, typen, bereiche, vsBereiche, fg: minVon(R.fruehGrenze), sg: minVon(R.spaetGrenze), personen: [], pI: new Map(), alle: [], stabil: null, grenzen: !(d.regeln && d.regeln.hartUmschaltbar && d.regeln.hartUmschaltbar.H16 === 'weich') };
   d.lehrer.forEach((l, i) => {
     const a = idx.get(l.id);
     const x = azMap.get(l.id);
@@ -7030,6 +7072,8 @@ function springerZeitraum(ctx, s) {
   if (pa) iv = { start: Math.min(pa.start, iv.start), end: Math.max(pa.end, iv.end) };
   c.set(k, iv); return iv;
 }
+// Dienste, die Stammkräfte der Vorschule außerhalb des Vorschul-Bereichs übernehmen dürfen: Früh-/Spätaufsicht und Betreuung
+const VS_BETREUUNG = new Set(['dt_frueh', 'dt_spaet', 'dt_hort']);
 function dienstHartGruende(ctx, p, s, alle) {
   const out = [], l = p.l, t = ctx.typen.get(s.typ), wer = lehrerNameKurz(l);
   const add = (code, text) => { out.push({ code, text }); return !alle; };
@@ -7039,6 +7083,11 @@ function dienstHartGruende(ctx, p, s, alle) {
   if ((s.ausschlussPersonen || []).includes(l.id)) { if (add('D05', wer + ': für diesen Zeitabschnitt ausdrücklich ausgeschlossen.')) return out; }
   { const g = (s.ausschlussGruppen || []).find(id => personInDienstGruppe(ctx.d, l, id)); if (g) { const n = (dienstGruppenOptionen(ctx.d).find(x => x[0] === g) || [null, g])[1]; if (add('D05', wer + ': Personengruppe „' + n + '“ ist für diesen Zeitabschnitt ausgeschlossen.')) return out; } }
   { const aus = dienstAusgeschlossen(ctx.d, l, s.typ, s.tag, s.start, s.end, s.bereich); if (aus) { if (add('D05', wer + ': ' + aus + '.')) return out; } }
+  // D13 Vorschulzulassung (Rollen: l.vorschule; die Vorschul-Bereiche stehen einmal je Kontext in ctx.vsBereiche)
+  { const vr = l.vorschule, imVs = !!s.bereich && ctx.vsBereiche.has(s.bereich);
+    if (imVs && vr === 'nein') { if (add('D13', wer + ': keine Vorschulberechtigung.')) return out; }
+    else if (imVs && vr === 'reserve' && s.prio === 'soll') { if (add('D13', wer + ': Reserve der Vorschule hilft nur beim Mindestbedarf.')) return out; }
+    else if (vr === 'stamm' && !imVs && !VS_BETREUUNG.has(s.typ)) { if (add('D13', wer + ' ist Stammkraft der Vorschule: nur Vorschule, Früh-/Spätaufsicht und Betreuung zulässig.')) return out; } }
   const f = p.fenster[s.tag];
   if (f && f.abwesend) { if (add('D02', wer + ': ' + f.grund + '.')) return out; }
   // Früh-/Spätwünsche und aufsichtsspezifische Wunschfenster sind bewusst weich: Unterricht und echte Abwesenheit bleiben hart,
@@ -7092,6 +7141,8 @@ function personKosten(ctx, p) {
   // eingetragene Soll-Arbeitszeit sind neutral; weiteres Personal ohne Soll wird leicht bevorzugt.
   if (p.soll > 0) { const dev = (dmin - p.rest) / 60; k += W('DW02') * 2 * dev * dev; }
   else if (p.l.art === 'personal') k -= W('DW02') * 0.9 * dmin / 15;
+  // DW12: Die Reserve der Vorschule übernimmt Vorschuldienste erst, wenn keine Stammkraft frei ist (je 15 Minuten, Rotation anteilig; so hoch, dass auch große Minusstunden einer Reserve (DW02) nicht gegen eine freie Stammkraft gewinnen)
+  if (p.l.vorschule === 'reserve') { let rv = 0; eigene.forEach(x => { if (x.bereich && ctx.vsBereiche.has(x.bereich)) rv += (x.end - x.start) * (x.faktor === undefined ? 1 : x.faktor); }); if (rv) k += W('DW12') * 100 * rv / 15; }
   // Rangfolge sonstiges Personal → Co → Lehrkraft nur noch bei (fast) gleicher Differenz: kleiner Bonus je 15 Minuten
   { let dAlle = 0; eigene.forEach(x => { dAlle += (x.end - x.start) * (x.faktor === undefined ? 1 : x.faktor); }); // auch Springer und nicht angerechnete Einsätze
     const rang = AUFSICHT_RANG[aufsichtRang(p.l)] || 0; if (rang && dAlle > 0) k -= rang * dAlle / 15; }
@@ -7474,7 +7525,7 @@ function aufsichtenNeuBerechnen(d, opt) {
 function offenGrund(ctx, s) {
   const zaehl = {};
   let billig = 0;
-  ctx.personen.forEach(p => { const g = dienstHartGruende(ctx, p, s, false); if (g.length) { const c = g[0].code, t = g[0].text; const key = c === 'D01' ? (/unterrichtet|Co-Lehrkraft|Aufgabe|gesperrt/.test(t) ? 'Unterricht/Aufgabe' : /Aufsicht|Springer \(Pause\)/.test(t) ? 'Aufsicht' : 'andere Aufsicht') : { D02: 'Anwesenheit', D05: 'ausgeschlossen/ausgenommen', D06: 'Bereich exklusiv', D07: 'Qualifikation', D10: 'ungültig', D11: 'Arbeitszeitgrenze erreicht' }[c] || c; zaehl[key] = (zaehl[key] || 0) + 1; } else billig++; });
+  ctx.personen.forEach(p => { const g = dienstHartGruende(ctx, p, s, false); if (g.length) { const c = g[0].code, t = g[0].text; const key = c === 'D01' ? (/unterrichtet|Co-Lehrkraft|Aufgabe|gesperrt/.test(t) ? 'Unterricht/Aufgabe' : /Aufsicht|Springer \(Pause\)/.test(t) ? 'Aufsicht' : 'andere Aufsicht') : { D02: 'Anwesenheit', D05: 'ausgeschlossen/ausgenommen', D13: 'Vorschulzulassung', D06: 'Bereich exklusiv', D07: 'Qualifikation', D10: 'ungültig', D11: 'Arbeitszeitgrenze erreicht' }[c] || c; zaehl[key] = (zaehl[key] || 0) + 1; } else billig++; });
   const teile = Object.entries(zaehl).sort((a, b) => b[1] - a[1]).map(([k, n]) => n + '× ' + k);
   return (billig ? billig + ' Person(en) wären möglich' + (s.prio === 'soll' ? ', für die Sollbesetzung aber zu ungünstig (Arbeitszeit, Lücken, Fairness)' : '') + ' – bitte „Aufsichten planen“ ausführen. ' : 'Niemand zulässig und frei. ') + (teile.length ? teile.join(', ') + '.' : '');
 }
@@ -7709,10 +7760,10 @@ function planStatus(d, opt) {
     .concat(g('ablage').filter(x => !abgl.length || aufgabenIds.has(x.unterricht)).map(x => ({ text: x.text, bloecke: x.unterricht && x.blockNr ? [x.unterricht + '|' + x.blockNr] : [] }))));
   // 2 Fachlehrkräfte: vorhanden und fachlich geeignet
   const ungeeignet = [];
-  d.unterrichte.forEach(u => { if (u.aufgabe || !u.fach) return; u.lehrkraefte.forEach(z => { const l = lI.get(z.lehrer); if (z.rolle === 'fach' && l && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ': ' + (l.kuerzel || l.name) + ' unterrichtet ohne eingetragene Fachbefähigung'); }); });
+  d.unterrichte.forEach(u => { if (u.aufgabe || !u.fach) return; u.lehrkraefte.forEach(z => { const l = lI.get(z.lehrer); if (z.rolle === 'fach' && l && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ': ' + (l.kuerzel || l.name) + (vorschuleStamm(l) ? ' ist Stammkraft der Vorschule und darf nicht unterrichten' : ' unterrichtet ohne eingetragene Fachbefähigung')); }); });
   // … auch wer nur für eine einzelne Stunde von Hand eingesetzt ist („nur dieser Termin“), braucht als Fachlehrkraft die Fachbefähigung
   { const uM = new Map(d.unterrichte.map(u => [u.id, u]));
-    (d.plan.besetzung || []).forEach(b => { if (b.rolle === 'co') return; const u = uM.get(b.unterricht), l = lI.get(b.lehrer); if (u && l && !u.aufgabe && u.fach && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ' (Block ' + b.blockNr + '): ' + (l.kuerzel || l.name) + ' ist für diese Stunde eingesetzt, hat aber keine Fachbefähigung'); }); }
+    (d.plan.besetzung || []).forEach(b => { if (b.rolle === 'co') return; const u = uM.get(b.unterricht), l = lI.get(b.lehrer); if (u && l && !u.aufgabe && u.fach && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ' (Block ' + b.blockNr + '): ' + (l.kuerzel || l.name) + (vorschuleStamm(l) ? ' ist Stammkraft der Vorschule und darf nicht unterrichten' : ' ist für diese Stunde eingesetzt, hat aber keine Fachbefähigung')); }); }
   P_('lehrkraft', 'Jeder Unterricht hat eine fachlich geeignete Lehrkraft', g('lehrkraft').map(mitBezug).concat(ungeeignet));
   // 3 Parallelbänder
   // … und keine Lehrkraft unterrichtet beide Hälften eines Bandes (sie müsste zur selben Zeit in beiden Gruppen stehen)
@@ -8388,7 +8439,7 @@ function lehrerPasst(l, fachId, rolle) { return !fachId || (rolle === 'co' || l.
 // klassen (optional): Klassenteam dieser Klassen steht als eigene Gruppe vorn
 function lehrerOpts(leer, fachId, kurz, art, klassen) {
   let L = APP.daten.lehrer.slice();
-  if (art) L = L.filter(l => l.art !== 'personal'); // weiteres Personal unterrichtet nicht (auch nicht als Co)
+  if (art) L = L.filter(l => !unterrichtetNicht(l)); // weiteres Personal und Stammkräfte der Vorschule unterrichten nicht (auch nicht als Co)
   if (art === 'fach') L = L.filter(l => l.ausgebildet !== false);
   if (art === 'zwang') L = L.filter(l => l.ausgebildet === false);
   // immer alphabetisch nach Kürzel; nur für die Co-Rolle stehen Co-Kräfte als Gruppe vorn
@@ -8448,6 +8499,7 @@ const SEITEN = [
   { id: 'klassen', titel: 'Klassen & Stundentafel', symbol: 'gruppe' },
   { id: 'unterricht', titel: 'Unterrichtsversorgung', symbol: 'tabelle' },
   { id: 'aufsicht', titel: 'Aufsichten', symbol: 'auge' },
+  { id: 'vorschule', titel: 'Vorschule & Betreuung', symbol: 'gruppe' },
   { id: 'pruefung', titel: 'Prüfung', symbol: 'pruefung' },
   { id: 'berechnung', titel: 'Plan berechnen', symbol: 'zahnrad' },
   { id: 'regeln', titel: 'Regeln & Gewichte', symbol: 'regler' },
@@ -8463,7 +8515,7 @@ const BEREICHE = [
   { id: 'schule', titel: 'Schule & Zeiten', symbol: 'schule', seiten: ['schule', 'faecher', 'raeume'] },
   { id: 'lehrer', titel: 'Mitarbeitende', symbol: 'personen', seiten: ['lehrer', 'arbeitszeit', 'aufgaben'] },
   { id: 'klassen', titel: 'Klassen & Stundentafel', symbol: 'gruppe', seiten: ['klassen', 'unterricht'], experte: ['unterricht'] },
-  { id: 'pausen', titel: 'Aufsichten', symbol: 'auge', seiten: ['aufsicht'] },
+  { id: 'pausen', titel: 'Aufsichten', symbol: 'auge', seiten: ['aufsicht', 'vorschule'] },
   { id: 'pruefung', titel: 'Prüfung', symbol: 'pruefung', seiten: ['pruefung'] },
   { id: 'berechnung', titel: 'Plan berechnen', symbol: 'zahnrad', seiten: ['berechnung', 'regeln'], experte: ['regeln'] },
   { id: 'editor', titel: 'Plan bearbeiten & Ergebnis', symbol: 'kalender', seiten: ['editor', 'auswertung', 'ausgabe', 'staende'] },
@@ -11961,6 +12013,7 @@ function lehrerAbgelegt(e, p, lid, x, y) {
   const { M } = modell();
   const part = M.E[e].parts[p] || M.E[e].parts[0];
   const u = APP.daten.unterrichte[part.u], l = lehrerVon(lid), U = M.U[part.u];
+  if (!u.aufgabe && vorschuleStamm(l)) { toast((l.kuerzel || l.name) + ' ist Stammkraft der Vorschule und unterrichtet nicht.', 'err', 6000); return; }
   if (!u.aufgabe && l.art === 'personal') { toast((l.kuerzel || l.name) + ' ist weiteres Personal und unterrichtet nicht – einsetzbar für Aufsichten und Aufgaben.', 'err', 6000); return; }
   // die Person steht schon in diesem Termin (auch automatisch geplant oder für diese Stunde herausgenommen): herausnehmen bzw. wieder einsetzen anbieten
   if (lkEntfernenMenue(e, lid, x, y)) return;
@@ -12075,7 +12128,7 @@ function ressourceEintrag(e, p, lid, rolle) {
   const x = (rolle === 'co' ? teil.co : teil.lehrer).find(q => q.id === lid);
   if (x) return x;
   const l = lehrerVon(lid) || {};
-  return { id: lid, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', st: 'nein', gruende: [l.art === 'personal' ? 'weiteres Personal – unterrichtet nicht' : rolle === 'co' ? 'als Co-Lehrkraft hier nicht einsetzbar' : 'Co-Kraft ohne Lehrbefähigung – als Fachlehrkraft nicht vorgesehen'], folgen: [], alle: false, aktuell: false };
+  return { id: lid, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', st: 'nein', gruende: [vorschuleStamm(l) ? 'Stammkraft der Vorschule – unterrichtet nicht' : l.art === 'personal' ? 'weiteres Personal – unterrichtet nicht' : rolle === 'co' ? 'als Co-Lehrkraft hier nicht einsetzbar' : 'Co-Kraft ohne Lehrbefähigung – als Fachlehrkraft nicht vorgesehen'], folgen: [], alle: false, aktuell: false };
 }
 // Gemeinsame Schranke: ✕ „nicht verfügbar“ und neue harte Verstöße werden nie stillschweigend übernommen – weder aus der Ressourcenleiste
 // noch aus dem Menü der Stunde noch beim Ziehen einer Lehrkraft. Liefert null (abgebrochen) oder { erzwungen }.
@@ -12639,7 +12692,7 @@ function lehrerMenue(e, x, y) {
   const aktuell = u.lehrkraefte.find(z => z.rolle === 'fach');
   // frei = in allen platzierten Blöcken des Unterrichts verfügbar und nicht anderweitig belegt
   const team = teamVon(u.klassen);
-  const alle = APP.daten.lehrer.map((l, t) => ({ l, t })).filter(k => U.aufgabe || k.l.art !== 'personal').map(({ l, t }) => ({ l, t, bef: U.aufgabe || (l.ausgebildet === false ? coBefaehigt(l, fach) : fachBefaehigt(l, fach)), frei: !lehrerFreiIn(M, P, part.u, t).length, team: team.has(l.id) }))
+  const alle = APP.daten.lehrer.map((l, t) => ({ l, t })).filter(k => U.aufgabe || !unterrichtetNicht(k.l)).map(({ l, t }) => ({ l, t, bef: U.aufgabe || (l.ausgebildet === false ? coBefaehigt(l, fach) : fachBefaehigt(l, fach)), frei: !lehrerFreiIn(M, P, part.u, t).length, team: team.has(l.id) }))
     .sort((a, b) => natVergleich(a.l.kuerzel || a.l.name, b.l.kuerzel || b.l.name) || natVergleich(a.l.name, b.l.name));
   const setzen = async (k, zwang) => {
     const tun = d => { const uu = d.unterrichte[part.u]; const i = uu.lehrkraefte.findIndex(z => z.rolle === 'fach'); if (i >= 0) Object.assign(uu.lehrkraefte[i], { lehrer: k.l.id, zwang, auto: false }); else uu.lehrkraefte.unshift(nLehrkraftZuordnung({ lehrer: k.l.id, rolle: 'fach', zwang })); };
@@ -14094,7 +14147,8 @@ function bedarfGrafik(b, bes) {
     }),
     h('span', { class: 'bg-achse l' }, zeitText(s)), h('span', { class: 'bg-achse r' }, zeitText(e)));
 }
-function bedarfDetailKarte(d, b) {
+// opt.eingebettet: ohne Nachbar-Navigation und ohne feste Kennung (die Karte steht dann außerhalb der Bedarfsliste, z. B. unter „Vorschule“)
+function bedarfDetailKarte(d, b, opt) {
     const bes = besetzungBedarf(d, b), eig = [b.pauseKey ? 'Pause' : null, b.arbeitszeit === false ? 'arbeitszeitneutral' : null, b.qualifikation ? 'Qualifikation: ' + b.qualifikation : null].filter(Boolean);
     const zeilen = b.abschnitte.map((a, i) => {
       const x = bes[i] || { ist: 0, status: 'err' };
@@ -14106,8 +14160,8 @@ function bedarfDetailKarte(d, b) {
         h('td', { class: 'zahl' }, h('span', { class: 'badge ' + (x.status === 'ok' ? 'ok' : x.status === 'warn' ? 'warn' : 'err') }, x.ist + ' / ' + a.soll + ' ' + (x.status === 'ok' ? '✓' : x.status === 'warn' ? '~' : '✕'))),
         h('td', { class: 'aktion' }, h('button', { class: 'btn icon klein', title: 'Zeitraum teilen', onclick: () => abschnittTeilen(b.id, i) }, icon('schere')), i < b.abschnitte.length - 1 ? h('button', { class: 'btn icon klein', title: 'Mit folgendem Abschnitt zusammenführen', onclick: () => abschnittZusammen(b.id, i) }, icon('zusammen')) : null, h('button', { class: 'btn icon klein gefahr', title: 'Abschnitt löschen', onclick: () => undoToastNach(() => bedarfAendern('Bedarfsabschnitt gelöscht', b.id, bb => bb.abschnitte.splice(i, 1)), 'Zeitabschnitt gelöscht.') }, icon('papierkorb'))));
     });
-    return h('div', { class: 'karte bedarfdetail', 'data-id': b.id, id: 'bedarfDetail' },
-      h('div', { class: 'bd-kopf' }, h('span', { class: 'eyebrow' }, 'Bearbeiten · ' + tagLang(b.tag)), h('div', { class: 'rechts' }), bedarfNachbarn(d, b)),
+    return h('div', { class: 'karte bedarfdetail', 'data-id': b.id, id: opt && opt.eingebettet ? null : 'bedarfDetail' },
+      h('div', { class: 'bd-kopf' }, h('span', { class: 'eyebrow' }, 'Bearbeiten · ' + tagLang(b.tag)), h('div', { class: 'rechts' }), opt && opt.eingebettet ? null : bedarfNachbarn(d, b)),
       h('div', { class: 'zeile', style: { alignItems: 'flex-end' } },
         h('label', { class: 'feld' }, 'Tag', sel(d.schule.tage.map((x, i) => [String(i), x]), String(b.tag), v => bedarfAendern('Aufsicht verschoben', b.id, bb => { bb.tag = Number(v); }), { 'aria-label': 'Tag' })),
         h('label', { class: 'feld', style: { flex: '1 1 220px' } }, 'Bezeichnung', h('input', { type: 'text', value: b.name || '', placeholder: 'Bezeichnung', style: { width: '100%' }, onchange: ev => bedarfAendern('Aufsicht umbenannt', b.id, bb => { bb.name = ev.target.value.trim() || 'Aufsicht'; }) })),
@@ -14251,6 +14305,7 @@ function dienstBereicheTab() {
     DI.bereiche.length ? h('div', { class: 'zeile', style: { gap: '10px' } }, DI.bereiche.map(b => h('span', { class: 'zeile eng bereichchip', 'data-id': b.id },
       h('input', { type: 'text', value: b.name, style: { width: '140px' }, 'aria-label': 'Name des Bereichs', onchange: ev => { const v = ev.target.value.trim(); if (v) dienstAendern('Bereich umbenannt', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.name = v.slice(0, 60); }); } }),
       h('label', { class: 'check klein' }, h('input', { type: 'checkbox', checked: b.exklusiv, onchange: ev => dienstAendern('Bereich exklusiv', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.exklusiv = ev.target.checked; }) }), 'exklusiv'),
+      h('label', { class: 'check klein', title: 'Bereich der Vorschule: Dort arbeiten nur Stammkräfte und Reserve (siehe „Vorschule & Betreuung“).' }, h('input', { type: 'checkbox', checked: !!b.vorschule, onchange: ev => dienstAendern('Bereich Vorschule', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.vorschule = ev.target.checked; }) }), 'Vorschule'),
       h('button', { class: 'btn icon klein gefahr', title: 'Löschen', onclick: async () => { const n = DI.plan.filter(x => x.bereich === b.id).length + DI.bedarfe.filter(x => x.bereich === b.id).length; if (n && !(await bestaetigen('Bereich „' + b.name + '“ wird in ' + n + ' Einsätzen/Bedarfen verwendet; dort wird der Bereich entfernt.', 'Löschen', 'gefahr'))) return; undoToastNach(() => dienstAendern('Bereich gelöscht', dd => { const D2 = dd.dienste; D2.bereiche = D2.bereiche.filter(x => x.id !== b.id); [D2.plan, D2.bedarfe, D2.offen].forEach(l => l.forEach(x => { if (x.bereich === b.id) x.bereich = null; })); }), 'Bereich „' + b.name + '“ gelöscht.'); } }, icon('papierkorb'))))) : h('p', { class: 'muted' }, 'Noch keine Bereiche.'));
   return [bereiche, h('div', { class: 'karte zeile' }, h('span', { class: 'muted' }, 'Früh-/Spätregeln werden aus den tatsächlichen Uhrzeiten abgeleitet. Weitere Planungsgewichte stehen bei den Regeln.'), h('div', { class: 'rechts' }), h('button', { class: 'btn', onclick: () => gehe('regeln', { reiter: 'dienste' }) }, 'Regeln & Gewichte'))];
 }
@@ -15720,6 +15775,105 @@ window.addEventListener('beforeunload', ev => { if (APP.speicherTimer && APP.spe
 document.addEventListener('DOMContentLoaded', () => { const sk = document.querySelector('.skiplink'); if (sk) sk.addEventListener('click', ev => { ev.preventDefault(); const m = $('#inhalt'); m.focus(); m.scrollTop = 0; }); });
 document.addEventListener('DOMContentLoaded', start);
 
+/* =====================================================================
+   5g. OBERFLÄCHE – Vorschule & Betreuung (Reiter unter „Aufsichten“)
+   Rollen je Person (nicht zugelassen · Stammkraft · Reserve), Tagesbedarf des Vorschulbereichs und Wochenbilanz.
+   Die Regeln (D13, DW12) und die Rollen selbst stehen im Rechenkern (lehrer[].vorschule, bereiche[].vorschule).
+   Der Bedarf wird mit denselben Bausteinen bearbeitet wie unter „Aufsichten“ (bedarfDetailKarte, bedarfUebertragen).
+   ===================================================================== */
+const VS_ROLLEN = [['nein', 'Nicht zugelassen'], ['stamm', 'Stammkraft'], ['reserve', 'Reserve']];
+const VS_ROLLEN_HILFE = {
+  nein: 'Arbeitet nicht in der Vorschule.',
+  stamm: 'Nur Vorschule sowie Früh-/Spätaufsicht und Betreuung; unterrichtet nie.',
+  reserve: 'Hilft in der Vorschule nur beim Mindestbedarf, wenn keine Stammkraft frei ist; behält sonst alle anderen Aufgaben.'
+};
+function vsZustand() { const s = APP.tabellen.vorschule || (APP.tabellen.vorschule = { tag: 0 }); if (s.tag >= APP.daten.schule.tage.length) s.tag = 0; return s; }
+function vsBereichIds(d) { return new Set(d.dienste.bereiche.filter(b => b.vorschule).map(b => b.id)); }
+function vsBedarfe(d, tag) { const ids = vsBereichIds(d); return d.dienste.bedarfe.filter(b => b.bereich && ids.has(b.bereich) && (tag === undefined || b.tag === tag)); }
+function vsRolleSetzen(id, rolle) {
+  if (!VORSCHULROLLEN.includes(rolle)) return;
+  aendern('Vorschulrolle geändert', d => { const l = d.lehrer.find(x => x.id === id); if (l) l.vorschule = rolle; });
+}
+// Neuer Tagesbedarf im Vorschulbereich: ein Abschnitt über die Schulzeit (Minimum 1, Soll 1) – Zeiten und Zahlen danach anpassen
+function vsNeuerBedarf(d, bereich, tag) {
+  const zg = stundenZeiten(d.schule, null).filter(Boolean);
+  const von = zg.length ? Math.min(...zg.map(z => z.start)) : 450, bis = zg.length ? Math.max(...zg.map(z => z.end)) : 900;
+  return nBedarf({ tag, typ: 'dt_dienst', bereich, name: 'Vorschule', arbeitszeit: true, springer: false, farbe: '#ad83d2', herkunft: 'vorschule',
+    abschnitte: [{ beginn: zeitText(von), ende: zeitText(bis), min: 1, soll: 1 }] });
+}
+function vsEinrichten() {
+  dienstAendern('Vorschule eingerichtet', d => {
+    const DI = d.dienste;
+    let b = DI.bereiche.find(x => x.vorschule);
+    if (!b) { b = { id: neueId('a'), name: 'Vorschule', exklusiv: false, vorschule: true }; DI.bereiche.push(b); }
+    d.schule.tage.forEach((_, tag) => { if (!DI.bedarfe.some(x => x.bereich === b.id && x.tag === tag)) DI.bedarfe.push(vsNeuerBedarf(d, b.id, tag)); });
+  });
+}
+function vsBedarfErgaenzen(tag) {
+  dienstAendern('Vorschulbedarf ergänzt', d => { const b = d.dienste.bereiche.find(x => x.vorschule); if (b) d.dienste.bedarfe.push(vsNeuerBedarf(d, b.id, tag)); });
+}
+function vsRollenKarte(d) {
+  const lehrer = lehrerAlphabetisch(d.lehrer);
+  const zaehl = r => d.lehrer.filter(l => l.vorschule === r).length;
+  const unterrichtet = l => d.unterrichte.filter(u => !u.aufgabe && u.lehrkraefte.some(z => z.lehrer === l.id)).length;
+  const zeilen = lehrer.map(l => {
+    const n = vorschuleStamm(l) ? unterrichtet(l) : 0;
+    return h('tr', {}, h('td', {}, l.name || l.kuerzel || '?', l.kuerzel && l.name ? h('span', { class: 'muted klein' }, ' · ' + l.kuerzel) : null),
+      h('td', { class: 'muted klein' }, artText(l)),
+      h('td', {}, sel(VS_ROLLEN, l.vorschule, v => vsRolleSetzen(l.id, v), { 'aria-label': 'Rolle in der Vorschule: ' + (l.name || l.kuerzel), title: VS_ROLLEN_HILFE[l.vorschule] })),
+      h('td', {}, n ? h('span', { class: 'badge err', title: 'Stammkräfte unterrichten nie. Die Lehrkraft in der Unterrichtsversorgung austauschen.' }, 'unterrichtet in ' + n + ' Unterricht' + (n === 1 ? '' : 'en')) : null));
+  });
+  return h('div', { class: 'karte' },
+    h('div', { class: 'zeile' }, h('h2', {}, 'Personal'), h('span', { class: 'badge neutral' }, zaehl('stamm') + ' Stammkräfte'), h('span', { class: 'badge neutral' }, zaehl('reserve') + ' Reserve')),
+    h('p', { class: 'muted klein' }, VS_ROLLEN.filter(r => r[0] !== 'nein').map(r => r[1] + ': ' + VS_ROLLEN_HILFE[r[0]]).join(' ')),
+    d.lehrer.length ? h('div', { class: 'tabwrap', style: { maxHeight: '340px', overflow: 'auto' } }, h('table', { class: 'tab' },
+      h('thead', {}, h('tr', {}, ['Person', 'Art', 'Rolle in der Vorschule', ''].map(t => h('th', {}, t)))), h('tbody', {}, zeilen))) : h('p', { class: 'muted' }, 'Noch keine Mitarbeitenden angelegt.'),
+    h('p', { class: 'klein muted' }, 'Prüfe unter „Arbeitszeit & Deputat“ die Wochenarbeitszeit der Stammkräfte: Nur darüber weiß die Planung, wie viele Stunden sie füllen soll.'));
+}
+function vsBedarfKarte(d) {
+  const st = vsZustand(), tage = d.schule.tage;
+  const tabs = h('div', { class: 'reiter', role: 'tablist' }, tage.map((t, i) => {
+    const n = vsBedarfe(d, i).length;
+    return h('button', { class: 'reiterknopf' + (st.tag === i ? ' aktiv' : ''), role: 'tab', 'aria-selected': st.tag === i ? 'true' : 'false', onclick: () => { st.tag = i; render(); } }, tagLang(i), n ? null : h('span', { class: 'badge warn', title: 'Für diesen Tag ist noch kein Vorschulbedarf eingetragen.' }, '–'));
+  }));
+  const heute = vsBedarfe(d, st.tag);
+  const karten = heute.map(b => bedarfDetailKarte(d, b, { eingebettet: true }));
+  const mind = vorschuleMindestbedarf(d);
+  return h('div', {},
+    h('div', { class: 'karte' }, h('div', { class: 'zeile' }, h('h2', {}, 'Bedarf je Tag'), h('span', { class: 'badge neutral', title: 'Summe aus Minimum × Dauer über alle Tage, ohne Sollbesetzung sowie Früh-/Spätaufsicht' }, 'Mindestbedarf pro Woche: ' + dauerText(mind))),
+      h('p', { class: 'muted klein' }, 'Wie viele Personen werden wann gebraucht? „Minimum“ muss besetzt werden, „Soll“ ist der Wunsch – bei der Soll-Besetzung hilft die Reserve nicht. Über das Pfeilsymbol lässt sich ein Tag auf andere Tage übertragen.'),
+      tabs),
+    karten.length ? karten : h('div', { class: 'karte' }, h('p', { class: 'muted' }, 'Für ' + tagLang(st.tag) + ' ist noch kein Vorschulbedarf eingetragen.')),
+    h('div', { class: 'zeile' }, h('button', { class: 'btn klein', onclick: () => vsBedarfErgaenzen(st.tag) }, '+ Bedarf für ' + tagLang(st.tag))));
+}
+function vsBilanzKarte(d) {
+  const liste = vorschuleBilanz(d);
+  if (!liste.length) return h('div', { class: 'karte' }, h('h2', {}, 'Wochenbilanz'), h('p', { class: 'muted' }, 'Sobald Stammkräfte oder Reserve festgelegt sind, zeigt die Bilanz hier, wie viele Stunden sie in der Vorschule und in der Betreuung arbeiten und wie weit sie ihre Wochenarbeitszeit erreichen.'));
+  const stammSoll = liste.filter(x => x.rolle === 'stamm').reduce((n, x) => n + x.soll, 0), stammIst = liste.filter(x => x.rolle === 'stamm').reduce((n, x) => n + x.vorschule + x.betreuung, 0);
+  const mind = vorschuleMindestbedarf(d), kap = liste.reduce((n, x) => n + x.soll, 0);
+  const warn = mind > kap && kap > 0 ? h('p', { class: 'hinweis warn' }, 'Der Mindestbedarf der Vorschule (' + dauerText(mind) + ') ist größer als die Wochenarbeitszeit aller Stammkräfte und der Reserve zusammen (' + dauerText(kap) + '). Rechnerisch kann er nicht gedeckt werden.') : null;
+  const t = m => dauerText(m) || '0 h';
+  return h('div', { class: 'karte' }, h('h2', {}, 'Wochenbilanz'),
+    h('p', { class: 'muted klein' }, 'Geplante Dienste, Wochenrhythmus und Rotation anteilig. „Gesamt“ und „Soll“ sind die Werte der Arbeitszeit (mit Unterricht und Aufgaben).'),
+    warn,
+    h('div', { class: 'tabwrap' }, h('table', { class: 'tab' },
+      h('thead', {}, h('tr', {}, ['Person', 'Rolle', 'Vorschule', 'Früh-/Spätaufsicht, Betreuung', 'Sonstige Dienste', 'Gesamt', 'Soll', 'Differenz'].map((x, i) => h('th', { class: i > 1 ? 'zahl' : '' }, x)))),
+      h('tbody', {}, liste.map(x => {
+        const diff = x.ist - x.soll;
+        return h('tr', {}, h('td', {}, x.name || x.kuerzel), h('td', {}, x.rolle === 'stamm' ? 'Stammkraft' : 'Reserve'), h('td', { class: 'zahl' }, t(x.vorschule)), h('td', { class: 'zahl' }, t(x.betreuung)),
+          h('td', { class: 'zahl' }, x.sonstige ? h('span', { class: x.rolle === 'stamm' ? 'badge err' : '', title: x.rolle === 'stamm' ? 'Stammkräfte sind nur für Vorschule und Betreuung zulässig. Bitte prüfen.' : '' }, t(x.sonstige)) : '–'),
+          h('td', { class: 'zahl' }, t(x.ist)), h('td', { class: 'zahl' }, x.soll ? t(x.soll) : '–'), h('td', { class: 'zahl' }, x.soll ? h('span', { class: 'badge ' + (Math.abs(diff) < 15 ? 'ok' : diff < 0 ? 'warn' : 'err') }, (diff > 0 ? '+' : diff < 0 ? '−' : '') + t(diff)) : '–'));
+      })),
+      h('tfoot', {}, h('tr', {}, h('td', {}, 'Stammkräfte'), h('td', {}), h('td', { class: 'zahl', colspan: 2 }, t(stammIst) + ' in Vorschule/Betreuung'), h('td', {}), h('td', {}), h('td', { class: 'zahl' }, stammSoll ? t(stammSoll) : '–'), h('td', {}))))));
+}
+SEITEN_RENDER.vorschule = () => {
+  const d = APP.daten, hat = d.dienste.bereiche.some(b => b.vorschule);
+  const kopf = seitenkopf('Vorschule & Betreuung', 'Die Vorschule hat eigene Stammkräfte und eine Reserve. Stammkräfte arbeiten nur in der Vorschule sowie in Früh-/Spätaufsicht und Betreuung und unterrichten nie. Die Reserve hilft nur, wenn der Mindestbedarf sonst offen bliebe. Wie viele Personen wann gebraucht werden, trägst du je Tag ein; geplant wird mit der normalen Aufsichtsplanung.',
+    h('button', { class: 'btn', onclick: () => dienstePlanenStarten(true), title: 'Behält alle vorhandenen Aufsichtseinsätze und besetzt nur, was fehlt.' }, 'Nur offene besetzen'),
+    h('button', { class: 'btn primaer', onclick: () => dienstePlanenStarten(false), title: 'Plant alle automatischen Aufsichten der Schule neu, nicht nur die Vorschule. Nur von Hand gesetzte und fixierte Einsätze bleiben.' }, 'Alle Aufsichten neu planen'));
+  if (!hat) return [kopf, vsRollenKarte(d), h('div', { class: 'karte' }, h('h2', {}, 'Vorschule einrichten'), h('p', {}, 'Legt den Bereich „Vorschule“ mit einem Bedarf je Schultag an (ein Abschnitt über die Schulzeit, mindestens eine Person). Zeiten und Anzahl passt du danach an. Die bestehende Planung bleibt unverändert.'), h('button', { class: 'btn primaer', onclick: vsEinrichten }, 'Vorschule anlegen'))];
+  return [kopf, vsRollenKarte(d), vsBedarfKarte(d), vsBilanzKarte(d)];
+};
 </script>
 <script id="selbsttests">
 'use strict';
@@ -16109,6 +16263,13 @@ function selbsttestZusatz() {
     const leer = kand(null), nul = kand(0), vier = kand(4), text = kand('');
     return [leer[0] === null && leer[1] === 'A' && !leer[2] && nul[0] === 0 && nul[1] === '–' && nul[2] && vier[1] === 'A' && text[0] === null,
       'leer: Kandidaten für Ma ' + leer[1] + ' (keine Grenze); 0: ' + nul[1] + '; 4: ' + vier[1] + '; Text „“ → ' + (text[0] === null ? 'leer' : text[0])];
+  });
+  T('ZV1', 'Vorschule: Stammkraft unterrichtet nie', 'Eine Stammkraft wird bei „automatisch“ nie als Fachlehrkraft vorgeschlagen (Deutsch können A und B: nur B bleibt); von Hand eingetragen meldet die Machbarkeit einen harten Fehler; ohne Stammrolle gibt es beides nicht', () => {
+    const mk = rolle => basis(x => { x.lehrer[0].vorschule = rolle; x.unterrichte = [uT('u1', 'de', ['k2'], [], 2, { fachAuto: true })]; });
+    const kand = rolle => { const M = kompiliere(mk(rolle), { personal: true }); return M.PE[0].cands.map(t => M.lKz[t]).join('+') || '–'; };
+    const hand = rolle => { const d = basis(x => { x.lehrer[0].vorschule = rolle; x.unterrichte = [uT('u1', 'de', ['k2'], ['A'], 2)]; }); return machbarkeit(d).filter(m => m.stufe === 'fehler' && /Stammkraft/.test(m.text)).length; };
+    const stamm = kand('stamm'), reserve = kand('reserve'), keine = kand('nein');
+    return [stamm === 'B' && reserve.includes('A') && keine.includes('A') && hand('stamm') === 1 && hand('reserve') === 0 && hand('nein') === 0, 'Kandidaten Deutsch – Stamm: ' + stamm + ', Reserve: ' + reserve + ', nein: ' + keine + ' · Fehler bei Handeintrag: Stamm ' + hand('stamm') + ', Reserve ' + hand('reserve')];
   });
   T('Z42', 'Aufgaben sind nicht an Unterrichtsblöcke gebunden', 'Aufgaben dürfen nach Unterrichtsschluss liegen und mehrere Blöcke am selben Tag haben; für Unterricht gilt beides weiterhin nicht', () => {
     const mk = aufg => basis(x => {
@@ -16648,6 +16809,57 @@ function selbsttestDienste() {
     const r = dienstePlanen(d, { zeitlimit: 200 });
     const spr = r.plan.filter(x => x.lehrer === 'A' && x.typ === 'dt_springer'), hof = r.plan.filter(x => x.typ === 'dt_pause');
     return [spr.length === 1 && !hof.length, 'Springer Mo 12:00–12:30: ' + (spr.length ? 'A eingeplant' : 'offen') + ' · Hofaufsicht Di (zählt zur Arbeitszeit): ' + (hof.length ? 'besetzt' : 'offen')];
+  });
+  // ---------- Vorschule: Rollen (lehrer[].vorschule), Regel D13 und Gewicht DW12 ----------
+  const vsDaten = (rollen, fn) => dienstTestDaten(x => {
+    x.dienste.bereiche = [{ id: 'vs', name: 'Vorschule', vorschule: true }, { id: 'hof', name: 'Schulhof' }];
+    Object.keys(rollen).forEach(id => { x.lehrer.find(l => l.id === id).vorschule = rollen[id]; });
+    if (fn) fn(x);
+  });
+  T('DT34', 'Vorschule: Zulassung (D13)', 'Wer nicht zugelassen ist, arbeitet nie in der Vorschule; Stammkräfte nur dort sowie in Früh-/Spätaufsicht und Betreuung (nicht in Pausenaufsicht oder als Springer); die Reserve nie bei Sollbesetzung', () => {
+    const d = vsDaten({ A: 'stamm', B: 'reserve' });
+    const gr = (id, dienst) => dienstKandidatScore(d, dienst, id).hart.map(h => h.code).join(',');
+    const nein = gr('C', di('C', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' }));
+    const stammVs = gr('A', di('A', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' }));
+    const stammPause = gr('A', di('A', 1, 'dt_pause', '12:00', '12:30'));
+    const stammSpringer = gr('A', di('A', 1, 'dt_springer', '12:00', '12:30'));
+    const stammFrueh = gr('A', di('A', 1, 'dt_frueh', '07:00', '07:30'));
+    const stammHort = gr('A', di('A', 1, 'dt_hort', '13:00', '14:00'));
+    const reserveHof = gr('B', di('B', 1, 'dt_pause', '12:00', '12:30', { bereich: 'hof' }));
+    const ctx = dienstKontext(d), pB = ctx.pI.get('B');
+    const grund = prio => dienstHartGruende(ctx, pB, Object.assign(schichtAusDienst(ctx, di('B', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' })), { prio }), true).map(h => h.code).join(',');
+    const soll = grund('soll'), min = grund('min');
+    const ok = nein.includes('D13') && !stammVs.includes('D13') && stammPause.includes('D13') && stammSpringer.includes('D13') && !stammFrueh.includes('D13') && !stammHort.includes('D13') && !reserveHof.includes('D13') && soll.includes('D13') && !min.includes('D13');
+    return [ok, 'nicht zugelassen in Vorschule: ' + nein + ' · Stamm Vorschule: ' + (stammVs || 'frei') + ', Pause: ' + stammPause + ', Springer: ' + stammSpringer + ', Früh: ' + (stammFrueh || 'frei') + ', Hort: ' + (stammHort || 'frei') + ' · Reserve Hof: ' + (reserveHof || 'frei') + ', Soll: ' + soll + ', Min: ' + (min || 'frei')];
+  });
+  T('DT35', 'Vorschule: Stammkräfte zuerst (DW12)', 'Die Reserve füllt nur, was die Stammkräfte nicht schaffen – auch wenn sie viel mehr Minusstunden hat. Reicht die Stammkraft nicht (Mindestbedarf 2), springt die Reserve ein; die Sollbesetzung bleibt ohne Reserve offen', () => {
+    const lege = fn => vsDaten({ A: 'stamm', B: 'reserve' }, x => { x.lehrer.find(l => l.id === 'A').arbeitszeit = 20; x.lehrer.find(l => l.id === 'B').arbeitszeit = 40; fn(x); });
+    const d1 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 1]], 'vs')]; });
+    const r1 = dienstePlanen(d1, { zeitlimit: 300 });
+    const d2 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 2]], 'vs')]; });
+    const r2 = dienstePlanen(d2, { zeitlimit: 300 });
+    const d3 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 1, 2]], 'vs')]; });
+    const r3 = dienstePlanen(d3, { zeitlimit: 300 });
+    const ok = r1.plan.length === 1 && r1.plan[0].lehrer === 'A' && r2.plan.length === 2 && r2.plan.some(x => x.lehrer === 'B') && !r2.offen.length
+      && r3.plan.length === 1 && r3.plan[0].lehrer === 'A' && r3.offen.length === 1 && r3.offen[0].prio === 'soll';
+    return [ok, 'Min 1: ' + zeiten(r1.plan) + ' | Min 2: ' + zeiten(r2.plan) + ', offen ' + r2.offen.length + ' | Min 1/Soll 2: ' + zeiten(r3.plan) + ', offen ' + r3.offen.map(o => o.prio).join(',')];
+  });
+  T('DT36', 'Vorschule: ältere Stände', 'Rollen aus dienste.vorschuleRollen und der frühere Bereich (feste ID oder Name „Vorschule“) werden beim Laden übernommen; das neue Merkmal bleibt beim Umbenennen erhalten; unbekannte Rollen werden verworfen', () => {
+    const d = dienstTestDaten(x => {
+      x.dienste.vorschuleRollen = { A: 'stamm', B: 'reserve', C: 'quatsch', gibtsnicht: 'stamm' };
+      x.dienste.bereiche = [{ id: 'a_vorschule_exklusiv', name: 'Irgendwie' }, { id: 'x2', name: ' vorschule ' }, { id: 'x3', name: 'Vorschule', vorschule: false }, { id: 'x4', name: 'Neu', vorschule: true }, { id: 'hof', name: 'Hof' }];
+    });
+    const rolle = id => d.lehrer.find(l => l.id === id).vorschule, v = id => d.dienste.bereiche.find(b => b.id === id).vorschule;
+    const ok = rolle('A') === 'stamm' && rolle('B') === 'reserve' && rolle('C') === 'nein' && rolle('E') === 'nein' && v('a_vorschule_exklusiv') && v('x2') && !v('x3') && v('x4') && !v('hof') && d.dienste.vorschuleRollen === undefined;
+    const d2 = normalisiere(JSON.parse(JSON.stringify(d)));
+    return [ok && d2.lehrer.find(l => l.id === 'A').vorschule === 'stamm' && d2.dienste.bereiche.find(b => b.id === 'x3').vorschule === false, 'Rollen A/B/C/E: ' + ['A', 'B', 'C', 'E'].map(rolle).join('/') + ' · Bereiche: ' + d.dienste.bereiche.map(b => b.id + '=' + b.vorschule).join(', ')];
+  });
+  T('DT37', 'Vorschule: Stammkraft unterrichtet nie', 'Eine Stammkraft gilt weder als Fach- noch als Co-Lehrkraft (auch nicht automatisch); die Reserve und alle anderen bleiben unverändert', () => {
+    const d = vsDaten({ A: 'stamm', B: 'reserve' });
+    const l = id => d.lehrer.find(x => x.id === id);
+    l('A').coFaecher = ['de']; l('B').coFaecher = ['de'];
+    const ok = !fachBefaehigt(l('A'), 'de') && !coBefaehigt(l('A'), 'de') && !coAutoBefaehigt(l('A'), 'de') && fachBefaehigt(l('B'), 'de') && coBefaehigt(l('B'), 'de') && coAutoBefaehigt(l('B'), 'de');
+    return [ok, 'Stamm: Fach ' + fachBefaehigt(l('A'), 'de') + ', Co ' + coBefaehigt(l('A'), 'de') + ' · Reserve: Fach ' + fachBefaehigt(l('B'), 'de') + ', Co ' + coBefaehigt(l('B'), 'de')];
   });
   return erg;
 }
@@ -17452,6 +17664,19 @@ function selbsttestOberflaeche() {
     let d1 = JSON.parse(JSON.stringify(d0)); f(d1); d1 = normalisiere(d1);
     const u = d1.unterrichte[0], nachher = kand(d1);
     return [vorher === 'A+B' && nachher === 'B' && u.fachAuto && !u.lehrkraefte.some(z => z.rolle === 'fach'), 'Kandidaten vorher ' + vorher + ', nachher ' + nachher + ' · Fachlehrkraft automatisch: ' + (u.fachAuto ? 'ja' : 'nein')];
+  });
+  T('V1', 'Vorschule: Seite und Wochenbilanz', 'Die Seite „Vorschule & Betreuung“ zeigt Rollen, Bedarf und Wochenbilanz; Mindestbedarf = Minimum × Dauer; die Bilanz stimmt mit dem Aufsichtsplan überein; nicht zugelassene Personen kommen in der Vorschule nicht vor', () => {
+    const d = daten();
+    d.lehrer.find(l => l.id === 'A').vorschule = 'stamm'; d.lehrer.find(l => l.id === 'B').vorschule = 'reserve';
+    d.dienste.bereiche.push({ id: 'vs', name: 'Vorschule', exklusiv: false, vorschule: true });
+    d.dienste.bedarfe.push(nBedarf({ tag: 2, typ: 'dt_dienst', bereich: 'vs', name: 'Vorschule', abschnitte: [{ beginn: '09:00', ende: '10:00', min: 2, soll: 2 }] }));
+    aufsichtenNeuBerechnen(d, { zeitlimit: 300 });
+    const mind = vorschuleMindestbedarf(d), bil = vorschuleBilanz(d), vs = d.dienste.plan.filter(x => x.bereich === 'vs');
+    const summe = bil.reduce((n, x) => n + x.vorschule, 0), fremd = vs.filter(x => !['A', 'B'].includes(x.lehrer)).length;
+    return mitDaten(d, () => {
+      const text = h('div', {}, SEITEN_RENDER.vorschule()).textContent;
+      return [mind === 120 && summe === 120 && vs.length === 2 && fremd === 0 && bil.length === 2 && /Wochenbilanz/.test(text) && /Bedarf je Tag/.test(text) && /Stammkraft/.test(text), 'Mindestbedarf ' + mind + ' min, Bilanz ' + summe + ' min, Einsätze ' + vs.length + ', fremde Personen ' + fremd];
+    });
   });
   return erg;
 }

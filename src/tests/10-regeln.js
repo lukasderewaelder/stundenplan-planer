@@ -380,6 +380,13 @@ function selbsttestZusatz() {
     return [leer[0] === null && leer[1] === 'A' && !leer[2] && nul[0] === 0 && nul[1] === '–' && nul[2] && vier[1] === 'A' && text[0] === null,
       'leer: Kandidaten für Ma ' + leer[1] + ' (keine Grenze); 0: ' + nul[1] + '; 4: ' + vier[1] + '; Text „“ → ' + (text[0] === null ? 'leer' : text[0])];
   });
+  T('ZV1', 'Vorschule: Stammkraft unterrichtet nie', 'Eine Stammkraft wird bei „automatisch“ nie als Fachlehrkraft vorgeschlagen (Deutsch können A und B: nur B bleibt); von Hand eingetragen meldet die Machbarkeit einen harten Fehler; ohne Stammrolle gibt es beides nicht', () => {
+    const mk = rolle => basis(x => { x.lehrer[0].vorschule = rolle; x.unterrichte = [uT('u1', 'de', ['k2'], [], 2, { fachAuto: true })]; });
+    const kand = rolle => { const M = kompiliere(mk(rolle), { personal: true }); return M.PE[0].cands.map(t => M.lKz[t]).join('+') || '–'; };
+    const hand = rolle => { const d = basis(x => { x.lehrer[0].vorschule = rolle; x.unterrichte = [uT('u1', 'de', ['k2'], ['A'], 2)]; }); return machbarkeit(d).filter(m => m.stufe === 'fehler' && /Stammkraft/.test(m.text)).length; };
+    const stamm = kand('stamm'), reserve = kand('reserve'), keine = kand('nein');
+    return [stamm === 'B' && reserve.includes('A') && keine.includes('A') && hand('stamm') === 1 && hand('reserve') === 0 && hand('nein') === 0, 'Kandidaten Deutsch – Stamm: ' + stamm + ', Reserve: ' + reserve + ', nein: ' + keine + ' · Fehler bei Handeintrag: Stamm ' + hand('stamm') + ', Reserve ' + hand('reserve')];
+  });
   T('Z42', 'Aufgaben sind nicht an Unterrichtsblöcke gebunden', 'Aufgaben dürfen nach Unterrichtsschluss liegen und mehrere Blöcke am selben Tag haben; für Unterricht gilt beides weiterhin nicht', () => {
     const mk = aufg => basis(x => {
       x.schule.tagSchluss = { Fr: 6 };

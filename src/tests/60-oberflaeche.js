@@ -279,5 +279,18 @@ function selbsttestOberflaeche() {
     const u = d1.unterrichte[0], nachher = kand(d1);
     return [vorher === 'A+B' && nachher === 'B' && u.fachAuto && !u.lehrkraefte.some(z => z.rolle === 'fach'), 'Kandidaten vorher ' + vorher + ', nachher ' + nachher + ' · Fachlehrkraft automatisch: ' + (u.fachAuto ? 'ja' : 'nein')];
   });
+  T('V1', 'Vorschule: Seite und Wochenbilanz', 'Die Seite „Vorschule & Betreuung“ zeigt Rollen, Bedarf und Wochenbilanz; Mindestbedarf = Minimum × Dauer; die Bilanz stimmt mit dem Aufsichtsplan überein; nicht zugelassene Personen kommen in der Vorschule nicht vor', () => {
+    const d = daten();
+    d.lehrer.find(l => l.id === 'A').vorschule = 'stamm'; d.lehrer.find(l => l.id === 'B').vorschule = 'reserve';
+    d.dienste.bereiche.push({ id: 'vs', name: 'Vorschule', exklusiv: false, vorschule: true });
+    d.dienste.bedarfe.push(nBedarf({ tag: 2, typ: 'dt_dienst', bereich: 'vs', name: 'Vorschule', abschnitte: [{ beginn: '09:00', ende: '10:00', min: 2, soll: 2 }] }));
+    aufsichtenNeuBerechnen(d, { zeitlimit: 300 });
+    const mind = vorschuleMindestbedarf(d), bil = vorschuleBilanz(d), vs = d.dienste.plan.filter(x => x.bereich === 'vs');
+    const summe = bil.reduce((n, x) => n + x.vorschule, 0), fremd = vs.filter(x => !['A', 'B'].includes(x.lehrer)).length;
+    return mitDaten(d, () => {
+      const text = h('div', {}, SEITEN_RENDER.vorschule()).textContent;
+      return [mind === 120 && summe === 120 && vs.length === 2 && fremd === 0 && bil.length === 2 && /Wochenbilanz/.test(text) && /Bedarf je Tag/.test(text) && /Stammkraft/.test(text), 'Mindestbedarf ' + mind + ' min, Bilanz ' + summe + ' min, Einsätze ' + vs.length + ', fremde Personen ' + fremd];
+    });
+  });
   return erg;
 }

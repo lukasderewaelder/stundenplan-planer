@@ -263,6 +263,57 @@ function selbsttestDienste() {
     const spr = r.plan.filter(x => x.lehrer === 'A' && x.typ === 'dt_springer'), hof = r.plan.filter(x => x.typ === 'dt_pause');
     return [spr.length === 1 && !hof.length, 'Springer Mo 12:00–12:30: ' + (spr.length ? 'A eingeplant' : 'offen') + ' · Hofaufsicht Di (zählt zur Arbeitszeit): ' + (hof.length ? 'besetzt' : 'offen')];
   });
+  // ---------- Vorschule: Rollen (lehrer[].vorschule), Regel D13 und Gewicht DW12 ----------
+  const vsDaten = (rollen, fn) => dienstTestDaten(x => {
+    x.dienste.bereiche = [{ id: 'vs', name: 'Vorschule', vorschule: true }, { id: 'hof', name: 'Schulhof' }];
+    Object.keys(rollen).forEach(id => { x.lehrer.find(l => l.id === id).vorschule = rollen[id]; });
+    if (fn) fn(x);
+  });
+  T('DT34', 'Vorschule: Zulassung (D13)', 'Wer nicht zugelassen ist, arbeitet nie in der Vorschule; Stammkräfte nur dort sowie in Früh-/Spätaufsicht und Betreuung (nicht in Pausenaufsicht oder als Springer); die Reserve nie bei Sollbesetzung', () => {
+    const d = vsDaten({ A: 'stamm', B: 'reserve' });
+    const gr = (id, dienst) => dienstKandidatScore(d, dienst, id).hart.map(h => h.code).join(',');
+    const nein = gr('C', di('C', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' }));
+    const stammVs = gr('A', di('A', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' }));
+    const stammPause = gr('A', di('A', 1, 'dt_pause', '12:00', '12:30'));
+    const stammSpringer = gr('A', di('A', 1, 'dt_springer', '12:00', '12:30'));
+    const stammFrueh = gr('A', di('A', 1, 'dt_frueh', '07:00', '07:30'));
+    const stammHort = gr('A', di('A', 1, 'dt_hort', '13:00', '14:00'));
+    const reserveHof = gr('B', di('B', 1, 'dt_pause', '12:00', '12:30', { bereich: 'hof' }));
+    const ctx = dienstKontext(d), pB = ctx.pI.get('B');
+    const grund = prio => dienstHartGruende(ctx, pB, Object.assign(schichtAusDienst(ctx, di('B', 1, 'dt_dienst', '09:00', '10:00', { bereich: 'vs' })), { prio }), true).map(h => h.code).join(',');
+    const soll = grund('soll'), min = grund('min');
+    const ok = nein.includes('D13') && !stammVs.includes('D13') && stammPause.includes('D13') && stammSpringer.includes('D13') && !stammFrueh.includes('D13') && !stammHort.includes('D13') && !reserveHof.includes('D13') && soll.includes('D13') && !min.includes('D13');
+    return [ok, 'nicht zugelassen in Vorschule: ' + nein + ' · Stamm Vorschule: ' + (stammVs || 'frei') + ', Pause: ' + stammPause + ', Springer: ' + stammSpringer + ', Früh: ' + (stammFrueh || 'frei') + ', Hort: ' + (stammHort || 'frei') + ' · Reserve Hof: ' + (reserveHof || 'frei') + ', Soll: ' + soll + ', Min: ' + (min || 'frei')];
+  });
+  T('DT35', 'Vorschule: Stammkräfte zuerst (DW12)', 'Die Reserve füllt nur, was die Stammkräfte nicht schaffen – auch wenn sie viel mehr Minusstunden hat. Reicht die Stammkraft nicht (Mindestbedarf 2), springt die Reserve ein; die Sollbesetzung bleibt ohne Reserve offen', () => {
+    const lege = fn => vsDaten({ A: 'stamm', B: 'reserve' }, x => { x.lehrer.find(l => l.id === 'A').arbeitszeit = 20; x.lehrer.find(l => l.id === 'B').arbeitszeit = 40; fn(x); });
+    const d1 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 1]], 'vs')]; });
+    const r1 = dienstePlanen(d1, { zeitlimit: 300 });
+    const d2 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 2]], 'vs')]; });
+    const r2 = dienstePlanen(d2, { zeitlimit: 300 });
+    const d3 = lege(x => { x.dienste.bedarfe = [bed(1, 'dt_dienst', [['09:00', '10:00', 1, 2]], 'vs')]; });
+    const r3 = dienstePlanen(d3, { zeitlimit: 300 });
+    const ok = r1.plan.length === 1 && r1.plan[0].lehrer === 'A' && r2.plan.length === 2 && r2.plan.some(x => x.lehrer === 'B') && !r2.offen.length
+      && r3.plan.length === 1 && r3.plan[0].lehrer === 'A' && r3.offen.length === 1 && r3.offen[0].prio === 'soll';
+    return [ok, 'Min 1: ' + zeiten(r1.plan) + ' | Min 2: ' + zeiten(r2.plan) + ', offen ' + r2.offen.length + ' | Min 1/Soll 2: ' + zeiten(r3.plan) + ', offen ' + r3.offen.map(o => o.prio).join(',')];
+  });
+  T('DT36', 'Vorschule: ältere Stände', 'Rollen aus dienste.vorschuleRollen und der frühere Bereich (feste ID oder Name „Vorschule“) werden beim Laden übernommen; das neue Merkmal bleibt beim Umbenennen erhalten; unbekannte Rollen werden verworfen', () => {
+    const d = dienstTestDaten(x => {
+      x.dienste.vorschuleRollen = { A: 'stamm', B: 'reserve', C: 'quatsch', gibtsnicht: 'stamm' };
+      x.dienste.bereiche = [{ id: 'a_vorschule_exklusiv', name: 'Irgendwie' }, { id: 'x2', name: ' vorschule ' }, { id: 'x3', name: 'Vorschule', vorschule: false }, { id: 'x4', name: 'Neu', vorschule: true }, { id: 'hof', name: 'Hof' }];
+    });
+    const rolle = id => d.lehrer.find(l => l.id === id).vorschule, v = id => d.dienste.bereiche.find(b => b.id === id).vorschule;
+    const ok = rolle('A') === 'stamm' && rolle('B') === 'reserve' && rolle('C') === 'nein' && rolle('E') === 'nein' && v('a_vorschule_exklusiv') && v('x2') && !v('x3') && v('x4') && !v('hof') && d.dienste.vorschuleRollen === undefined;
+    const d2 = normalisiere(JSON.parse(JSON.stringify(d)));
+    return [ok && d2.lehrer.find(l => l.id === 'A').vorschule === 'stamm' && d2.dienste.bereiche.find(b => b.id === 'x3').vorschule === false, 'Rollen A/B/C/E: ' + ['A', 'B', 'C', 'E'].map(rolle).join('/') + ' · Bereiche: ' + d.dienste.bereiche.map(b => b.id + '=' + b.vorschule).join(', ')];
+  });
+  T('DT37', 'Vorschule: Stammkraft unterrichtet nie', 'Eine Stammkraft gilt weder als Fach- noch als Co-Lehrkraft (auch nicht automatisch); die Reserve und alle anderen bleiben unverändert', () => {
+    const d = vsDaten({ A: 'stamm', B: 'reserve' });
+    const l = id => d.lehrer.find(x => x.id === id);
+    l('A').coFaecher = ['de']; l('B').coFaecher = ['de'];
+    const ok = !fachBefaehigt(l('A'), 'de') && !coBefaehigt(l('A'), 'de') && !coAutoBefaehigt(l('A'), 'de') && fachBefaehigt(l('B'), 'de') && coBefaehigt(l('B'), 'de') && coAutoBefaehigt(l('B'), 'de');
+    return [ok, 'Stamm: Fach ' + fachBefaehigt(l('A'), 'de') + ', Co ' + coBefaehigt(l('A'), 'de') + ' · Reserve: Fach ' + fachBefaehigt(l('B'), 'de') + ', Co ' + coBefaehigt(l('B'), 'de')];
+  });
   return erg;
 }
 

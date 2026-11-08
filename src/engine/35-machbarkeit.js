@@ -166,6 +166,8 @@ function machbarkeit(data) {
     const U = M.U[i];
     u.lehrkraefte.forEach(z => { const l = M.data.lehrer.find(x => x.id === z.lehrer); if (l && z.rolle === 'fach' && z.zwang && l.ausgebildet === false) W('Co-Kraft ' + (l.kuerzel || l.name) + ' ist per Zwang als Fachlehrkraft in „' + U.name + '“ eingeteilt.', { seite: 'unterricht', id: u.id }); });
     if (u.aufgabe) return;
+    // Stammkräfte der Vorschule unterrichten nie (auch nicht als Co): von Hand eingetragen ist das ein harter Fehler vor der Berechnung
+    u.lehrkraefte.forEach(z => { const l = M.data.lehrer.find(x => x.id === z.lehrer); if (l && vorschuleStamm(l)) F((l.kuerzel || l.name) + ' ist Stammkraft der Vorschule und darf in „' + U.name + '“ nicht unterrichten (auch nicht als Co-Lehrkraft). Bitte die Lehrkraft austauschen oder die Rolle der Person ändern.', { seite: 'unterricht', id: u.id }); });
     U.fachL.forEach(t => { if (M.data.lehrer[t].ausgebildet === false) return; if (!M.data.lehrer[t].faecher.includes(u.fach)) W('Lehrkraft ' + M.lKz[t] + ' hat keine Lehrbefähigung für ' + (U.f >= 0 ? M.fKz[U.f] : '?') + ' (' + U.name + ').', { seite: 'unterricht', id: u.id }); });
     // Co-Lehrkräfte: Co-Fach und Klassenteam
     const team = new Set(); let teamDa = false;
@@ -338,7 +340,7 @@ function aufsichtKapazitaet(data) {
       ctx.personen.filter(p => !frei.includes(p)).forEach(p => {
         const g = dienstHartGruende(ctx, p, schichten[0], true)[0]; if (!g) return;
         const b = (p.basis[tag] || []).find(x => intervalleUeberschneiden(x, { start: von, end: bis }));
-        const name = b ? (b.art === 'aufgabe' ? 'Aufgabe „' + b.text + '“' : b.art === 'gesperrt' ? 'Sperrzeit (Verfügbarkeit)' : g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text) : (g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.text);
+        const name = b ? (b.art === 'aufgabe' ? 'Aufgabe „' + b.text + '“' : b.art === 'gesperrt' ? 'Sperrzeit (Verfügbarkeit)' : g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.code === 'D13' ? 'nicht für diese Aufsicht der Vorschule zugelassen' : g.text) : (g.code === 'D05' ? 'Ausschluss von Aufsichten' : g.code === 'D02' ? 'Abwesenheit' : g.code === 'D13' ? 'nicht für diese Aufsicht der Vorschule zugelassen' : g.text);
         gruende.set(name, (gruende.get(name) || 0) + 1);
       });
       const warum = [...gruende].sort((x, y) => y[1] - x[1]).slice(0, 3).map(([n, c]) => c + '× ' + n).join(', ');

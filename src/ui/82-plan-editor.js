@@ -345,6 +345,7 @@ function lehrerAbgelegt(e, p, lid, x, y) {
   const { M } = modell();
   const part = M.E[e].parts[p] || M.E[e].parts[0];
   const u = APP.daten.unterrichte[part.u], l = lehrerVon(lid), U = M.U[part.u];
+  if (!u.aufgabe && vorschuleStamm(l)) { toast((l.kuerzel || l.name) + ' ist Stammkraft der Vorschule und unterrichtet nicht.', 'err', 6000); return; }
   if (!u.aufgabe && l.art === 'personal') { toast((l.kuerzel || l.name) + ' ist weiteres Personal und unterrichtet nicht – einsetzbar für Aufsichten und Aufgaben.', 'err', 6000); return; }
   // die Person steht schon in diesem Termin (auch automatisch geplant oder für diese Stunde herausgenommen): herausnehmen bzw. wieder einsetzen anbieten
   if (lkEntfernenMenue(e, lid, x, y)) return;
@@ -459,7 +460,7 @@ function ressourceEintrag(e, p, lid, rolle) {
   const x = (rolle === 'co' ? teil.co : teil.lehrer).find(q => q.id === lid);
   if (x) return x;
   const l = lehrerVon(lid) || {};
-  return { id: lid, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', st: 'nein', gruende: [l.art === 'personal' ? 'weiteres Personal – unterrichtet nicht' : rolle === 'co' ? 'als Co-Lehrkraft hier nicht einsetzbar' : 'Co-Kraft ohne Lehrbefähigung – als Fachlehrkraft nicht vorgesehen'], folgen: [], alle: false, aktuell: false };
+  return { id: lid, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', st: 'nein', gruende: [vorschuleStamm(l) ? 'Stammkraft der Vorschule – unterrichtet nicht' : l.art === 'personal' ? 'weiteres Personal – unterrichtet nicht' : rolle === 'co' ? 'als Co-Lehrkraft hier nicht einsetzbar' : 'Co-Kraft ohne Lehrbefähigung – als Fachlehrkraft nicht vorgesehen'], folgen: [], alle: false, aktuell: false };
 }
 // Gemeinsame Schranke: ✕ „nicht verfügbar“ und neue harte Verstöße werden nie stillschweigend übernommen – weder aus der Ressourcenleiste
 // noch aus dem Menü der Stunde noch beim Ziehen einer Lehrkraft. Liefert null (abgebrochen) oder { erzwungen }.

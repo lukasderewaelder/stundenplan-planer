@@ -8,8 +8,8 @@ function dienstKontext(d, opt) {
   const az = arbeitszeiten(d, { ohneDienste: true });
   const azMap = new Map(az.liste.map(x => [x.lehrer, x]));
   const tagE = tagesEinsatz(d, idx); // Einsatzzeit je Tag ohne Aufsichten
-  const typen = new Map(DIENSTTYPEN.map(t => [t.id, t])), bereiche = new Map(DI.bereiche.map(b => [b.id, b]));
-  const ctx = { d, D, R, G: R.gewichte, typen, bereiche, fg: minVon(R.fruehGrenze), sg: minVon(R.spaetGrenze), personen: [], pI: new Map(), alle: [], stabil: null, grenzen: !(d.regeln && d.regeln.hartUmschaltbar && d.regeln.hartUmschaltbar.H16 === 'weich') };
+  const typen = new Map(DIENSTTYPEN.map(t => [t.id, t])), bereiche = new Map(DI.bereiche.map(b => [b.id, b])), vsBereiche = new Set(DI.bereiche.filter(b => b.vorschule).map(b => b.id));
+  const ctx = { d, D, R, G: R.gewichte, typen, bereiche, vsBereiche, fg: minVon(R.fruehGrenze), sg: minVon(R.spaetGrenze), personen: [], pI: new Map(), alle: [], stabil: null, grenzen: !(d.regeln && d.regeln.hartUmschaltbar && d.regeln.hartUmschaltbar.H16 === 'weich') };
   d.lehrer.forEach((l, i) => {
     const a = idx.get(l.id);
     const x = azMap.get(l.id);
@@ -68,6 +68,8 @@ function springerZeitraum(ctx, s) {
   if (pa) iv = { start: Math.min(pa.start, iv.start), end: Math.max(pa.end, iv.end) };
   c.set(k, iv); return iv;
 }
+// Dienste, die Stammkräfte der Vorschule außerhalb des Vorschul-Bereichs übernehmen dürfen: Früh-/Spätaufsicht und Betreuung
+const VS_BETREUUNG = new Set(['dt_frueh', 'dt_spaet', 'dt_hort']);
 function dienstHartGruende(ctx, p, s, alle) {
   const out = [], l = p.l, t = ctx.typen.get(s.typ), wer = lehrerNameKurz(l);
   const add = (code, text) => { out.push({ code, text }); return !alle; };
@@ -77,6 +79,11 @@ function dienstHartGruende(ctx, p, s, alle) {
   if ((s.ausschlussPersonen || []).includes(l.id)) { if (add('D05', wer + ': für diesen Zeitabschnitt ausdrücklich ausgeschlossen.')) return out; }
   { const g = (s.ausschlussGruppen || []).find(id => personInDienstGruppe(ctx.d, l, id)); if (g) { const n = (dienstGruppenOptionen(ctx.d).find(x => x[0] === g) || [null, g])[1]; if (add('D05', wer + ': Personengruppe „' + n + '“ ist für diesen Zeitabschnitt ausgeschlossen.')) return out; } }
   { const aus = dienstAusgeschlossen(ctx.d, l, s.typ, s.tag, s.start, s.end, s.bereich); if (aus) { if (add('D05', wer + ': ' + aus + '.')) return out; } }
+  // D13 Vorschulzulassung (Rollen: l.vorschule; die Vorschul-Bereiche stehen einmal je Kontext in ctx.vsBereiche)
+  { const vr = l.vorschule, imVs = !!s.bereich && ctx.vsBereiche.has(s.bereich);
+    if (imVs && vr === 'nein') { if (add('D13', wer + ': keine Vorschulberechtigung.')) return out; }
+    else if (imVs && vr === 'reserve' && s.prio === 'soll') { if (add('D13', wer + ': Reserve der Vorschule hilft nur beim Mindestbedarf.')) return out; }
+    else if (vr === 'stamm' && !imVs && !VS_BETREUUNG.has(s.typ)) { if (add('D13', wer + ' ist Stammkraft der Vorschule: nur Vorschule, Früh-/Spätaufsicht und Betreuung zulässig.')) return out; } }
   const f = p.fenster[s.tag];
   if (f && f.abwesend) { if (add('D02', wer + ': ' + f.grund + '.')) return out; }
   // Früh-/Spätwünsche und aufsichtsspezifische Wunschfenster sind bewusst weich: Unterricht und echte Abwesenheit bleiben hart,
@@ -130,6 +137,8 @@ function personKosten(ctx, p) {
   // eingetragene Soll-Arbeitszeit sind neutral; weiteres Personal ohne Soll wird leicht bevorzugt.
   if (p.soll > 0) { const dev = (dmin - p.rest) / 60; k += W('DW02') * 2 * dev * dev; }
   else if (p.l.art === 'personal') k -= W('DW02') * 0.9 * dmin / 15;
+  // DW12: Die Reserve der Vorschule übernimmt Vorschuldienste erst, wenn keine Stammkraft frei ist (je 15 Minuten, Rotation anteilig; so hoch, dass auch große Minusstunden einer Reserve (DW02) nicht gegen eine freie Stammkraft gewinnen)
+  if (p.l.vorschule === 'reserve') { let rv = 0; eigene.forEach(x => { if (x.bereich && ctx.vsBereiche.has(x.bereich)) rv += (x.end - x.start) * (x.faktor === undefined ? 1 : x.faktor); }); if (rv) k += W('DW12') * 100 * rv / 15; }
   // Rangfolge sonstiges Personal → Co → Lehrkraft nur noch bei (fast) gleicher Differenz: kleiner Bonus je 15 Minuten
   { let dAlle = 0; eigene.forEach(x => { dAlle += (x.end - x.start) * (x.faktor === undefined ? 1 : x.faktor); }); // auch Springer und nicht angerechnete Einsätze
     const rang = AUFSICHT_RANG[aufsichtRang(p.l)] || 0; if (rang && dAlle > 0) k -= rang * dAlle / 15; }
@@ -512,7 +521,7 @@ function aufsichtenNeuBerechnen(d, opt) {
 function offenGrund(ctx, s) {
   const zaehl = {};
   let billig = 0;
-  ctx.personen.forEach(p => { const g = dienstHartGruende(ctx, p, s, false); if (g.length) { const c = g[0].code, t = g[0].text; const key = c === 'D01' ? (/unterrichtet|Co-Lehrkraft|Aufgabe|gesperrt/.test(t) ? 'Unterricht/Aufgabe' : /Aufsicht|Springer \(Pause\)/.test(t) ? 'Aufsicht' : 'andere Aufsicht') : { D02: 'Anwesenheit', D05: 'ausgeschlossen/ausgenommen', D06: 'Bereich exklusiv', D07: 'Qualifikation', D10: 'ungültig', D11: 'Arbeitszeitgrenze erreicht' }[c] || c; zaehl[key] = (zaehl[key] || 0) + 1; } else billig++; });
+  ctx.personen.forEach(p => { const g = dienstHartGruende(ctx, p, s, false); if (g.length) { const c = g[0].code, t = g[0].text; const key = c === 'D01' ? (/unterrichtet|Co-Lehrkraft|Aufgabe|gesperrt/.test(t) ? 'Unterricht/Aufgabe' : /Aufsicht|Springer \(Pause\)/.test(t) ? 'Aufsicht' : 'andere Aufsicht') : { D02: 'Anwesenheit', D05: 'ausgeschlossen/ausgenommen', D13: 'Vorschulzulassung', D06: 'Bereich exklusiv', D07: 'Qualifikation', D10: 'ungültig', D11: 'Arbeitszeitgrenze erreicht' }[c] || c; zaehl[key] = (zaehl[key] || 0) + 1; } else billig++; });
   const teile = Object.entries(zaehl).sort((a, b) => b[1] - a[1]).map(([k, n]) => n + '× ' + k);
   return (billig ? billig + ' Person(en) wären möglich' + (s.prio === 'soll' ? ', für die Sollbesetzung aber zu ungünstig (Arbeitszeit, Lücken, Fairness)' : '') + ' – bitte „Aufsichten planen“ ausführen. ' : 'Niemand zulässig und frei. ') + (teile.length ? teile.join(', ') + '.' : '');
 }

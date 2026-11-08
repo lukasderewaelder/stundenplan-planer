@@ -48,7 +48,7 @@ function lehrerPasst(l, fachId, rolle) { return !fachId || (rolle === 'co' || l.
 // klassen (optional): Klassenteam dieser Klassen steht als eigene Gruppe vorn
 function lehrerOpts(leer, fachId, kurz, art, klassen) {
   let L = APP.daten.lehrer.slice();
-  if (art) L = L.filter(l => l.art !== 'personal'); // weiteres Personal unterrichtet nicht (auch nicht als Co)
+  if (art) L = L.filter(l => !unterrichtetNicht(l)); // weiteres Personal und Stammkräfte der Vorschule unterrichten nicht (auch nicht als Co)
   if (art === 'fach') L = L.filter(l => l.ausgebildet !== false);
   if (art === 'zwang') L = L.filter(l => l.ausgebildet === false);
   // immer alphabetisch nach Kürzel; nur für die Co-Rolle stehen Co-Kräfte als Gruppe vorn
@@ -108,6 +108,7 @@ const SEITEN = [
   { id: 'klassen', titel: 'Klassen & Stundentafel', symbol: 'gruppe' },
   { id: 'unterricht', titel: 'Unterrichtsversorgung', symbol: 'tabelle' },
   { id: 'aufsicht', titel: 'Aufsichten', symbol: 'auge' },
+  { id: 'vorschule', titel: 'Vorschule & Betreuung', symbol: 'gruppe' },
   { id: 'pruefung', titel: 'Prüfung', symbol: 'pruefung' },
   { id: 'berechnung', titel: 'Plan berechnen', symbol: 'zahnrad' },
   { id: 'regeln', titel: 'Regeln & Gewichte', symbol: 'regler' },
@@ -123,7 +124,7 @@ const BEREICHE = [
   { id: 'schule', titel: 'Schule & Zeiten', symbol: 'schule', seiten: ['schule', 'faecher', 'raeume'] },
   { id: 'lehrer', titel: 'Mitarbeitende', symbol: 'personen', seiten: ['lehrer', 'arbeitszeit', 'aufgaben'] },
   { id: 'klassen', titel: 'Klassen & Stundentafel', symbol: 'gruppe', seiten: ['klassen', 'unterricht'], experte: ['unterricht'] },
-  { id: 'pausen', titel: 'Aufsichten', symbol: 'auge', seiten: ['aufsicht'] },
+  { id: 'pausen', titel: 'Aufsichten', symbol: 'auge', seiten: ['aufsicht', 'vorschule'] },
   { id: 'pruefung', titel: 'Prüfung', symbol: 'pruefung', seiten: ['pruefung'] },
   { id: 'berechnung', titel: 'Plan berechnen', symbol: 'zahnrad', seiten: ['berechnung', 'regeln'], experte: ['regeln'] },
   { id: 'editor', titel: 'Plan bearbeiten & Ergebnis', symbol: 'kalender', seiten: ['editor', 'auswertung', 'ausgabe', 'staende'] },

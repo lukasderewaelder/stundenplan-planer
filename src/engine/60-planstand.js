@@ -83,10 +83,10 @@ function planStatus(d, opt) {
     .concat(g('ablage').filter(x => !abgl.length || aufgabenIds.has(x.unterricht)).map(x => ({ text: x.text, bloecke: x.unterricht && x.blockNr ? [x.unterricht + '|' + x.blockNr] : [] }))));
   // 2 Fachlehrkräfte: vorhanden und fachlich geeignet
   const ungeeignet = [];
-  d.unterrichte.forEach(u => { if (u.aufgabe || !u.fach) return; u.lehrkraefte.forEach(z => { const l = lI.get(z.lehrer); if (z.rolle === 'fach' && l && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ': ' + (l.kuerzel || l.name) + ' unterrichtet ohne eingetragene Fachbefähigung'); }); });
+  d.unterrichte.forEach(u => { if (u.aufgabe || !u.fach) return; u.lehrkraefte.forEach(z => { const l = lI.get(z.lehrer); if (z.rolle === 'fach' && l && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ': ' + (l.kuerzel || l.name) + (vorschuleStamm(l) ? ' ist Stammkraft der Vorschule und darf nicht unterrichten' : ' unterrichtet ohne eingetragene Fachbefähigung')); }); });
   // … auch wer nur für eine einzelne Stunde von Hand eingesetzt ist („nur dieser Termin“), braucht als Fachlehrkraft die Fachbefähigung
   { const uM = new Map(d.unterrichte.map(u => [u.id, u]));
-    (d.plan.besetzung || []).forEach(b => { if (b.rolle === 'co') return; const u = uM.get(b.unterricht), l = lI.get(b.lehrer); if (u && l && !u.aufgabe && u.fach && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ' (Block ' + b.blockNr + '): ' + (l.kuerzel || l.name) + ' ist für diese Stunde eingesetzt, hat aber keine Fachbefähigung'); }); }
+    (d.plan.besetzung || []).forEach(b => { if (b.rolle === 'co') return; const u = uM.get(b.unterricht), l = lI.get(b.lehrer); if (u && l && !u.aufgabe && u.fach && !fachBefaehigt(l, u.fach)) ungeeignet.push((fN.get(u.fach) || '?') + ' ' + u.klassen.map(k => kN.get(k) || '?').join('/') + ' (Block ' + b.blockNr + '): ' + (l.kuerzel || l.name) + (vorschuleStamm(l) ? ' ist Stammkraft der Vorschule und darf nicht unterrichten' : ' ist für diese Stunde eingesetzt, hat aber keine Fachbefähigung')); }); }
   P_('lehrkraft', 'Jeder Unterricht hat eine fachlich geeignete Lehrkraft', g('lehrkraft').map(mitBezug).concat(ungeeignet));
   // 3 Parallelbänder
   // … und keine Lehrkraft unterrichtet beide Hälften eines Bandes (sie müsste zur selben Zeit in beiden Gruppen stehen)

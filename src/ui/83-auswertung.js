@@ -231,7 +231,7 @@ function lehrerMenue(e, x, y) {
   const aktuell = u.lehrkraefte.find(z => z.rolle === 'fach');
   // frei = in allen platzierten Blöcken des Unterrichts verfügbar und nicht anderweitig belegt
   const team = teamVon(u.klassen);
-  const alle = APP.daten.lehrer.map((l, t) => ({ l, t })).filter(k => U.aufgabe || k.l.art !== 'personal').map(({ l, t }) => ({ l, t, bef: U.aufgabe || (l.ausgebildet === false ? coBefaehigt(l, fach) : fachBefaehigt(l, fach)), frei: !lehrerFreiIn(M, P, part.u, t).length, team: team.has(l.id) }))
+  const alle = APP.daten.lehrer.map((l, t) => ({ l, t })).filter(k => U.aufgabe || !unterrichtetNicht(k.l)).map(({ l, t }) => ({ l, t, bef: U.aufgabe || (l.ausgebildet === false ? coBefaehigt(l, fach) : fachBefaehigt(l, fach)), frei: !lehrerFreiIn(M, P, part.u, t).length, team: team.has(l.id) }))
     .sort((a, b) => natVergleich(a.l.kuerzel || a.l.name, b.l.kuerzel || b.l.name) || natVergleich(a.l.name, b.l.name));
   const setzen = async (k, zwang) => {
     const tun = d => { const uu = d.unterrichte[part.u]; const i = uu.lehrkraefte.findIndex(z => z.rolle === 'fach'); if (i >= 0) Object.assign(uu.lehrkraefte[i], { lehrer: k.l.id, zwang, auto: false }); else uu.lehrkraefte.unshift(nLehrkraftZuordnung({ lehrer: k.l.id, rolle: 'fach', zwang })); };

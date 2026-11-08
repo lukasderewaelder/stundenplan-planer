@@ -9,6 +9,8 @@
 const PRAEF_WERTE = ['gern', 'neutral', 'ungern', 'nicht möglich'];
 const RHYTHMUS_ARTEN = { woechentlich: 'wöchentlich', wochentage: 'bestimmte Wochentage', A: 'nur A-Woche', B: 'nur B-Woche', zweiwoechentlich: 'alle zwei Wochen', monatlich: 'einmal im Monat', rotation: 'Rotation', einzel: 'Einzeltermin' };
 const DIENST_QUELLEN = ['auto', 'manuell'];
+// Kennung des Vorschulbereichs in älteren Ständen (vor dem Merkmal bereiche[].vorschule)
+const VORSCHULE_ALT_ID = 'a_vorschule_exklusiv';
 // Interne Aufsichtstypen: fest im Programm, nicht sichtbar und nicht gespeichert (Kategorie steuert Früh-/Spätaufsicht, Springer …)
 const DIENSTTYPEN = [
   { id: 'dt_dienst', name: 'Aufsicht', kuerzel: 'A', farbe: '#5f7597', kategorie: 'sonstige' },
@@ -36,6 +38,7 @@ const DIENST_REGELN = [
   { id: 'D10', hart: true, name: 'Gültige Zeiten', text: 'Beginn liegt vor dem Ende, der Tag gehört zur Schulwoche und die zugeordnete Person existiert.' },
   { id: 'D11', hart: true, name: 'Arbeitszeitgrenzen', text: 'Die Wochenarbeitszeit und die Höchstarbeitszeit je Tag werden nicht überschritten (wie „Arbeitszeitgrenzen“ im Stundenplan) – die Automatik besetzt keine Aufsicht über diese Grenzen hinaus. Gezählt wird ausschließlich der endgültige Plan (Unterricht, Co-Unterricht, Aufgaben, Aufsichten). Ist „Arbeitszeitgrenzen“ auf „weich“ gestellt, zählt nur noch die weiche Regel „Arbeitszeit ausgleichen“.' },
   { id: 'D12', hart: true, name: 'Springer ist eine andere Person', text: 'Wer in einer Pause (einem Zeitraum: z. B. Frühstück, Mittag, Spätaufsicht – jeweils getrennt) eine feste Aufsicht hat, ist in derselben Pause nie Springer – auch nicht vorher oder nachher. In einer anderen Pause desselben Tages ist beides möglich. Fehlt dafür Personal, hat die feste Aufsicht Vorrang; der Springer bleibt offen (gelb).' },
+  { id: 'D13', hart: true, name: 'Vorschulzulassung', text: 'Nicht zugelassene Personen arbeiten nie in einem Vorschul-Bereich. Stammkräfte der Vorschule sind nur dort sowie in Früh-, Spätaufsicht und Hort/Betreuung einsetzbar (und unterrichten nie). Die Reserve hilft in der Vorschule nur bei der Mindestbesetzung, nie bei der Sollbesetzung.' },
   { id: 'DW01', hart: false, std: 8, name: 'Sollbesetzung erreichen', text: 'Je Person, die zur Sollbesetzung fehlt (Minimum ist gedeckt).' },
   { id: 'DW02', hart: false, std: 9, name: 'Arbeitszeit ausgleichen', text: 'Aufsichten gehen zuerst an die Personen mit den meisten Minusstunden: Die Differenz Ist − Soll der Wochenarbeitszeit soll bei allen möglichst gleich sein (quadratisch gewichtet). Erst bei Gleichstand gilt die Rangfolge sonstiges Personal → Co-Lehrkräfte → Lehrkräfte; danach zählen Lücken, freie Zeiten und persönliche Wünsche.' },
   { id: 'DW03', hart: false, std: 3, name: 'Anwesenheit verlängern', text: 'Eine Aufsicht schließt nach Möglichkeit direkt an Unterricht oder andere Einsätze an. Dieses Komfortziel ist der vollständigen Besetzung und dem Auffüllen freier Soll-Arbeitszeit nachgeordnet.' },
@@ -47,6 +50,7 @@ const DIENST_REGELN = [
   { id: 'DW09', hart: false, std: 4, name: 'Kontinuität', text: 'Direkt anschließende Aufsichtsabschnitte möglichst bei derselben Person statt eines Wechsels alle 15 Minuten.' },
   { id: 'DW10', hart: false, std: 3, name: 'Persönliche Wünsche', text: 'Wunschzeiten sowie „gern/ungern/nicht möglich“ beeinflussen die Verteilung erst nach Unterricht, Mindestbesetzung und Soll-Arbeitszeit. Sie sind keine harte Sperre.' },
   { id: 'DW11', hart: false, std: 3, name: 'Stabilität', text: 'Bei „Änderungen gering halten“: bisherige Zuordnungen bevorzugen.' },
+  { id: 'DW12', hart: false, std: 8, name: 'Reserve in der Vorschule vermeiden', text: 'Die Reserve übernimmt Vorschuldienste erst, wenn keine Stammkraft frei ist. Je höher das Gewicht, desto strikter gilt „Stammkräfte zuerst“.' },
   // Persönliche Wünsche sind bei Aufsichten nur weich: Sie entscheiden zwischen mehreren möglichen Personen, verhindern aber keine notwendige Aufsicht.
   { id: 'D08', hart: false, std: 9, name: 'Höchstzahl Früh-/Spätaufsichten (Wunsch)', text: 'Die persönliche Höchstzahl an Früh- bzw. Spätaufsichten je Woche wird möglichst nicht überschritten. Der Wunsch entscheidet zwischen mehreren möglichen Personen; eine notwendige Aufsicht bleibt deswegen nie offen.' },
   { id: 'D09', hart: false, std: 9, name: 'Früh und spät am selben Tag (Wunsch)', text: 'Ist „Früh + spät am selben Tag erlaubt“ nicht gesetzt, bekommt die Person an einem Tag möglichst nicht beides. Der Wunsch entscheidet zwischen mehreren möglichen Personen; eine notwendige Aufsicht bleibt deswegen nie offen.' }
@@ -233,7 +237,10 @@ function nDienstRegeln(r) {
 function nDienste(x) {
   const neu = !x || typeof x !== 'object';
   x = neu ? {} : x;
-  const bereiche = _arr(x.bereiche).map(b => ({ id: _str(b && b.id) || neueId('a'), name: _str(b && b.name, 'Bereich').slice(0, 60), exklusiv: !!(b && b.exklusiv) }));
+  // vorschule: Bereich der Vorschule (Rollen siehe lehrer[].vorschule). Ältere Stände kannten das Merkmal nicht: Dort gilt die frühere Kennung
+  // (feste ID oder der Name „Vorschule“) einmalig beim Laden; danach steht das Merkmal fest und ein Umbenennen ändert nichts mehr.
+  const bereiche = _arr(x.bereiche).map(b => ({ id: _str(b && b.id) || neueId('a'), name: _str(b && b.name, 'Bereich').slice(0, 60), exklusiv: !!(b && b.exklusiv),
+    vorschule: b && b.vorschule !== undefined ? !!b.vorschule : !!(b && (b.id === VORSCHULE_ALT_ID || _str(b.name).trim().toLocaleLowerCase('de') === 'vorschule')) }));
   // Ältere Stände speicherten die Typen mit: Name und Farbe eines dort eigenen Typs gehen an den Eintrag, der Typ wird zur allgemeinen Aufsicht
   const alt = new Map(_arr(x.typen).filter(t => t && !DIENSTTYPEN.some(s => s.id === t.id)).map(t => [_str(t.id), t]));
   const typ = y => { const t = alt.get(_str(y && y.typ)); return t ? Object.assign({}, y, { typ: 'dt_dienst', name: y.name || t.name, farbe: y.farbe || t.farbe }) : y; };
@@ -563,10 +570,36 @@ function dienstGrundlagenSignatur(d) {
     d.schule.stunden.map(s => [s.beginn, s.ende, s.istPause]), d.schule.tage, d.schule.zeitprofile, d.klassen.map(k => [k.id, k.zeitprofil]),
     d.unterrichte.map(u => [u.id, u.fach, u.klassen, u.rhythmus, u.lehrkraefte.map(z => [z.lehrer, z.rolle, z.modus]), u.termine || []]),
     d.lehrer.map(l => [l.id, l.aufsicht, l.anwesenheit, l.anwesenheitTage, l.verfuegbarkeit, l.dienstVerfuegbarkeit, l.dienstPraeferenzen, l.qualifikationen, l.arbeitszeit]),
-    d.dienste.bedarfe.map(b => [b.tag, b.typ, b.bereich, b.abschnitte]), DIENSTTYPEN, d.dienste.bereiche,
+    d.dienste.bedarfe.map(b => [b.tag, b.typ, b.bereich, b.abschnitte]), DIENSTTYPEN, d.dienste.bereiche.map(b => b.vorschule ? b : { id: b.id, name: b.name, exklusiv: b.exklusiv }), // ohne Vorschule bleibt die Signatur wie früher
     d.dienste.plan.filter(x => x.fixiert).map(x => [x.id, x.lehrer, x.tag, x.typ, x.bereich, x.beginn, x.ende, x.rhythmus])
-  ].concat((d.plan.besetzung || []).length || (d.plan.frei || []).length ? [(d.plan.besetzung || []).map(b => [b.unterricht, b.blockNr, b.lehrer, b.rolle]), (d.plan.frei || []).map(a => [a.unterricht, a.blockNr, a.lehrer])] : [])); // Besetzung einzelner Stunden von Hand
+  ].concat((d.plan.besetzung || []).length || (d.plan.frei || []).length ? [(d.plan.besetzung || []).map(b => [b.unterricht, b.blockNr, b.lehrer, b.rolle]), (d.plan.frei || []).map(a => [a.unterricht, a.blockNr, a.lehrer])] : []).concat(d.lehrer.some(l => l.vorschule !== 'nein') ? [d.lehrer.map(l => [l.id, l.vorschule])] : [])); // Besetzung einzelner Stunden von Hand
   return _hash(t) + ':' + t.length;
+}
+// ---------- Vorschule: Bedarf und Wochenbilanz ----------
+// Wöchentlicher Mindestbedarf aller Vorschul-Bereiche in Personenminuten (Summe Minimum × Dauer der Abschnitte)
+function vorschuleMindestbedarf(d) {
+  const ids = new Set(d.dienste.bereiche.filter(b => b.vorschule).map(b => b.id));
+  let min = 0;
+  d.dienste.bedarfe.forEach(b => { if (!b.bereich || !ids.has(b.bereich)) return; b.abschnitte.forEach(a => { const iv = intervall(a.beginn, a.ende); if (iv && iv.end > iv.start) min += (iv.end - iv.start) * a.min; }); });
+  return min;
+}
+// Wochenbilanz je Stammkraft und Reserve: Minuten in der Vorschule, in Früh-/Spätaufsicht und Betreuung sowie in sonstigen Diensten
+// (Wochenrhythmus und Rotation anteilig), dazu Soll und Ist der Wochenarbeitszeit aus arbeitszeiten(d). Alle Werte in Minuten.
+function vorschuleBilanz(d) {
+  const ids = new Set(d.dienste.bereiche.filter(b => b.vorschule).map(b => b.id));
+  const az = new Map(arbeitszeiten(d).liste.map(x => [x.lehrer, x]));
+  const out = new Map(d.lehrer.filter(l => l.vorschule !== 'nein').map(l => [l.id, { lehrer: l.id, kuerzel: l.kuerzel || l.name || '?', name: l.name || '', rolle: l.vorschule, soll: 0, ist: 0, vorschule: 0, betreuung: 0, sonstige: 0 }]));
+  d.dienste.plan.forEach(x => {
+    const iv = dienstIntervall(x); if (!iv) return;
+    const personen = x.rhythmus && x.rhythmus.art === 'rotation' && x.rhythmus.personen.length ? x.rhythmus.personen : [x.lehrer];
+    personen.forEach(pid => {
+      const o = out.get(pid); if (!o) return;
+      const min = (iv.end - iv.start) * dienstFaktor(x.rhythmus, pid);
+      if (x.bereich && ids.has(x.bereich)) o.vorschule += min; else if (VS_BETREUUNG.has(x.typ)) o.betreuung += min; else o.sonstige += min;
+    });
+  });
+  out.forEach((o, id) => { const a = az.get(id); if (a) { o.soll = a.soll; o.ist = a.summe; } });
+  return [...out.values()].sort((a, b) => (a.rolle === b.rolle ? 0 : a.rolle === 'stamm' ? -1 : 1) || String(a.kuerzel).localeCompare(String(b.kuerzel), 'de'));
 }
 function schichtenAusKurve(punkte) {
   const offen = [], out = [];

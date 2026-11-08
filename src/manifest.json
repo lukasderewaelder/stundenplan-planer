@@ -63,6 +63,7 @@
     "src/ui/95-import-export.js",
     "src/ui/96-druck.js",
     "src/ui/97-staende-start.js",
+    "src/ui/98-vorschule.js",
     "src/shell/40-tests-oeffnen.html",
     "src/tests/00-kopf.js",
     "src/tests/10-regeln.js",

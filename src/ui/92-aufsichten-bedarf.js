@@ -370,7 +370,8 @@ function bedarfGrafik(b, bes) {
     }),
     h('span', { class: 'bg-achse l' }, zeitText(s)), h('span', { class: 'bg-achse r' }, zeitText(e)));
 }
-function bedarfDetailKarte(d, b) {
+// opt.eingebettet: ohne Nachbar-Navigation und ohne feste Kennung (die Karte steht dann außerhalb der Bedarfsliste, z. B. unter „Vorschule“)
+function bedarfDetailKarte(d, b, opt) {
     const bes = besetzungBedarf(d, b), eig = [b.pauseKey ? 'Pause' : null, b.arbeitszeit === false ? 'arbeitszeitneutral' : null, b.qualifikation ? 'Qualifikation: ' + b.qualifikation : null].filter(Boolean);
     const zeilen = b.abschnitte.map((a, i) => {
       const x = bes[i] || { ist: 0, status: 'err' };
@@ -382,8 +383,8 @@ function bedarfDetailKarte(d, b) {
         h('td', { class: 'zahl' }, h('span', { class: 'badge ' + (x.status === 'ok' ? 'ok' : x.status === 'warn' ? 'warn' : 'err') }, x.ist + ' / ' + a.soll + ' ' + (x.status === 'ok' ? '✓' : x.status === 'warn' ? '~' : '✕'))),
         h('td', { class: 'aktion' }, h('button', { class: 'btn icon klein', title: 'Zeitraum teilen', onclick: () => abschnittTeilen(b.id, i) }, icon('schere')), i < b.abschnitte.length - 1 ? h('button', { class: 'btn icon klein', title: 'Mit folgendem Abschnitt zusammenführen', onclick: () => abschnittZusammen(b.id, i) }, icon('zusammen')) : null, h('button', { class: 'btn icon klein gefahr', title: 'Abschnitt löschen', onclick: () => undoToastNach(() => bedarfAendern('Bedarfsabschnitt gelöscht', b.id, bb => bb.abschnitte.splice(i, 1)), 'Zeitabschnitt gelöscht.') }, icon('papierkorb'))));
     });
-    return h('div', { class: 'karte bedarfdetail', 'data-id': b.id, id: 'bedarfDetail' },
-      h('div', { class: 'bd-kopf' }, h('span', { class: 'eyebrow' }, 'Bearbeiten · ' + tagLang(b.tag)), h('div', { class: 'rechts' }), bedarfNachbarn(d, b)),
+    return h('div', { class: 'karte bedarfdetail', 'data-id': b.id, id: opt && opt.eingebettet ? null : 'bedarfDetail' },
+      h('div', { class: 'bd-kopf' }, h('span', { class: 'eyebrow' }, 'Bearbeiten · ' + tagLang(b.tag)), h('div', { class: 'rechts' }), opt && opt.eingebettet ? null : bedarfNachbarn(d, b)),
       h('div', { class: 'zeile', style: { alignItems: 'flex-end' } },
         h('label', { class: 'feld' }, 'Tag', sel(d.schule.tage.map((x, i) => [String(i), x]), String(b.tag), v => bedarfAendern('Aufsicht verschoben', b.id, bb => { bb.tag = Number(v); }), { 'aria-label': 'Tag' })),
         h('label', { class: 'feld', style: { flex: '1 1 220px' } }, 'Bezeichnung', h('input', { type: 'text', value: b.name || '', placeholder: 'Bezeichnung', style: { width: '100%' }, onchange: ev => bedarfAendern('Aufsicht umbenannt', b.id, bb => { bb.name = ev.target.value.trim() || 'Aufsicht'; }) })),
@@ -527,6 +528,7 @@ function dienstBereicheTab() {
     DI.bereiche.length ? h('div', { class: 'zeile', style: { gap: '10px' } }, DI.bereiche.map(b => h('span', { class: 'zeile eng bereichchip', 'data-id': b.id },
       h('input', { type: 'text', value: b.name, style: { width: '140px' }, 'aria-label': 'Name des Bereichs', onchange: ev => { const v = ev.target.value.trim(); if (v) dienstAendern('Bereich umbenannt', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.name = v.slice(0, 60); }); } }),
       h('label', { class: 'check klein' }, h('input', { type: 'checkbox', checked: b.exklusiv, onchange: ev => dienstAendern('Bereich exklusiv', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.exklusiv = ev.target.checked; }) }), 'exklusiv'),
+      h('label', { class: 'check klein', title: 'Bereich der Vorschule: Dort arbeiten nur Stammkräfte und Reserve (siehe „Vorschule & Betreuung“).' }, h('input', { type: 'checkbox', checked: !!b.vorschule, onchange: ev => dienstAendern('Bereich Vorschule', dd => { const x = dd.dienste.bereiche.find(y => y.id === b.id); if (x) x.vorschule = ev.target.checked; }) }), 'Vorschule'),
       h('button', { class: 'btn icon klein gefahr', title: 'Löschen', onclick: async () => { const n = DI.plan.filter(x => x.bereich === b.id).length + DI.bedarfe.filter(x => x.bereich === b.id).length; if (n && !(await bestaetigen('Bereich „' + b.name + '“ wird in ' + n + ' Einsätzen/Bedarfen verwendet; dort wird der Bereich entfernt.', 'Löschen', 'gefahr'))) return; undoToastNach(() => dienstAendern('Bereich gelöscht', dd => { const D2 = dd.dienste; D2.bereiche = D2.bereiche.filter(x => x.id !== b.id); [D2.plan, D2.bedarfe, D2.offen].forEach(l => l.forEach(x => { if (x.bereich === b.id) x.bereich = null; })); }), 'Bereich „' + b.name + '“ gelöscht.'); } }, icon('papierkorb'))))) : h('p', { class: 'muted' }, 'Noch keine Bereiche.'));
   return [bereiche, h('div', { class: 'karte zeile' }, h('span', { class: 'muted' }, 'Früh-/Spätregeln werden aus den tatsächlichen Uhrzeiten abgeleitet. Weitere Planungsgewichte stehen bei den Regeln.'), h('div', { class: 'rechts' }), h('button', { class: 'btn', onclick: () => gehe('regeln', { reiter: 'dienste' }) }, 'Regeln & Gewichte'))];
 }
