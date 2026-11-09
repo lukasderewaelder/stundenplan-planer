@@ -6,7 +6,7 @@ const sp = (c, y = 0) => c.js(`document.querySelector('#inhalt').scrollTop = ${y
 
 export default { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
 
   // 3.1 Schule & Zeitraster
   await c.gehe('schule');

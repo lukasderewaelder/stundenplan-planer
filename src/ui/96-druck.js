@@ -67,32 +67,48 @@ SEITEN_RENDER.ausgabe = () => {
   const liste = gesamt ? d.schule.tage.map((t, i) => [String(i), TAGE_LANG[t]]) : istDienstDruck(o.art) ? [] : o.art === 'klassen' ? d.klassen.map(k => [k.id, 'Klasse ' + k.name]).sort(nat) : o.art === 'lehrer' || o.art === 'arbeitszeitNachweis' ? lehrerAlphabetisch(d.lehrer).map(l => [l.id, (l.kuerzel || '') + ' – ' + (l.name || '')]) : d.raeume.map(r => [r.id, r.name]).sort(nat);
   if (o.auswahl !== 'alle' && !liste.some(([i]) => i === o.auswahl)) o.auswahl = 'alle';
   const erste = druckListe(o)[0];
-  const vorschau = erste && (d.plan.platzierungen.length || dienstArt) ? h('div', { class: 'karte', style: { overflow: 'auto' } }, h('h3', { style: { marginTop: 0 } }, 'Vorschau (erste Seite)'), h('div', { style: { transform: 'scale(.9)', transformOrigin: 'top left' } }, druckSeite(erste[0], erste[1], erste[2], 0, druckListe(o).length, o, erste[3]))) : null;
+  const hatPlan = !!d.plan.platzierungen.length, moeglich = hatPlan || dienstArt;
+  // Explorer: die Planarten als Liste (früher das Auswahlfeld „Pläne“)
+  const PLANARTEN = [{ gruppe: 'Stundenpläne', opts: [['klassen', 'Klassenpläne'], ['lehrer', 'Lehrerpläne (mit Aufsichten = persönlicher Plan)'], ['raeume', 'Raumpläne']] }, { gruppe: 'Gesamtplan', opts: [['gesamtplan', 'Gesamtplan je Tag – alle Personen (Unterricht, Co, Aufgaben, Aufsichten)']] }, { gruppe: 'Aufsichten', opts: DIENST_DRUCKARTEN.filter(x => x[0] !== 'arbeitszeitDienst' && x[0] !== 'gta') }, { gruppe: 'GTA', opts: [['gta', 'GTA-Plan (Ganztagsangebote)']] }, { gruppe: 'Arbeitszeit', opts: [['arbeitszeitDienst', 'Arbeitszeitübersicht (alle Personen)'], ['arbeitszeitNachweis', 'Arbeitszeitnachweis je Person (mit Berechnung)']] }];
+  const artWaehlen = v => { APP.meta.druck = Object.assign(druckOpt(), { art: v, auswahl: 'alle' }); metaSpeichern(); render(); };
+  const seitenZahl = art => { try { return druckListe(Object.assign({}, o, { art, auswahl: 'alle' })).length; } catch (err) { return 0; } };
+  APP._explorerTeil = h('div', { class: 'ex-objekte' }, h('div', { class: 'ex-liste', 'aria-label': 'Was drucken?' }, h('div', { class: 'ex-gtitel', style: { paddingTop: '12px' } }, 'Was drucken?'),
+    PLANARTEN.map(g => h('div', { class: 'ex-gruppe', role: 'group', 'aria-label': g.gruppe }, h('div', { class: 'ex-gtitel' }, g.gruppe), g.opts.map(([id, t]) => {
+      const m = t.match(/^(.*?)\s*(?:\((.*)\)|–\s*(.*))?$/), name = m ? m[1] : t, unter = m ? (m[2] || m[3] || '') : '';
+      const n = seitenZahl(id);
+      return h('button', { class: 'ex-eintrag', type: 'button', 'data-id': id, 'aria-current': o.art === id ? 'true' : null, title: t, onclick: () => artWaehlen(id) },
+        h('span', { class: 'ex-name' }, h('b', {}, name), h('span', {}, [unter, n ? n + (n === 1 ? ' Seite' : ' Seiten') : ''].filter(Boolean).join(', '))), h('span'), h('span'));
+    })))));
+  const vorschau = erste && moeglich ? h('div', { class: 'druckbuehne' }, h('div', { class: 'db-kopf muted klein' }, 'Vorschau der ersten Seite' + (druckListe(o).length > 1 ? ' von ' + druckListe(o).length : '')), h('div', { class: 'db-blatt' }, druckSeite(erste[0], erste[1], erste[2], 0, druckListe(o).length, o, erste[3]))) : null;
   const opts = DRUCK_OPTIONEN[o.art] || [];
   const chk = (k, t, erkl) => opts.includes(k) ? h('label', { class: 'check' }, h('input', { type: 'checkbox', checked: o[k] !== false, 'data-druckopt': k, onchange: ev => druckOptSetzen(k, ev.target.checked) }), t, erkl ? hilfe(erkl) : null) : null;
   const farbe = opts.includes('farbe') ? [h('label', { class: 'check' }, h('input', { type: 'radio', name: 'farbe', checked: o.farbe, onchange: () => druckOptSetzen('farbe', true) }), 'Farbe'),
     h('label', { class: 'check' }, h('input', { type: 'radio', name: 'farbe', checked: !o.farbe, onchange: () => druckOptSetzen('farbe', false) }), gesamt ? 'Schwarzweiß' : 'Schwarzweiß (Muster je Fach)')] : null;
   const tsvArt = APP.editor.art, tsvId = APP.editor.id || (d.klassen[0] || {}).id;
-  return [
-    seitenkopf('Druck & Export', 'Druckansichten A4 quer (über die Druckfunktion des Browsers auch als PDF), CSV, Zwischenablage und HTML-Weitergabe. Die Projektdatei (Export, Import) steht im Menü oben rechts.'),
-    h('div', { class: 'karte' }, h('h2', { style: { marginTop: 0 } }, 'Drucken'),
-      h('div', { class: 'zeile', style: { gap: '14px', alignItems: 'flex-end' } },
-        h('label', { class: 'feld' }, 'Pläne', sel([{ gruppe: 'Stundenpläne', opts: [['klassen', 'Klassenpläne'], ['lehrer', 'Lehrerpläne (mit Aufsichten = persönlicher Plan)'], ['raeume', 'Raumpläne']] }, { gruppe: 'Gesamtplan', opts: [['gesamtplan', 'Gesamtplan je Tag – alle Personen (Unterricht, Co, Aufgaben, Aufsichten)']] }, { gruppe: 'Aufsichten', opts: DIENST_DRUCKARTEN.filter(x => x[0] !== 'arbeitszeitDienst' && x[0] !== 'gta') }, { gruppe: 'GTA', opts: [['gta', 'GTA-Plan (Ganztagsangebote)']] }, { gruppe: 'Arbeitszeit', opts: [['arbeitszeitDienst', 'Arbeitszeitübersicht (alle Personen)'], ['arbeitszeitNachweis', 'Arbeitszeitnachweis je Person (mit Berechnung)']] }], o.art, v => { APP.meta.druck = Object.assign(druckOpt(), { art: v, auswahl: 'alle' }); metaSpeichern(); render(); })),
+  const artName = (PLANARTEN.flatMap(g => g.opts).find(x => x[0] === o.art) || [o.art, o.art])[1];
+  // Inspektor › Optionen: Auswahl, Darstellung, Drucken und weitere Formate
+  APP._inspektorDetails = { titel: 'Optionen', inhalt: h('div', { class: 'druckoptionen' },
+    h('section', { class: 'iabschnitt' }, h('h3', {}, artName),
+      h('div', { class: 'rechenfelder-liste' },
         istDienstDruck(o.art) ? null : h('label', { class: 'feld' }, 'Auswahl', sel([['alle', gesamt ? 'Alle Tage (je Tag eigene Seiten)' : o.art === 'klassen' ? 'Alle Klassen drucken' : o.art === 'lehrer' || o.art === 'arbeitszeitNachweis' ? 'Alle Personen drucken' : 'Alle Räume drucken']].concat(liste), o.auswahl, v => druckOptSetzen('auswahl', v))),
         abWochenAktiv() && !dienstArt ? h('label', { class: 'feld' }, 'A/B-Wochen', sel([['beide', 'beide Wochen in einem Plan'], ['A', 'nur Woche A'], ['B', 'nur Woche B'], ['getrennt', 'Woche A und B je eine Seite']], o.woche || 'beide', v => druckOptSetzen('woche', v))) : null,
-        gesamt ? h('label', { class: 'feld' }, h('span', {}, 'Personen je Seite', hilfe('Weniger Personen je Seite = breitere Spalten und größere Schrift. Die Personen eines Tages werden gleichmäßig auf die Seiten verteilt (z. B. 23 Personen bei höchstens 12 je Seite: 12 + 11).')), sel(GP_SPALTEN.map(x => [String(x), 'höchstens ' + x]), String(gpSpalten(o)), v => druckOptSetzen('gpSpalten', Number(v)))) : null,
-        h('button', { class: 'btn primaer', disabled: !d.plan.platzierungen.length && !dienstArt, onclick: drucken }, 'Drucken / als PDF')),
-      opts.length ? h('div', { class: 'zeile', style: { gap: '16px', marginTop: '10px' } }, chk('zeiten', 'Uhrzeiten anzeigen'), chk('raeume', 'Räume anzeigen'), chk('vollnamen', 'Vollnamen statt Kürzel'), chk('pausen', 'Pausen anzeigen'),
-        chk('gruppen', 'Gruppenbezeichnung bei Halbgruppen anzeigen', 'Bei geteiltem Unterricht steht die Gruppe am Fach („Ku · Gr. A“) bzw. an der Klasse („6a · Gr. A“). Gilt für Druck, Vorschau, HTML-Weitergabe und die Zwischenablage.'),
-        chk('aufsichten', 'Aufsichten mitdrucken', 'Jeder Lehrerplan zeigt unter dem Wochenplan alle Aufsichten und Dienste der Person – das ist der persönliche Plan. Gilt für Druck, Vorschau, HTML-Weitergabe, CSV und die Anzeige unter dem Lehrerplan im Editor.'),
-        farbe, gesamt ? h('span', { class: 'muted klein' }, 'Eine Spalte je Person, alle Einsätze mit genauer Uhrzeit; lange Texte brechen um statt abgeschnitten zu werden.') : null) : null,
-      !d.plan.platzierungen.length && !dienstArt ? leerZustand({ klein: true, icon: 'drucker', titel: 'Noch kein Plan zum Drucken', text: 'Klassen-, Lehrer- und Raumpläne gibt es, sobald ein Plan berechnet ist.', aktion: { text: 'Plan berechnen', tun: () => { gehe('berechnung'); if (!APP.rechnung.laeuft) rechnungStart(); } } }) : null),
-    h('div', { class: 'abstand' }), vorschau, vorschau ? h('div', { class: 'abstand' }) : null,
-    h('div', { class: 'karte' }, h('h2', { style: { marginTop: 0 } }, 'Weitere Formate'),
-      h('div', { class: 'zeile' },
-        h('button', { class: 'btn', disabled: !d.plan.platzierungen.length, onclick: () => herunterladen(planCsv(), 'stundenplan_' + slug(d.schule.name) + '_' + isoDatum() + '.csv', 'text/csv'), title: 'Eine Zeile je Stunde: Klasse, Gruppe, Tag, Stunde, Beginn, Ende, Fach, Fachlehrkraft, Co-Lehrkraft, Raum (Semikolon, UTF-8 mit BOM).' }, 'Plan als CSV'),
-        h('button', { class: 'btn', disabled: !d.plan.platzierungen.length || !tsvId, onclick: async () => { const ok = await inZwischenablage(planTsv(tsvArt, tsvId)); toast(ok ? 'Plan (' + (tsvArt === 'klasse' ? 'Klasse' : tsvArt === 'lehrer' ? 'Lehrkraft' : 'Raum') + ' aus dem Editor) als Tabelle kopiert – in Excel oder Word einfügen.' : 'Kopieren nicht möglich.', ok ? 'ok' : 'err'); }, title: 'Kopiert den im Editor gewählten Plan als Tab-getrennten Text.' }, 'Aktuellen Editor-Plan kopieren'),
-        h('button', { class: 'btn', disabled: !d.plan.platzierungen.length, onclick: htmlExport, title: 'Eine eigenständige HTML-Datei mit allen Klassen- und Lehrerplänen, dem Aufsichtsplan und dem Gesamtplan je Tag – mit einer Auswahlliste.' }, 'HTML-Datei mit allen Plänen')))
+        gesamt ? h('label', { class: 'feld' }, h('span', {}, 'Personen je Seite', hilfe('Weniger Personen je Seite = breitere Spalten und größere Schrift. Die Personen eines Tages werden gleichmäßig auf die Seiten verteilt (z. B. 23 Personen bei höchstens 12 je Seite: 12 + 11).')), sel(GP_SPALTEN.map(x => [String(x), 'höchstens ' + x]), String(gpSpalten(o)), v => druckOptSetzen('gpSpalten', Number(v)))) : null),
+      h('div', { class: 'zeile', style: { marginTop: '12px' } }, h('button', { class: 'btn primaer', disabled: !moeglich, onclick: drucken }, 'Drucken / als PDF'))),
+    opts.length ? h('section', { class: 'iabschnitt druckchecks' }, h('h3', {}, 'Darstellung'), chk('zeiten', 'Uhrzeiten anzeigen'), chk('raeume', 'Räume anzeigen'), chk('vollnamen', 'Vollnamen statt Kürzel'), chk('pausen', 'Pausen anzeigen'),
+      chk('gruppen', 'Gruppenbezeichnung bei Halbgruppen anzeigen', 'Bei geteiltem Unterricht steht die Gruppe am Fach („Ku · Gr. A“) bzw. an der Klasse („6a · Gr. A“). Gilt für Druck, Vorschau, HTML-Weitergabe und die Zwischenablage.'),
+      chk('aufsichten', 'Aufsichten mitdrucken', 'Jeder Lehrerplan zeigt unter dem Wochenplan alle Aufsichten und Dienste der Person – das ist der persönliche Plan. Gilt für Druck, Vorschau, HTML-Weitergabe, CSV und die Anzeige unter dem Lehrerplan im Editor.'),
+      farbe ? h('div', { class: 'zeile' }, farbe) : null, gesamt ? h('p', { class: 'muted klein' }, 'Eine Spalte je Person, alle Einsätze mit genauer Uhrzeit; lange Texte brechen um statt abgeschnitten zu werden.') : null) : null,
+    h('section', { class: 'iabschnitt' }, h('h3', {}, 'Weitere Formate'),
+      h('div', { class: 'aktionen-spalte' },
+        h('button', { class: 'btn', disabled: !hatPlan, onclick: () => herunterladen(planCsv(), 'stundenplan_' + slug(d.schule.name) + '_' + isoDatum() + '.csv', 'text/csv'), title: 'Eine Zeile je Stunde: Klasse, Gruppe, Tag, Stunde, Beginn, Ende, Fach, Fachlehrkraft, Co-Lehrkraft, Raum (Semikolon, UTF-8 mit BOM).' }, 'Plan als CSV'),
+        h('button', { class: 'btn', disabled: !hatPlan || !tsvId, onclick: async () => { const ok = await inZwischenablage(planTsv(tsvArt, tsvId)); toast(ok ? 'Plan (' + (tsvArt === 'klasse' ? 'Klasse' : tsvArt === 'lehrer' ? 'Lehrkraft' : 'Raum') + ' aus dem Stundenplan) als Tabelle kopiert – in Excel oder Word einfügen.' : 'Kopieren nicht möglich.', ok ? 'ok' : 'err'); }, title: 'Kopiert den im Stundenplan gewählten Plan als Tab-getrennten Text.' }, 'Plan aus dem Stundenplan kopieren'),
+        h('button', { class: 'btn', disabled: !hatPlan, onclick: htmlExport, title: 'Eine eigenständige HTML-Datei mit allen Klassen- und Lehrerplänen, dem Aufsichtsplan und dem Gesamtplan je Tag – mit einer Auswahlliste.' }, 'HTML-Datei mit allen Plänen')),
+      h('p', { class: 'muted klein' }, 'Die Projektdatei (Export, Import) steht unter Ausgeben › Projektdatei.'))) };
+  return [
+    seitenkopf('Drucken & Export', 'Druckansichten A4 quer (über die Druckfunktion des Browsers auch als PDF), CSV, Zwischenablage und HTML-Weitergabe. Links steht, was gedruckt wird, rechts im Inspektor stehen Auswahl und Darstellung.',
+      h('button', { class: 'btn primaer', disabled: !moeglich, onclick: drucken }, 'Drucken / als PDF')),
+    !moeglich ? leerZustand({ klein: true, icon: 'drucker', titel: 'Noch kein Plan zum Drucken', text: 'Klassen-, Lehrer- und Raumpläne gibt es, sobald ein Plan berechnet ist.', aktion: { text: 'Plan berechnen', tun: () => { gehe('berechnung'); if (!APP.rechnung.laeuft) rechnungStart(); } } }) : null,
+    vorschau
   ];
 };
 

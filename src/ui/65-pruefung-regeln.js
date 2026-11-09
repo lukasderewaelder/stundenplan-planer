@@ -10,7 +10,7 @@ SEITEN_RENDER.pruefung = () => {
   const SYM = { fehler: ['h', '✕ Fehler'], warnung: ['w', '! Warnung'], hinweis: ['i', 'ℹ Hinweis'] };
   const eintrag = x => h('li', { onclick: () => springeZu(x.ziel), title: x.ziel ? 'Zur betroffenen Stelle springen' : '' }, h('span', { class: 'sym ' + SYM[x.stufe][0] }, SYM[x.stufe][1]), h('span', {}, x.text), x.ziel ? h('span', { class: 'rechts muted' }, icon('pfeil-rechts')) : null);
   return [
-    seitenkopf('Prüfung & Start', 'Vorprüfung vor der Berechnung: Stimmen Stundentafel und Unterricht je Schüler überein? Sind Halbgruppen, Parallelbänder und Blockzwänge darstellbar? Gibt es für jeden Unterricht eine geeignete Lehrkraft? Fehler blockieren die Berechnung, Warnungen und Hinweise nicht. Ein Klick springt zur betroffenen Stelle.'),
+    seitenkopf('Prüfung der Daten', 'Vorprüfung vor der Berechnung: Stimmen Stundentafel und Unterricht je Schüler überein? Sind Halbgruppen, Parallelbänder und Blockzwänge darstellbar? Gibt es für jeden Unterricht eine geeignete Lehrkraft? Fehler blockieren die Berechnung, Warnungen und Hinweise nicht. Ein Klick springt zur betroffenen Stelle.'),
     h('div', { class: 'kennzahlen' },
       [['Klassen', d.klassen.length], ['Lehrkräfte', d.lehrer.length], ['Räume', d.raeume.length], ['Unterrichte', d.unterrichte.length], ['Blöcke', M.E.length], ['UStd. je Woche (Schüler)', zahlDe(std, 1)]].map(([n, v]) => h('div', { class: 'kennzahl', title: n === 'UStd. je Woche (Schüler)' ? 'Summe über alle Klassen, je Schüler gezählt: Halbgruppen einmal, A-/B-Wochen halb' : null }, h('div', { class: 'w' }, v), h('div', { class: 'n' }, n)))),
     h('div', { class: 'karte' },

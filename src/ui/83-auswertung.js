@@ -433,11 +433,13 @@ function planKopf(rolle) {
   const E = APP.editor, { art, id, liste } = planAnsicht(rolle);
   const setze = (a, i) => { if (rolle === 'b') { E.art2 = a; E.id2 = i; } else { E.art = a; E.id = i; } render(); };
   const idx = liste.findIndex(([i]) => i === id);
-  const kopf = h('div', { class: 'pkopf', role: 'group', 'aria-label': rolle === 'b' ? 'Ansicht des zweiten Plans' : 'Ansicht' },
-    sel([['klasse', 'Klassenplan'], ['lehrer', 'Lehrerplan'], ['raum', 'Raumplan']], art, v => setze(v, null), { 'aria-label': 'Ansicht' }),
-    h('button', { class: 'btn icon', 'aria-label': 'Vorherige', title: 'Vorherige', disabled: idx <= 0, onclick: () => setze(art, liste[idx - 1][0]) }, icon('links')),
-    sel(liste, id || '', v => setze(art, v), { 'aria-label': 'Auswahl', style: { minWidth: '140px' } }),
-    h('button', { class: 'btn icon', 'aria-label': 'Nächste', title: 'Nächste', disabled: idx < 0 || idx >= liste.length - 1, onclick: () => setze(art, liste[idx + 1][0]) }, icon('rechts')),
+  const vor = h('button', { class: 'btn icon flach', 'aria-label': 'Vorherige', title: 'Vorherige', disabled: idx <= 0, onclick: () => setze(art, liste[idx - 1][0]) }, icon('links'));
+  const nach = h('button', { class: 'btn icon flach', 'aria-label': 'Nächste', title: 'Nächste', disabled: idx < 0 || idx >= liste.length - 1, onclick: () => setze(art, liste[idx + 1][0]) }, icon('rechts'));
+  const titel = () => { const o = art === 'klasse' ? klasseVon(id) : art === 'lehrer' ? lehrerVon(id) : raumVon(id); if (!o) return ''; return art === 'klasse' ? 'Klasse ' + o.name : art === 'lehrer' ? (o.name || o.kuerzel) + (o.name && o.kuerzel ? ' (' + o.kuerzel + ')' : '') : 'Raum ' + o.name; };
+  const kopf = h('div', { class: 'pkopf' + (rolle === 'b' ? '' : ' haupt'), role: 'group', 'aria-label': rolle === 'b' ? 'Ansicht des zweiten Plans' : 'Ansicht' },
+    rolle === 'b' ? [sel([['klasse', 'Klassenplan'], ['lehrer', 'Lehrerplan'], ['raum', 'Raumplan']], art, v => setze(v, null), { 'aria-label': 'Ansicht' }), vor, sel(liste, id || '', v => setze(art, v), { 'aria-label': 'Auswahl', style: { minWidth: '140px' } }), nach,
+      h('button', { class: 'btn icon flach', 'aria-label': 'Zweiten Plan schließen', title: 'Zweiten Plan schließen', onclick: () => { E.parallel = false; render(); } }, icon('x'))]
+      : [h('span', { class: 'ptitel', role: 'heading', 'aria-level': '2' }, titel()), vor, nach],
     abWochenAktiv() ? sel([['alle', 'Woche A + B'], ['A', 'nur Woche A'], ['B', 'nur Woche B']], (rolle === 'b' ? E.woche2 : E.woche) || 'alle', v => { if (rolle === 'b') E.woche2 = v; else E.woche = v; render(); }, { 'aria-label': 'Woche', title: 'A/B-Wochen: beide Wochen übereinander oder nur eine Woche anzeigen', class: (rolle === 'b' ? E.woche2 : E.woche) && (rolle === 'b' ? E.woche2 : E.woche) !== 'alle' ? 'wochewahl aktiv' : 'wochewahl' }) : null);
   if (id && art === 'lehrer') {
     const x = arbeitszeiten(APP.daten).liste.find(y => y.lehrer === id);
@@ -523,12 +525,12 @@ function problemeZahl() {
 }
 // Seitenleiste des Editors: drei Reiter – Details (Ressourcen des gewählten Blocks), Probleme, Zuordnen. Alle drei stehen im DOM,
 // der Wechsel blendet nur um (kein Neuaufbau); ein Klick auf eine Kachel oder ein leeres Feld öffnet „Details“.
-const EDITOR_TABS = [['details', 'Details', 'detail'], ['probleme', 'Probleme', 'warnung'], ['zuordnen', 'Zuordnen', 'hand']];
+const EDITOR_TABS = [['details', 'Details', 'detail'], ['probleme', 'Probleme', 'warnung'], ['zuordnen', 'Zuordnen', 'hand'], ['hilfe', 'Hilfe', 'hilfe']];
 function editorLeiste(tab) {
   if (!EDITOR_TABS.some(t => t[0] === tab)) tab = 'details';
   APP.editor.leiste = tab;
-  const sl = document.querySelector('.seitenleiste'); if (!sl) return;
-  sl.classList.remove('zu'); APP.editor.leisteZu = false;
+  const sl = document.querySelector('#inspektor .seitenleiste'); if (!sl) return;
+  if (!inspektorOffen()) inspektorUmschalten(true);
   sl.querySelectorAll('[data-sltab]').forEach(b => { const an = b.dataset.sltab === tab; b.classList.toggle('aktiv', an); b.setAttribute('aria-selected', an ? 'true' : 'false'); b.tabIndex = an ? 0 : -1; });
   sl.querySelectorAll('[data-slpanel]').forEach(p => { p.hidden = p.dataset.slpanel !== tab; });
 }
@@ -539,10 +541,10 @@ function editorSeitenleiste() {
     onkeydown: ev => { if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return; const i = EDITOR_TABS.findIndex(t => t[0] === APP.editor.leiste), n = EDITOR_TABS[(i + (ev.key === 'ArrowRight' ? 1 : EDITOR_TABS.length - 1)) % EDITOR_TABS.length][0]; ev.preventDefault(); ev.stopPropagation(); editorLeiste(n); const b = document.querySelector('.seitenleiste [data-sltab="' + n + '"]'); if (b) b.focus(); } },
     EDITOR_TABS.map(([k, t, sym]) => h('button', { class: 'sl-tab' + (aktiv === k ? ' aktiv' : ''), type: 'button', role: 'tab', id: 'sltab_' + k, 'data-sltab': k, 'aria-selected': aktiv === k ? 'true' : 'false', 'aria-controls': 'slpanel_' + k, tabindex: aktiv === k ? 0 : -1, onclick: () => editorLeiste(k) },
       icon(sym, 'k'), t, k === 'probleme' && (pz.hart || pz.weich) ? h('span', { class: 'badge ' + (pz.hart ? 'err' : 'neutral'), title: pz.hart + ' harte und ' + pz.weich + ' weiche Verstöße in dieser Ansicht' }, pz.hart || pz.weich) : null)),
-    h('button', { class: 'btn icon klein sl-zu', type: 'button', 'aria-label': 'Leiste einklappen', title: 'Leiste einklappen', onclick: ev => { const sl = document.querySelector('.seitenleiste'); if (!sl) return; APP.editor.leisteZu = sl.classList.toggle('zu'); ev.currentTarget.setAttribute('aria-expanded', APP.editor.leisteZu ? 'false' : 'true'); } }, icon('unten')));
+);
   const panel = (k, inhalt) => h('div', { class: 'sl-panel', role: 'tabpanel', id: 'slpanel_' + k, 'data-slpanel': k, 'aria-labelledby': 'sltab_' + k, hidden: aktiv !== k }, inhalt);
   // schmale Fenster: die Leiste ist ein Blatt am unteren Rand – anfangs eingeklappt, ein Klick auf eine Kachel oder einen Reiter öffnet es
-  return h('aside', { class: 'seitenleiste' + (E.leisteZu !== false ? ' zu' : ''), 'aria-label': 'Details, Probleme und Zuordnen' }, tabs, panel('details', ressourcenBox()), panel('probleme', verstoesseBox()), panel('zuordnen', zuordnenBox()));
+  return h('aside', { class: 'seitenleiste', 'aria-label': 'Details, Probleme, Zuordnen und Hilfe' }, tabs, panel('details', ressourcenBox()), panel('probleme', verstoesseBox()), panel('zuordnen', zuordnenBox()), panel('hilfe', inspektorHilfe()));
 }
 // „?“ der Werkzeugleiste: Tastatur und Legende
 function editorLegende() {
@@ -578,20 +580,20 @@ function detSprung(x) {
 }
 SEITEN_RENDER.editor = () => {
   const d = APP.daten, E = APP.editor;
-  if (!d.unterrichte.length) return [seitenkopf('Plan-Editor', ''), h('div', { class: 'karte' }, leerZustand({ icon: 'kalender', titel: 'Noch kein Unterricht, der sich planen ließe', text: 'Der Editor zeigt den Wochenplan, sobald Klassen, Lehrkräfte und die Stundentafel angelegt sind. Die Übersicht nennt den nächsten Schritt.', aktion: { text: 'Zur Übersicht', tun: () => gehe('start') }, zweit: { text: 'Beispieldaten laden', tun: beispielLaden } }))];
+  if (!d.unterrichte.length) return [seitenkopf('Stundenplan', ''), h('div', { class: 'karte' }, leerZustand({ icon: 'kalender', titel: 'Noch kein Unterricht, der sich planen ließe', text: 'Der Editor zeigt den Wochenplan, sobald Klassen, Lehrkräfte und die Stundentafel angelegt sind. Die Übersicht nennt den nächsten Schritt.', aktion: { text: 'Zur Übersicht', tun: () => gehe('start') }, zweit: { text: 'Beispieldaten laden', tun: beispielLaden } }))];
   if (E.parallel && !E.id2 && E.art === 'klasse') { const kl = d.lehrer.find(l => l.klassenleitung === E.id); if (kl) { E.art2 = 'lehrer'; E.id2 = kl.id; } }
   // Werkzeugleiste: links die Ansichtswahl, rechts „Offene Punkte“, das Menü „⋯“ und „?“ (Tastatur und Legende)
   const werkzeuge = h('div', { class: 'editor-werkzeuge', role: 'toolbar', 'aria-label': 'Plan-Editor' },
-    h('h1', { class: 'nurvorlesen' }, 'Plan-Editor'),
+    h('h1', { class: 'nurvorlesen' }, 'Stundenplan'),
     planKopf('a'),
     h('div', { class: 'rechts' }),
     offenePunkteKnopf(''),
     h('button', { class: 'btn icon', id: 'editorMehr', type: 'button', 'aria-haspopup': 'menu', 'aria-label': 'Weitere Aktionen', title: 'Weitere Aktionen: Parallelansicht, Größe der Kacheln, Plan verwerfen', onclick: ev => editorMenue(ev.currentTarget) }, icon('mehr')),
     hilfe(editorLegende, { icon: 'hilfe', klasse: 'btn icon', label: 'Tastatur und Legende' }));
   const ohnePlan = !d.plan.platzierungen.length ? h('div', { class: 'karte', style: { marginBottom: '10px' } }, leerZustand({ klein: true, icon: 'kalender', titel: 'Noch kein Plan', text: 'Alle Stunden liegen in der Ablage unter dem Raster. „Plan berechnen“ legt sie automatisch; von Hand lassen sie sich aus der Ablage in den Plan ziehen.', aktion: { text: 'Plan berechnen', tun: () => { gehe('berechnung'); if (!APP.rechnung.laeuft) rechnungStart(); } } })) : null;
+  APP._seitenHilfe = { titel: 'Stundenplan', text: 'Der Wochenplan der gewählten Klasse, Person oder des Raums. Gewählt wird links im Explorer; Strg+Klick zeigt einen zweiten Plan daneben.\nEine Kachel lässt sich auf ein anderes Feld ziehen. Beim Ziehen zeigen die Felder, ob es geht: ✓ möglich, ~ mit Nachteilen, ✕ nicht möglich. Auf ein Feld mit Konflikt fragt der Plan nach und bietet eine Reparatur an.\nEin Klick auf eine Kachel zeigt rechts unter „Details“, welche Lehrkräfte, Co-Lehrkräfte und Räume für genau diesen Termin frei sind. „Probleme“ listet die Verstöße dieser Ansicht, „Zuordnen“ bietet Lehrkräfte und Räume zum Ziehen auf eine Stunde an.\nNicht platzierte Stunden liegen in der Ablage unter dem Raster. Wer eine Kachel dorthin zieht, nimmt sie aus dem Plan.' };
   const inhalt = h('div', { class: 'editor dichte-' + dichte() + (E.parallel ? ' parallel' : '') },
-    h('div', { class: 'editor-haupt' }, h('div', { class: 'plaene' }, planBox('a'), E.parallel ? planBox('b', true) : null), ablageDock()),
-    editorSeitenleiste());
+    h('div', { class: 'editor-haupt' }, h('div', { class: 'plaene' }, planBox('a'), E.parallel ? planBox('b', true) : null), ablageDock()));
   return [werkzeuge, ohnePlan, inhalt];
 };
 function editorTaste(ev) {

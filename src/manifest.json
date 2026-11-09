@@ -2,6 +2,7 @@
   "ausgabe": "index.html",
   "dateien": [
     "src/shell/10-kopf.html",
+    "src/css/00-schrift.css",
     "src/css/00-tokens.css",
     "src/css/01-grundlagen.css",
     "src/css/02-buttons-felder.css",
@@ -24,6 +25,7 @@
     "src/css/19-touch-responsive.css",
     "src/css/20-aufgaben-dialog.css",
     "src/css/21-aufsichten-wochenuebersicht.css",
+    "src/css/22-arbeitsflaeche.css",
     "src/shell/20-body.html",
     "src/engine/00-kopf.js",
     "src/engine/10-datenmodell.js",
@@ -42,6 +44,7 @@
     "src/ui/10-grundlagen.js",
     "src/ui/20-speicher-undo.js",
     "src/ui/30-kopf-navigation.js",
+    "src/ui/32-explorer-inspektor.js",
     "src/ui/40-palette-start.js",
     "src/ui/50-tabellen-matrix.js",
     "src/ui/60-stammdaten-schule.js",

@@ -230,12 +230,12 @@ SEITEN_RENDER.klassen = () => {
   const nL = nlektionen();
   const kTabs = [['klassen', 'Klassen'], ['tafeln', 'Stundentafeln']];
   if (reiterAktiv('klassen', kTabs) === 'tafeln') return [
-    seitenkopf('Klassen & Gruppen', 'Stundentafel: die Wochenstunden je Fach für jede Klasse in einer Tabelle – mit dem Scheren-Knopf lässt sich ein Fach in die Gruppen A und B teilen. Änderungen wirken sofort auf die Unterrichtsverteilung.'),
+    seitenkopf('Klassen & Stundentafel', 'Stundentafel: die Wochenstunden je Fach für jede Klasse in einer Tabelle – mit dem Scheren-Knopf lässt sich ein Fach in die Gruppen A und B teilen. Änderungen wirken sofort auf die Unterrichtsverteilung.'),
     reiterLeiste('klassen', kTabs),
     h('div', { class: 'reiterinhalt' }, stundentafelBereich())
   ];
   return [
-    seitenkopf('Klassen & Gruppen', 'Klassen mit Klassenraum, Schülerzahl, Stundenkorridor, Zeitprofil, Teilgruppen, Klassenteam und Klassenleitung. Die Stundentafel (Wochenstunden je Fach, mit Teilung in Gruppen) steht im zweiten Reiter.'),
+    seitenkopf('Klassen & Stundentafel', 'Klassen mit Klassenraum, Schülerzahl, Stundenkorridor, Zeitprofil, Teilgruppen, Klassenteam und Klassenleitung. Die Stundentafel (Wochenstunden je Fach, mit Teilung in Gruppen) steht im zweiten Reiter.'),
     reiterLeiste('klassen', kTabs),
     h('div', { class: 'karte' }, h('h3', { style: { marginTop: 0 } }, 'Massenanlage über Muster'),
       h('div', { class: 'zeile' }, muster, h('button', { class: 'btn', onclick: () => {

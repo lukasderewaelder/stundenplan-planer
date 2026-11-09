@@ -3,7 +3,7 @@
 @page { size: A4 landscape; margin: 10mm; }
 @media print {
   html, body { height: auto; background: var(--panel); }
-  #app, #toasts, dialog, .menue, #zughinweis { display: none !important; }
+  #app, #toasts, dialog, .menue, #zughinweis, .popover { display: none !important; }
   #druck { display: block; }
   .druckseite { page-break-after: always; break-after: page; height: 188mm; display: flex; flex-direction: column; }
   .druckseite:last-child { page-break-after: auto; break-after: auto; }

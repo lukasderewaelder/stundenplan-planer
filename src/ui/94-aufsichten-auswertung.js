@@ -35,7 +35,7 @@ function dienstSpringeZu(ziel) {
   else if (ziel.tab === 'wochenplan') st.ansicht = 'tag';
   if (ziel.dienst) { st.sel = ziel.dienst; st.ansicht = 'tag'; const x = APP.daten.dienste.plan.find(y => y.id === ziel.dienst); if (x) { st.tag = x.tag; if (st.filter === 'mitDiensten' || st.suche) { st.suche = ''; st.filter = 'alle'; } } }
   if (ziel.tab === 'pausen') { gehe('pausen'); return; }
-  const zielSeite = zuGesamt ? 'gesamtansicht' : 'aufsicht';
+  const zielSeite = zuGesamt ? 'gesamtansicht' : st.tab === 'auswertung' ? 'aufsichtauswertung' : 'aufsicht';
   if (APP.seite !== zielSeite) gehe(zielSeite); else render();
   if (ziel.dienst) requestAnimationFrame(() => { const el = document.querySelector('.tl-d[data-id="' + ziel.dienst + '"]'); if (el) { el.scrollIntoView({ block: 'center', inline: 'center' }); el.focus({ preventScroll: true }); el.classList.add('blitz'); setTimeout(() => el.classList.remove('blitz'), 1500); } });
   if (ziel.bedarf) { st.bedarfSel = ziel.bedarf; if (APP.seite === 'aufsicht') render(); requestAnimationFrame(() => { const el = document.getElementById('bedarfDetail'); if (el) { el.scrollIntoView({ block: 'center' }); el.classList.add('blitz'); setTimeout(() => el.classList.remove('blitz'), 1500); } }); }

@@ -1,7 +1,7 @@
 // Kapitel 9 Arbeitszeit, 10 Auswertung, 11 Selbsttest, 12 Druck & Export, 13 Stände, 14 Speichern und Hilfe
 export const k9 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   await c.gehe('arbeitszeit');
   await c.klicke2({ text: 'Übersicht je Person', teil: true, sel: '[role=tab], button', in: '#inhalt' }); await c.ruhe(600);
   await c.klicke2({ text: 'Alle Bestandteile', sel: 'button' }); await c.ruhe(700);
@@ -14,7 +14,7 @@ export const k9 = { bilder: async c => {
 
 export const k10 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   const sp = y => c.js(`document.querySelector('#inhalt').scrollTop = ${y}`);
   await c.gehe('auswertung');
   await c.marke2(1, { text: 'Prüfung des fertigen Plans', teil: true, sel: '#inhalt *', hoch: false }, { pos: 'links' }); await c.marke2(2, { text: 'Offene Punkte', sel: '[role=tab], button', in: '#inhalt' });
@@ -34,7 +34,7 @@ export const k10 = { bilder: async c => {
 
 export const k11 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   await c.expert(true);
   await c.gehe('auswertung', { reiter: 'selbsttest' });
   await c.klicke2({ text: 'Selbsttest', sel: '[role=tab], button', in: '#inhalt' }); await c.ruhe(700);
@@ -47,7 +47,7 @@ export const k11 = { bilder: async c => {
 
 export const k12 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   await c.gehe('ausgabe');
   await c.marke2(1, { sel: '#inhalt select', nth: 0, hoch: false }); await c.marke2(2, { text: 'Drucken / als PDF', sel: 'button' }); await c.marke2(3, { text: 'Schwarzweiß', teil: true, sel: '#inhalt label', hoch: 'label' });
   await c.marke2(4, { text: 'Uhrzeiten anzeigen', teil: true, sel: '#inhalt label', hoch: 'label' }); await c.marke2(5, { text: 'Plan als CSV', teil: true, sel: '#inhalt button' }); await c.marke2(6, { text: 'HTML-Datei mit allen Plänen', teil: true, sel: '#inhalt button' });
@@ -69,7 +69,7 @@ export const k12 = { bilder: async c => {
 
 export const k13 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   await c.js("standSpeichern('Entwurf 1')"); await c.ruhe(500);
   await c.js("aendern('Änderung', d => { d.plan.platzierungen = d.plan.platzierungen.slice(); })");
   await c.js("standSpeichern('Nach Gesamtkonferenz')"); await c.ruhe(500);

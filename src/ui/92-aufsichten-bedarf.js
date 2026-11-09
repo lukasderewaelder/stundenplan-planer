@@ -108,27 +108,42 @@ function dienstHinweise(d) {
 }
 SEITEN_RENDER.gesamtansicht = () => {
   const d = APP.daten;
-  const kopf = seitenkopf('Gesamtansicht', 'Alle Personen eines Tages (oder eine Person über die Woche) auf einer Zeitleiste: Unterricht, Co-Unterricht, Aufgaben, GTAs und Aufsichten in echten Uhrzeiten. Aufsichten lassen sich hier ziehen, in der Länge ändern, tauschen und neu anlegen; offene Schichten stehen rechts zum Hineinziehen auf eine Person. Den Bedarf (wann wie viele Personen) legt die Seite „Aufsichten“ fest.',
+  const kopf = seitenkopf('Aufsichten', 'Alle Personen eines Tages (oder eine Person über die Woche) auf einer Zeitleiste: Unterricht, Co-Unterricht, Aufgaben, GTAs und Aufsichten in echten Uhrzeiten. Aufsichten lassen sich hier ziehen, in der Länge ändern, tauschen und neu anlegen; offene Schichten stehen rechts zum Hineinziehen auf eine Person. Den Bedarf (wann wie viele Personen) legt Einrichten › Aufsichten fest.',
+    h('button', { class: 'btn flach', onclick: () => gehe('aufsicht'), title: 'Bedarf und Bereiche der Aufsichten bearbeiten (Einrichten › Aufsichten)' }, 'Bedarf bearbeiten'),
     h('button', { class: 'btn', onclick: () => dienstePlanenStarten(true), title: 'Behält alle vorhandenen Aufsichtseinsätze (außer automatischen mit Konflikt) und besetzt nur, was fehlt.' }, 'Nur offene besetzen'),
     h('button', { class: 'btn primaer', onclick: () => dienstePlanenStarten(false), title: 'Plant alle automatischen Aufsichten neu gegen den aktuellen Fach- und Co-Unterricht. Nur von Hand gesetzte und fixierte Einsätze bleiben.' }, 'Aufsichten planen'));
   let inhalt;
   try { inhalt = dienstWochenplanTab(); } catch (err) { console.error(err); inhalt = h('div', { class: 'hinweis err' }, 'Fehler beim Anzeigen: ' + err.message); }
   return [kopf, dienstHinweise(d), inhalt];
 };
+// Planen › Aufsichten › Auswertung: Kennzahlen und Meldungen der Aufsichtsplanung (früher ein Reiter der Seite „Aufsichten“)
+SEITEN_RENDER.aufsichtauswertung = () => {
+  const d = APP.daten, st = DS();
+  st.tab = 'auswertung';
+  const kopf = seitenkopf('Aufsichten', 'Wie gut die Aufsichten besetzt sind: offene Mindest- und Sollbesetzungen, Zeitkonflikte, Arbeitszeit und lange Anwesenheitstage. Jede Meldung führt zur Stelle in der Zeitleiste oder zum Bedarf.',
+    h('button', { class: 'btn flach', onclick: () => gehe('aufsicht'), title: 'Bedarf und Bereiche der Aufsichten bearbeiten (Einrichten › Aufsichten)' }, 'Bedarf bearbeiten'),
+    h('button', { class: 'btn', onclick: () => dienstePlanenStarten(true), title: 'Behält alle vorhandenen Aufsichtseinsätze (außer automatischen mit Konflikt) und besetzt nur, was fehlt.' }, 'Nur offene besetzen'),
+    h('button', { class: 'btn primaer', onclick: () => dienstePlanenStarten(false), title: 'Plant alle automatischen Aufsichten neu gegen den aktuellen Fach- und Co-Unterricht. Nur von Hand gesetzte und fixierte Einsätze bleiben.' }, 'Aufsichten planen'));
+  let inhalt;
+  try { inhalt = dienstAuswertungTab(); } catch (err) { console.error(err); inhalt = h('div', { class: 'hinweis err' }, 'Fehler beim Anzeigen: ' + err.message); }
+  return [kopf, dienstHinweise(d), inhalt];
+};
+// Einrichten › Aufsichten: Bedarf und Bereiche. Zeitleiste und Auswertung stehen unter Planen › Aufsichten.
 SEITEN_RENDER.aufsicht = () => {
   const d = APP.daten, DI = d.dienste, st = DS();
-  if (!DIENST_TABS.some(t => t[0] === st.tab)) st.tab = 'bedarf';
+  if (!DIENST_TABS.some(t => t[0] === st.tab) || st.tab === 'auswertung') st.tab = 'bedarf';
   const kopf = seitenkopf('Aufsichten', 'Eine gemeinsame Planung für alle Aufsichten: Pausen, Früh-/Spätaufsichten, Bistro, Springer und weitere benannte Aufsichtsphasen. Fachunterricht und Co-Unterricht werden immer zuerst geplant; „Plan berechnen“ berechnet die Aufsichten danach jedes Mal neu. Aufsichten gelten für die Pausen des Zeitrasters und werden nur an den Grenzen ihrer Staffelung (Abschnitte) geteilt – zwischen den Abschnitten darf das Personal wechseln. Verschobene Pausen der Zeitprofile teilen nichts: Wer deshalb länger Unterricht hat, übernimmt nur die Abschnitte, die danach beginnen. Aufsichten gehen zuerst an die Personen mit den meisten Minusstunden (Differenz Ist − Soll möglichst gleich); bei Gleichstand gilt: sonstiges Personal, dann Co-Lehrkräfte, dann Lehrkräfte.',
     h('label', { class: 'check', title: 'Gilt für Änderungen von Hand: Ändern sich Stundenplan, Zeitprofile, Verfügbarkeiten oder Bedarf, werden offene und nicht mehr passende automatische Aufsichtseinsätze sofort nachgeplant. Manuelle und fixierte Einsätze bleiben. Hat sich der Stundenplan oder die Co-Planung geändert, werden vorher auch die automatisch vergebenen Co-Lehrkräfte angepasst (mit Hinweis). „Plan berechnen“ berechnet die Aufsichten unabhängig von diesem Schalter immer vollständig neu.' }, h('input', { type: 'checkbox', checked: DI.auto, onchange: ev => dienstAendern(ev.target.checked ? 'Automatische Nachplanung an' : 'Automatische Nachplanung aus', dd => { dd.dienste.auto = ev.target.checked; }) }), 'automatisch nachplanen'),
     h('label', { class: 'check', title: 'Bei „Aufsichten planen“ bisherige Aufsichtszuordnungen bevorzugen.' }, h('input', { type: 'checkbox', checked: st.stabil !== false, onchange: ev => { st.stabil = ev.target.checked; } }), 'Änderungen gering halten'),
     h('button', { class: 'btn', onclick: () => dienstePlanenStarten(true), title: 'Behält alle vorhandenen Aufsichtseinsätze (außer automatischen mit Konflikt) und besetzt nur, was fehlt.' }, 'Nur offene besetzen'),
     h('button', { class: 'btn primaer', onclick: () => dienstePlanenStarten(false), title: 'Plant alle automatischen Aufsichten neu gegen den aktuellen Fach- und Co-Unterricht. Nur von Hand gesetzte und fixierte Einsätze bleiben; alte automatische Einträge werden ersetzt.' }, 'Aufsichten planen'));
   const hinweise = dienstHinweise(d);
-  const tabs = h('div', { class: 'reiter', role: 'tablist' }, DIENST_TABS.map(([k, t]) => h('button', { class: 'reiterknopf' + (st.tab === k ? ' aktiv' : ''), role: 'tab', 'aria-selected': st.tab === k ? 'true' : 'false', onclick: () => { st.tab = k; render(); } }, t)),
-    h('button', { class: 'reiterknopf', role: 'tab', 'aria-selected': 'false', title: 'Zeitleiste aller Personen mit Aufsichten (9. Punkt der Seitenleiste)', onclick: () => gehe('gesamtansicht') }, 'Gesamtansicht ', icon('pfeil-rechts', 'k'), DI.offen.length ? h('span', { class: 'badge ' + (DI.offen.some(o => o.prio === 'min') ? 'err' : 'warn') }, DI.offen.length) : null));
+  const tabs = h('div', { class: 'reiter', role: 'tablist' }, DIENST_TABS.filter(t => t[0] !== 'auswertung').map(([k, t]) => h('button', { class: 'reiterknopf' + (st.tab === k ? ' aktiv' : ''), role: 'tab', 'aria-selected': st.tab === k ? 'true' : 'false', onclick: () => { st.tab = k; render(); } }, t)),
+    h('span', { class: 'reiter-rechts' }, h('button', { class: 'btn klein flach', type: 'button', title: 'Zeitleiste aller Personen mit Aufsichten (Planen › Aufsichten)', onclick: () => gehe('gesamtansicht') }, 'Zeitleiste in Planen', DI.offen.length ? h('span', { class: 'badge ' + (DI.offen.some(o => o.prio === 'min') ? 'err' : 'warn') }, DI.offen.length) : null),
+      h('button', { class: 'btn klein flach', type: 'button', title: 'Kennzahlen und Meldungen der Aufsichtsplanung (Planen › Aufsichten › Auswertung)', onclick: () => gehe('aufsichtauswertung') }, 'Auswertung')));
   let inhalt;
   try {
-    inhalt = st.tab === 'bereiche' ? dienstBereicheTab() : st.tab === 'auswertung' ? dienstAuswertungTab() : dienstBedarfTab();
+    inhalt = st.tab === 'bereiche' ? dienstBereicheTab() : dienstBedarfTab();
   } catch (err) { console.error(err); inhalt = h('div', { class: 'hinweis err' }, 'Fehler beim Anzeigen: ' + err.message); }
   return [kopf, hinweise, tabs, h('div', { class: 'reiterinhalt' }, inhalt)];
 };

@@ -64,11 +64,13 @@ function ersterSatz(text) {
   }
   return [t, ''];
 }
+// Seitenkopf: Titel und der erste Satz der Beschreibung; der ganze Text steht rechts im Inspektor unter „Hilfe“ (APP._seitenHilfe).
 function seitenkopf(titel, text, ...rechts) {
   const [kurz, rest] = ersterSatz(text);
-  const offen = APP.mehr || (APP.mehr = {});
-  return h('div', { class: 'seitenkopf' }, h('div', { class: 'text' }, h('h1', {}, titel), kurz ? h('p', {}, kurz) : null,
-    rest ? h('details', { class: 'mehr', open: !!offen[titel], ontoggle: ev => { offen[titel] = ev.target.open; } }, h('summary', {}, 'Mehr erfahren'), h('p', {}, rest)) : null), ...rechts);
+  APP._seitenHilfe = { titel, text: String(text || '').trim() };
+  return h('div', { class: 'seitenkopf' }, h('div', { class: 'text' }, h('h1', {}, titel), kurz ? h('p', {}, kurz,
+    rest ? h('button', { class: 'mehrlink', type: 'button', title: 'Ausführliche Erklärung rechts im Inspektor zeigen', onclick: () => inspektorZeigen('hilfe') }, 'Mehr in der Hilfe') : null) : null),
+    rechts.filter(Boolean).length ? h('div', { class: 'seitenaktionen' }, ...rechts) : null);
 }
 
 // ---------- Hilfe-Popover ----------

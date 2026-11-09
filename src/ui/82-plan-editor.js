@@ -4,6 +4,21 @@ const ZEILE_H = 58, PAUSE_H = 16, LUECKE_H = 13, KOPF_H = 28;
 const DICHTE = { kompakt: { zeile: 44, f: 15, l: 14, r: 13 }, normal: { zeile: ZEILE_H, f: 16.5, l: 15, r: 14 }, gross: { zeile: 78, f: 19, l: 17, r: 15.5 } };
 function dichte() { return DICHTE[APP.meta.dichte] ? APP.meta.dichte : 'normal'; }
 function dichteSetzen(v) { APP.meta.dichte = v; metaSpeichern(); render(); }
+// Zeilenhöhe, mit der das Raster die Höhe des Inhaltsbereichs ausfüllt (höchstens 112 px). Abgezogen werden, was schon über dem Editor steht
+// (Meldungen, Reiterleiste – beim Zeichnen bereits im Inhaltsbereich), sowie Werkzeugleiste, Rahmen, Ablage und Abstände (EDITOR_RAND).
+const EDITOR_RAND = 152;
+function zeileFuellen(M, luecken, art) {
+  const inh = typeof document !== 'undefined' && document.querySelector('#inhalt');
+  if (!inh || APP.seite !== 'editor' || art === 'lehrer' || !APP.daten.plan.platzierungen.length) return 0;
+  let fest = KOPF_H, n = 0;
+  for (let hh = 0; hh < M.H; hh++) { if (M.pause[hh]) fest += PAUSE_H; else n++; if (luecken[hh]) fest += LUECKE_H; }
+  if (!n) return 0;
+  const oben = [...inh.children].filter(el => el.offsetParent !== null).reduce((m, el) => Math.max(m, el.offsetTop + el.offsetHeight + 10), 10);
+  const frei = inh.clientHeight - oben - EDITOR_RAND - (APP.editor.parallel ? 44 : 0) - fest;
+  return Math.min(112, Math.floor(frei / n));
+}
+let editorGroesse = 0;
+window.addEventListener('resize', () => { clearTimeout(editorGroesse); editorGroesse = setTimeout(() => { if (APP.seite === 'editor' && !document.querySelector('dialog[open]') && !document.body.classList.contains('am-ziehen')) render(); }, 160); });
 function ansichtListe(art) {
   const d = APP.daten;
   if (art === 'klasse') return klassenAlphabetisch(d.klassen).map(k => [k.id, k.name]);
@@ -68,11 +83,12 @@ function planRaster(art, id, rolle) {
   const woche = abWochenAktiv() ? (rolle === 'b' ? APP.editor.woche2 : APP.editor.woche) : 'alle';
   const x = ansichtIndex(M, art, id);
   const D = M.D, H = M.H, S = M.S;
-  const DI = DICHTE[dichte()], ZH = DI.zeile;
-  const hoehe = hh => M.pause[hh] ? PAUSE_H : ZH;
+  const DI = DICHTE[dichte()];
   const zc = zeitCache(M.data), basis = zeitBasis(zc, art, id);
   // Pausen zwischen zwei Stunden (ab 10 Minuten) bekommen eine eigene schmale Zeile
   const luecken = planLuecken(M.data, basis);
+  const ZH = Math.max(DI.zeile, zeileFuellen(M, luecken, art));
+  const hoehe = hh => M.pause[hh] ? PAUSE_H : ZH;
   const oben = [], zeile = [], hoehen = []; let y = 0;
   for (let hh = 0; hh < H; hh++) { oben.push(y); zeile.push(hoehen.length + 2); hoehen.push(hoehe(hh)); y += hoehe(hh); if (luecken[hh]) { hoehen.push(LUECKE_H); y += LUECKE_H; } }
   const grid = h('div', { class: 'plangrid', role: 'region', 'aria-label': 'Wochenplan', dataset: { rolle }, style: { '--tage': D, gridTemplateColumns: '70px repeat(' + D + ', minmax(84px, 1fr))', gridTemplateRows: KOPF_H + 'px ' + hoehen.map(x => x + 'px').join(' ') } });

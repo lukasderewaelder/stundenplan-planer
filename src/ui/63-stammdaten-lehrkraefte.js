@@ -121,7 +121,7 @@ SEITEN_RENDER.lehrer = () => {
     h('div', { style: { marginTop: '8px' } }, verfLegende()));
   const verfSp = { k: 'verf', titel: 'Verfügbarkeit', typ: 'custom', sortierbar: false, hilfe: 'Stunden und Pausen sperren, wünschen oder als „ungern“ markieren – Klick öffnet „Zeiten & Verfügbarkeit“.', render: l => miniVerf(l.verfuegbarkeit, () => personDialog(l, 'verf'), 'Verfügbarkeit von ' + lehrerName(l) + ' bearbeiten') };
   return [
-    seitenkopf('Lehrkräfte', 'Lehrkräfte, Co-Kräfte und weiteres Personal (z. B. für Aufsichten) mit Kürzel, Fächern als Lehrkraft und als Co, Wochenarbeitszeit, Klassenleitung, Zeiten & Verfügbarkeit und Aufsichten. Die Klassenleitung wird hier oder bei den Klassen zugeordnet.'),
+    seitenkopf('Personen', 'Lehrkräfte, Co-Kräfte und weiteres Personal (z. B. für Aufsichten) mit Kürzel, Fächern als Lehrkraft und als Co, Wochenarbeitszeit, Klassenleitung, Zeiten & Verfügbarkeit und Aufsichten. Die Klassenleitung wird hier oder bei den Klassen zugeordnet.'),
     kopfKarte,
     h('div', { class: 'abstand' }),
     tabelle({

@@ -20,7 +20,7 @@ function tabelle(cfg) {
   [...st.auswahl].forEach(id => { if (!alleIds.has(id)) st.auswahl.delete(id); });
   if (md && APP.markiere && alleIds.has(APP.markiere)) st.detail = APP.markiere; // Sprung von einer Meldung oder neue Zeile: gleich die Details zeigen
   let sichtbar = [];
-  const wrap = h('div', {});
+  const wrap = h('div', { class: md ? null : 'tabellenblock' }); // Tabellenansicht: Werkzeuge und Tabelle so breit wie die Tabelle
   const suche = h('input', { type: 'search', placeholder: 'Suchen …', value: st.suche, 'aria-label': 'Tabelle durchsuchen', oninput: ev => { st.suche = ev.target.value; zeichneKoerper(); } });
   const neueZeile = () => { let neuId; aendern(cfg.titel + ': neue Zeile', d => { const o = cfg.neu(d); neuId = o.id; cfg.zeilen(d).push(o); }); APP.markiere = neuId; render(); if (md) { const f = $('#inhalt .md-detail input[type=text]'); if (f) { f.focus(); f.select(); } } };
   const dupliziere = z => { let neuId; aendern(cfg.titel + ': Zeile dupliziert', d => { const quelle = findeId(cfg.zeilen(d), z.id); const kopie = cfg.duplizieren ? cfg.duplizieren(d, quelle) : Object.assign(JSON.parse(JSON.stringify(quelle)), { id: neueId(z.id.split('_')[0] || 'x') }); neuId = kopie.id; const liste = cfg.zeilen(d); liste.splice(liste.indexOf(quelle) + 1, 0, kopie); }); APP.markiere = neuId; render(); };
@@ -32,7 +32,7 @@ function tabelle(cfg) {
       [['detail', 'Liste mit Details', 'Links die Liste, rechts alle Angaben des gewählten Eintrags'], ['tabelle', 'Tabelle', 'Alle Einträge als breite Tabelle – zum Vergleichen und für viele Änderungen auf einmal']].map(([m, t, tip]) => h('button', { type: 'button', class: (md ? 'detail' : 'tabelle') === m ? 'aktiv' : '', 'aria-pressed': (md ? 'detail' : 'tabelle') === m ? 'true' : 'false', title: tip, onclick: () => modusSetzen(m) }, t))) : null,
     ansichten && !md ? h('span', { class: 'zeile eng ansichtwahl', role: 'group', 'aria-label': 'Ansicht der Tabelle' }, h('span', { class: 'klein muted' }, 'Spalten:'),
       ansichten.map(a => h('button', { class: 'btn klein' + (a.k === st.ansicht ? ' aktiv' : ''), 'aria-pressed': a.k === st.ansicht ? 'true' : 'false', title: a.hilfe || null, onclick: () => { st.ansicht = a.k; APP.meta.tabAnsicht = Object.assign({}, APP.meta.tabAnsicht, { [cfg.key]: a.k }); metaSpeichern(); render(); } }, a.titel))) : null,
-    h('div', { class: 'rechts' }), suche,
+    h('div', { class: 'rechts' }), md ? null : suche,
     h('span', { class: 'muted klein' }, zeilenAlle.length + (zeilenAlle.length === 1 ? ' Eintrag' : ' Einträge')));
   const leiste = h('div', { class: 'auswahlleiste', role: 'region', 'aria-label': 'Aktionen für die Auswahl' });
   const alleBox = h('input', { type: 'checkbox', 'aria-label': 'Alle sichtbaren Zeilen auswählen', title: 'Alle sichtbaren Zeilen auswählen', onchange: ev => { sichtbar.forEach(id => { if (ev.target.checked) st.auswahl.add(id); else st.auswahl.delete(id); }); zeichneKoerper(); } });
@@ -103,7 +103,7 @@ function tabelle(cfg) {
       const gew = st.auswahl.has(z.id);
       const tr = h('tr', { 'data-id': z.id, class: gew ? 'gewaehlt' : '' });
       tr.append(h('td', {}, h('input', { type: 'checkbox', checked: gew, 'aria-label': 'Zeile auswählen', onchange: ev => { if (ev.target.checked) st.auswahl.add(z.id); else st.auswahl.delete(z.id); tr.classList.toggle('gewaehlt', ev.target.checked); zeichneLeiste(); alleStatus(); } })));
-      spSicht.forEach(sp => tr.append(h('td', { class: sp.typ === 'zahl' ? 'zahl' : '' }, zelle(cfg, sp, z))));
+      spSicht.forEach(sp => tr.append(h('td', { class: [sp.typ === 'zahl' ? 'zahl' : '', sp.breite ? 'fest' : ''].filter(Boolean).join(' ') || null }, zelle(cfg, sp, z))));
       tr.append(h('td', { class: 'aktion' },
         h('button', { class: 'btn icon klein', title: 'Zeile duplizieren', 'aria-label': 'Zeile duplizieren', onclick: () => dupliziere(z) }, icon('kopieren')),
         h('button', { class: 'btn icon klein gefahr', title: 'Zeile löschen', 'aria-label': 'Zeile löschen', onclick: () => zeileLoeschen(cfg, z.id) }, icon('papierkorb'))));
@@ -150,15 +150,18 @@ function tabelle(cfg) {
   function alleStatus() { const n = sichtbar.filter(id => st.auswahl.has(id)).length; alleBox.checked = n > 0 && n === sichtbar.length; alleBox.indeterminate = n > 0 && n < sichtbar.length; }
   zeichneKoerper();
   if (md) {
+    // Die Liste steht links im Explorer (render() hängt sie dort ein); in der Mitte bleiben Werkzeuge und Details
     const sortierbar = spAlle.filter(sp => sp.sortierbar !== false);
-    wrap.append(werkzeuge, leiste, h('div', { class: 'md' + (zeilenAlle.length ? '' : ' leer') },
-      zeilenAlle.length ? h('div', { class: 'md-links' },
-        h('div', { class: 'md-listenkopf' }, alleBox,
-          sel([['', 'wie angelegt']].concat(sortierbar.map(sp => [sp.k, sp.titel])), st.sort || '', v => { st.sort = v || null; st.dir = 1; render(); }, { 'aria-label': 'Sortieren nach', title: 'Sortieren nach' }),
-          h('button', { class: 'btn icon klein', disabled: !st.sort, 'aria-label': st.dir > 0 ? 'Aufsteigend sortiert – umkehren' : 'Absteigend sortiert – umkehren', title: st.dir > 0 ? 'Aufsteigend sortiert – umkehren' : 'Absteigend sortiert – umkehren', onclick: () => { st.dir = -st.dir; render(); } }, icon(st.dir > 0 ? 'unten' : 'oben'))),
-        mdListe) : null,
-      mdDetail));
-  } else wrap.append(werkzeuge, leiste, h('div', { class: 'tabwrap' }, h('table', { class: 'tab' + (cfg.klasse ? ' ' + cfg.klasse : '') + (ansicht ? ' ansicht-' + ansicht.k : '') }, h('thead', {}, kopf), tbody)));
+    suche.id = 'mdSuche'; suche.placeholder = (cfg.suchePlatzhalter || 'Suchen …');
+    const links = zeilenAlle.length ? h('div', { class: 'md-links' },
+      h('label', { class: 'ex-suche md-suche' }, icon('lupe'), suche),
+      h('div', { class: 'md-listenkopf' }, alleBox,
+        sel([['', 'wie angelegt']].concat(sortierbar.map(sp => [sp.k, sp.titel])), st.sort || '', v => { st.sort = v || null; st.dir = 1; render(); }, { 'aria-label': 'Sortieren nach', title: 'Sortieren nach' }),
+        h('button', { class: 'btn icon klein', disabled: !st.sort, 'aria-label': st.dir > 0 ? 'Aufsteigend sortiert – umkehren' : 'Absteigend sortiert – umkehren', title: st.dir > 0 ? 'Aufsteigend sortiert – umkehren' : 'Absteigend sortiert – umkehren', onclick: () => { st.dir = -st.dir; render(); } }, icon(st.dir > 0 ? 'unten' : 'oben'))),
+      mdListe) : null;
+    if (cfg.listeImExplorer === false) wrap.append(werkzeuge, leiste, h('div', { class: 'md' + (zeilenAlle.length ? '' : ' leer') }, links, mdDetail));
+    else { APP._explorerTeil = links; wrap.append(werkzeuge, leiste, h('div', { class: 'md ohne-liste' }, mdDetail)); }
+  } else wrap.append(werkzeuge, leiste, h('div', { class: 'tabwrap stamm' }, h('table', { class: 'tab' + (cfg.klasse ? ' ' + cfg.klasse : '') + (ansicht ? ' ansicht-' + ansicht.k : '') }, h('thead', {}, kopf), tbody)));
   return wrap;
 }
 async function massenLoeschen(cfg, ids) {

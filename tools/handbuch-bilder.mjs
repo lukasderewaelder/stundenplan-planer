@@ -13,7 +13,7 @@ const bilder = path.join(wurzel, 'handbuch', 'bilder');
 const zustandDatei = path.join(wurzel, 'handbuch', '_zustand.json');
 const warte = ms => new Promise(r => setTimeout(r, ms));
 export const BREITE = 1280, HOEHE = 860, FAKTOR = 1.5;
-const INHALT = { x: 284, y: 56, w: BREITE - 284, h: HOEHE - 56 }; // Arbeitsfläche ohne Kopfleiste und Seitenleiste
+const INHALT = { x: 240, y: 44, w: BREITE - 240, h: HOEHE - 44 }; // Arbeitsfläche ohne Kopfleiste und Seitenleiste
 const A = (x, y, w, h) => ({ x, y, w, h });
 
 // ---------- Hilfsfunktionen, die in der Seite laufen ----------

@@ -1,7 +1,7 @@
 // Kapitel 4 „Regeln & Gewichte“ (Expertenmodus) und Kapitel 5 „Plan berechnen“
 export const k4 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   const sp = y => c.js(`document.querySelector('#inhalt').scrollTop = ${y}`);
   await c.expert(true);
   await c.gehe('regeln');
@@ -29,7 +29,7 @@ export const k4 = { bilder: async c => {
 
 export const k5 = { bilder: async c => {
   const { A, INHALT } = c;
-  const SEITE = (h, y = 56) => A(INHALT.x, y, INHALT.w, h);
+  const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
   await c.gehe('berechnung');
   await c.marke2(1, { text: 'Rechenzeit', teil: true, sel: '#inhalt label', hoch: 'label' }); await c.marke2(2, { text: 'Ausgangspunkt', teil: true, sel: '#inhalt label', hoch: 'label' });
   await c.marke2(3, { text: 'Änderungen minimal halten', teil: true, sel: '#inhalt label', hoch: 'label' }); await c.marke2(4, { text: 'Teilneuplanung', teil: true, sel: '#inhalt label', hoch: 'label' });

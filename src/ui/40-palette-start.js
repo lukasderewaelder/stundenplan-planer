@@ -4,7 +4,7 @@
 function paletteEintraege() {
   const d = APP.daten, hatPlan = d.plan.platzierungen.length > 0, out = [];
   const seite = (id, titel, sym, zusatz, tun) => out.push({ art: 'Seite', text: titel, icon: sym, such: titel + ' ' + (zusatz || ''), tun: tun || (() => gehe(id)) });
-  SEITEN.forEach(x => seite(x.id, x.titel, x.symbol, bereichVon(x.id).titel || ''));
+  SEITEN.forEach(x => seite(x.id, x.titel, x.symbol, ortVon(x.id) + ' ' + (x.kurz || '')));
   seite('stundentafeln', 'Stundentafeln', 'tabelle', 'Wochenstunden Klassen Fächer');
   seite('zeitprofile', 'Zeitprofile', 'uhr', 'Unterrichtszeiten Klassen');
   seite('mitarbeitende', 'Einsätze & Anwesenheit', 'person', 'Einsatzübersicht Früh Spät Springer Anwesenheit Lücken Arbeitszeit');
@@ -13,6 +13,9 @@ function paletteEintraege() {
   seite('regeln', 'Regeln für Aufsichten', 'regler', 'Wichtigkeit Gewichte', () => gehe('regeln', { reiter: 'dienste' }));
   const aktion = (text, sym, tun, such) => out.push({ art: 'Aktion', text, icon: sym, such: text + ' ' + (such || ''), tun });
   aktion('Plan berechnen', 'start', () => { gehe('berechnung'); if (!APP.rechnung.laeuft) rechnungStart(); }, 'starten rechnen optimieren');
+  MODI.forEach((m, i) => aktion('Modus ' + m.titel, m.id === 'start' ? 'haus' : m.id === 'einrichten' ? 'regler' : m.id === 'planen' ? 'kalender' : 'drucker', () => modusWechseln(m.id), 'Alt+' + (i + 1) + ' Modus wechseln'));
+  aktion('Inspektor ein- oder ausblenden', 'seitenleiste', () => inspektorUmschalten(), 'rechts Details Probleme Hilfe Seitenleiste');
+  aktion('Explorer ein- oder ausblenden', 'seitenleiste', () => NAV_SCHMAL.matches ? navDrawer() : explorerUmschalten(), 'links Liste Seitenleiste');
   aktion('Projekt exportieren', 'herunterladen', () => exportJson(false), 'speichern Datei JSON sichern');
   aktion('Projekt importieren …', 'ordner', importDialog, 'laden öffnen Datei JSON');
   aktion('Pläne drucken / als PDF', 'drucker', () => gehe('ausgabe'), 'Druck Export PDF');
@@ -124,63 +127,87 @@ function startStand() {
 // Der nächste sinnvolle Schritt: der erste nicht erledigte Bereich in der Reihenfolge der Arbeit
 function startNaechster(z) {
   const R = APP.rechnung;
-  if (R.laeuft) return { titel: 'Die Berechnung läuft', text: 'Der Plan wird gerade berechnet. Der Fortschritt steht auf der Seite „Plan berechnen“; das Ergebnis wird automatisch übernommen.', knopf: 'Fortschritt ansehen', tun: () => gehe('berechnung') };
-  if (!z.nF) return { titel: 'Fächer anlegen', text: 'Jedes Fach bekommt Kürzel, Farbe und – wenn nötig – einen Raumtyp. Die üblichen Fächer lassen sich mit einem Klick übernehmen. Das Zeitraster der Schule steht schon mit Standardwerten bereit und lässt sich unter „Schule & Zeiten“ anpassen.', knopf: 'Fächer anlegen', tun: () => gehe('faecher'), zweit: ['Zeitraster ansehen', () => gehe('schule')] };
+  if (R.laeuft) return { titel: 'Die Berechnung läuft', text: 'Der Plan wird gerade berechnet. Der Fortschritt steht oben in der Kopfleiste und unter Planen › Berechnung; das Ergebnis wird automatisch übernommen.', knopf: 'Fortschritt ansehen', tun: () => gehe('berechnung') };
+  if (!z.nF) return { titel: 'Fächer anlegen', text: 'Jedes Fach bekommt Kürzel, Farbe und – wenn nötig – einen Raumtyp. Die üblichen Fächer lassen sich mit einem Klick übernehmen. Das Zeitraster der Schule steht schon mit Standardwerten bereit und lässt sich unter Einrichten › Schule & Zeiten anpassen.', knopf: 'Fächer anlegen', tun: () => gehe('faecher'), zweit: ['Zeitraster ansehen', () => gehe('schule')] };
   if (!z.nR) return { titel: 'Räume anlegen', text: 'Klassenräume, Fachräume und Hallen mit Typ und Platzzahl – die Berechnung legt jeden Unterricht in einen passenden Raum.', knopf: 'Räume anlegen', tun: () => gehe('raeume') };
-  if (!z.nL) return { titel: 'Mitarbeitende anlegen', text: 'Lehrkräfte, Co-Kräfte und weiteres Personal mit Fächern, Wochenarbeitszeit und Verfügbarkeit. Eine Liste aus Excel lässt sich direkt einfügen.', knopf: 'Mitarbeitende anlegen', tun: () => gehe('lehrer') };
+  if (!z.nL) return { titel: 'Personen anlegen', text: 'Lehrkräfte, Co-Kräfte und weiteres Personal mit Fächern, Wochenarbeitszeit und Verfügbarkeit. Eine Liste aus Excel lässt sich direkt einfügen.', knopf: 'Personen anlegen', tun: () => gehe('lehrer') };
   if (!z.nK) return { titel: 'Klassen anlegen', text: 'Klassen mit Jahrgang, Schülerzahl und Klassenraum – mehrere auf einmal über ein Muster wie „5a–5d“.', knopf: 'Klassen anlegen', tun: () => gehe('klassen') };
   if (!z.nU) return { titel: 'Stundentafel ausfüllen', text: 'Die Stundentafel nennt die Wochenstunden je Fach für jede Klasse. Daraus erzeugt das Programm den Unterricht von selbst.', knopf: 'Zur Stundentafel', tun: () => gehe('stundentafeln') };
   if (z.f) return { titel: (z.f === 1 ? '1 Fehler' : z.f + ' Fehler') + ' in den Daten beheben', text: 'Die Vorprüfung hat Fehler gefunden, mit denen sich kein Plan berechnen lässt. Jede Meldung führt mit einem Klick zur betroffenen Stelle.', knopf: 'Fehler ansehen', tun: () => gehe('pruefung'), art: 'err' };
   if (!z.plan) return { titel: 'Plan berechnen', text: 'Die Daten sind bereit' + (z.w ? ' (' + z.w + (z.w === 1 ? ' Warnung' : ' Warnungen') + ' – sie blockieren nicht)' : '') + '. Die Berechnung legt Unterricht, Lehrkräfte, Räume, Co-Lehrkräfte und Aufsichten in einem Durchgang fest.', knopf: 'Plan berechnen', tun: () => { gehe('berechnung'); if (!APP.rechnung.laeuft) rechnungStart(); }, zweit: z.w ? ['Warnungen ansehen', () => gehe('pruefung')] : null };
   if (z.st.ampel === 'rot' || z.nOffen) { const n = z.st.ampel === 'rot' ? (z.nHart || z.nOffen || 1) : z.nOffen; return { titel: n + (z.st.ampel === 'rot' ? (n === 1 ? ' Problem' : ' Probleme') : (n === 1 ? ' offenen Punkt' : ' offene Punkte')) + ' klären', text: z.st.ampel === 'rot' ? 'Der Plan verletzt noch mindestens eine Pflichtbedingung. Die Liste der offenen Punkte führt jeweils direkt zur betroffenen Stunde.' : 'Der Plan ist vollständig. Einzelne Punkte lassen sich im Editor von Hand noch verbessern.', knopf: 'Offene Punkte ansehen', tun: () => gehe('auswertung', { reiter: 'offen' }), zweit: ['Plan im Editor öffnen', () => gehe('editor')], art: z.st.ampel === 'rot' ? 'err' : '' }; }
-  return { titel: 'Pläne drucken und weitergeben', text: (z.st.ampel === 'gelb' ? 'Der Plan ist vollständig; einzelne Wünsche sind noch nicht erfüllt (siehe Plan-Ampel).' : 'Der Plan ist in Ordnung.') + ' Klassen-, Lehrer- und Raumpläne lassen sich drucken, als PDF speichern oder als Datei weitergeben.', knopf: 'Zu Druck & Export', tun: () => gehe('ausgabe'), zweit: ['Plan im Editor ansehen', () => gehe('editor')], art: 'ok' };
+  return { titel: 'Pläne drucken und weitergeben', text: (z.st.ampel === 'gelb' ? 'Der Plan ist vollständig; einzelne Wünsche sind noch nicht erfüllt (siehe Plan-Ampel).' : 'Der Plan ist in Ordnung.') + ' Klassen-, Lehrer- und Raumpläne lassen sich drucken, als PDF speichern oder als Datei weitergeben.', knopf: 'Zu Drucken & Export', tun: () => gehe('ausgabe'), zweit: ['Stundenplan ansehen', () => gehe('editor')], art: 'ok' };
 }
+// Namen der sieben Punkte der Checkliste (in der Reihenfolge der Arbeit)
+const START_NAMEN = { schule: 'Schule, Fächer und Räume', lehrer: 'Personen', klassen: 'Klassen und Stundentafel', pausen: 'Aufsichten', pruefung: 'Daten prüfen', berechnung: 'Plan berechnen', editor: 'Plan nachbessern' };
 SEITEN_RENDER.start = () => {
   const d = APP.daten, z = startStand();
   const lokal = h('p', { class: 'startlokal muted klein' }, icon('schloss', 'k'), 'Alle Daten bleiben lokal in diesem Browser – es wird nichts an einen Server gesendet.');
   const handbuch = h('p', { class: 'startlokal muted klein' }, icon('buch', 'k'), 'Neu hier? ', handbuchLink('Handbuch als PDF herunterladen'), ' – Schnellstart, Bilder, FAQ und Glossar.');
+  APP._seitenHilfe = { titel: 'Start', text: 'Start zeigt, wo das Projekt steht: oben den nächsten sinnvollen Schritt, darunter die Checkliste vom Zeitraster bis zum fertigen Plan. Jeder Punkt führt mit einem Klick an die Stelle, an der er erledigt wird.\nEingerichtet wird im Modus „Einrichten“, berechnet und nachgebessert im Modus „Planen“, gedruckt und gesichert im Modus „Ausgeben“. Rechts im Inspektor stehen immer die Probleme, die zur Ansicht passen.' };
   // Ohne Daten: Auswahl, womit es losgehen soll
   if (!z.hatDaten) {
-    const wahl = (sym, titel, text, knopf, tun, primaer) => h('div', { class: 'karte startwahl' + (primaer ? ' haupt' : '') }, h('span', { class: 'swsym' }, icon(sym)), h('h2', {}, titel), h('p', { class: 'muted' }, text),
+    const wahl = (sym, titel, text, knopf, tun, primaer) => h('div', { class: 'startwahl' + (primaer ? ' haupt' : '') }, h('span', { class: 'swsym' }, icon(sym)), h('h2', {}, titel), h('p', { class: 'muted' }, text),
       h('button', { class: 'btn' + (primaer ? ' primaer' : ''), onclick: tun }, knopf));
-    return [
+    return h('div', { class: 'startseite leer' },
       h('div', { class: 'starthero' }, h('h1', {}, 'Willkommen beim Stundenplaner'),
         h('p', {}, 'Dieses Werkzeug erzeugt einen Wochenstundenplan, lässt ihn von Hand nachbearbeiten und gibt ihn druckfertig aus. Es läuft vollständig offline in dieser einen Datei. Womit soll es losgehen?')),
       h('div', { class: 'startwahlen' },
-        wahl('kompass', 'Neu einrichten', 'In sieben Schritten von den Unterrichtszeiten bis zum fertigen Plan – die Übersicht zeigt jederzeit den nächsten Schritt.', 'Einrichtung starten', () => gehe('schule'), true),
-        wahl('stern', 'Beispieldaten ansehen', 'Eine fertige Beispielschule mit zwölf Klassen zum Ausprobieren – lässt sich jederzeit wieder ersetzen.', 'Beispieldaten laden', beispielLaden),
+        wahl('kompass', 'Neu einrichten', 'Vom Zeitraster bis zum fertigen Plan. Die Checkliste auf Start zeigt jederzeit den nächsten Schritt.', 'Einrichtung starten', () => gehe('schule'), true),
+        wahl('stern', 'Beispieldaten ansehen', 'Eine fertige Beispielschule mit zwölf Klassen zum Ausprobieren. Sie lässt sich jederzeit wieder ersetzen.', 'Beispieldaten laden', beispielLaden),
         wahl('ordner', 'Projekt importieren', 'Eine früher exportierte Projektdatei (JSON) öffnen und dort weiterarbeiten.', 'Projektdatei wählen …', importDialog)),
-      lokal, handbuch
-    ];
+      lokal, handbuch);
   }
   const nx = startNaechster(z);
-  const SYM = { fertig: () => icon('haken'), offen: (i, s) => s.schwer ? '!' : String(i + 1), leer: i => String(i + 1) };
-  const WORT = s => s.status === 'fertig' ? 'fertig' : s.status === 'offen' ? (s.schwer ? 'Fehler' : 'offen') : s.optional ? 'optional' : 'leer';
-  const bereiche = BEREICHE.filter(b => !b.start);
-  const stepper = h('ol', { class: 'stepper', 'aria-label': 'Stand der sieben Schritte' }, z.schritte.map((s, i) => { const b = bereiche.find(x => x.id === s.id) || bereiche[i];
-    return h('li', {}, h('button', { class: 'schritt ' + s.status + (s.schwer ? ' schwer' : ''), type: 'button', onclick: () => gehe(s.ziel), 'aria-label': (i + 1) + '. ' + b.titel + ' – ' + WORT(s) + ': ' + s.text },
-      h('span', { class: 'snr', 'aria-hidden': 'true' }, SYM[s.status](i, s)),
-      h('span', { class: 'stext' }, h('b', {}, b.titel), h('span', { class: 'sinfo' }, s.text)),
-      h('span', { class: 'sstatus' }, WORT(s)), h('span', { class: 'spfeil', 'aria-hidden': 'true' }, icon('rechts')))); }));
+  const WORT = s => s.status === 'fertig' ? 'erledigt' : s.status === 'offen' ? (s.schwer ? 'Fehler' : 'offen') : s.optional ? 'optional' : 'noch leer';
   const fertig = z.schritte.filter(s => s.status === 'fertig').length;
-  // Plan-Ampel: Zustand und Zahl der offenen Punkte – die Einzelheiten stehen unter „Ergebnis & Auswertung“ → „Offene Punkte“
+  const liste = h('ol', { class: 'checkliste', 'aria-label': 'Checkliste: ' + fertig + ' von ' + z.schritte.length + ' erledigt' }, z.schritte.map((s, i) => {
+    const name = START_NAMEN[s.id] || s.id;
+    return h('li', { class: s.status + (s.schwer ? ' schwer' : '') },
+      h('span', { class: 'cl-stand', 'aria-hidden': 'true' }, s.status === 'fertig' ? icon('haken', 'k') : s.schwer ? '!' : String(i + 1)),
+      h('span', { class: 'cl-text' }, h('b', {}, name), h('span', {}, s.text)),
+      h('span', { class: 'cl-wort' }, WORT(s)),
+      h('button', { class: 'btn klein flach cl-ziel', type: 'button', onclick: () => gehe(s.ziel), 'aria-label': name + ' (' + WORT(s) + '): ' + ortVon(s.ziel) + ' öffnen' }, ortVon(s.ziel)));
+  }));
   const ampelText = !z.plan ? 'Noch kein Plan' : z.st.ampel === 'rot' ? 'Plan mit Problemen' : z.nOffen ? 'Plan vollständig' : z.st.ampel === 'gelb' ? 'Plan vollständig' : 'Plan in Ordnung';
-  const ampel = h('div', { class: 'karte startampel ' + (z.plan ? z.st.ampel : 'leer') },
-    h('div', { class: 'sakopf' }, h('span', { class: 'ampel gross ' + (z.plan && z.st.ampel !== 'leer' ? z.st.ampel : ''), role: 'img', 'aria-label': 'Plan-Ampel: ' + (AMPEL_TEXT[z.st.ampel] || AMPEL_TEXT.leer)[0] }), h('div', {}, h('div', { class: 'eyebrow' }, 'Plan-Ampel'), h('h2', {}, ampelText))),
-    h('p', { class: 'muted' }, (AMPEL_TEXT[z.plan ? z.st.ampel : 'leer'] || AMPEL_TEXT.leer)[1]),
-    z.plan ? h('p', { class: z.nOffen || z.st.ampel === 'rot' ? '' : 'saok' }, z.nOffen ? h('b', {}, z.nOffen + (z.nOffen === 1 ? ' offener Punkt' : ' offene Punkte')) : z.st.ampel === 'rot' ? h('b', {}, hartText(z.nHart || 1)) : '✓ Keine offenen Punkte') : null,
-    z.plan ? h('div', { class: 'zeile' }, h('button', { class: 'btn klein', onclick: () => gehe('auswertung', { reiter: 'offen' }) }, z.nOffen || z.st.ampel === 'rot' ? 'Offene Punkte ansehen' : 'Zur Auswertung'), h('button', { class: 'btn klein ghost', onclick: () => gehe('editor') }, 'Plan öffnen')) : null);
+  const T = AMPEL_TEXT[z.plan ? z.st.ampel : 'leer'] || AMPEL_TEXT.leer;
+  const planstatus = h('section', { class: 'kasten startampel ' + (z.plan ? z.st.ampel : 'leer') },
+    h('h2', {}, 'Planstatus'),
+    h('div', { class: 'ampelzeile' }, h('span', { class: 'ampel gross ' + (z.plan && z.st.ampel !== 'leer' ? z.st.ampel : ''), role: 'img', 'aria-label': 'Plan-Ampel: ' + T[0] }), h('b', {}, ampelText)),
+    h('p', { class: 'muted klein' }, T[1]),
+    z.plan ? h('p', {}, z.nOffen ? h('b', {}, z.nOffen + (z.nOffen === 1 ? ' offener Punkt' : ' offene Punkte')) : z.st.ampel === 'rot' ? h('b', {}, hartText(z.nHart || 1)) : 'Keine offenen Punkte.') : null,
+    h('div', { class: 'zeile' }, z.plan ? h('button', { class: 'btn klein', onclick: () => inspektorZeigen('probleme') }, z.nOffen || z.st.ampel === 'rot' ? 'Probleme ansehen' : 'Probleme und Hinweise') : null, z.plan ? h('button', { class: 'btn klein flach', onclick: () => gehe('editor') }, 'Stundenplan öffnen') : h('button', { class: 'btn klein', onclick: () => gehe('pruefung') }, 'Daten prüfen')));
+  const tage = exportTage();
+  const projekt = h('section', { class: 'kasten' }, h('h2', {}, 'Projektdatei'),
+    h('p', { class: 'klein' }, APP.meta.letzterExport ? 'Zuletzt exportiert am ' + datum(APP.meta.letzterExport) + '.' : 'Noch nie exportiert.', tage > 7 ? h('span', { class: 'warn-text' }, ' Seit ' + tage + ' Tagen keine Sicherung – Browserdaten können beim Löschen des Verlaufs verloren gehen.') : null),
+    h('div', { class: 'zeile' }, h('button', { class: 'btn klein', onclick: () => exportJson(false) }, 'Projekt exportieren'), h('button', { class: 'btn klein flach', onclick: () => gehe('staende') }, 'Stände')));
+  return h('div', { class: 'startseite' },
+    h('div', { class: 'start-links' },
+      h('section', { class: 'naechst ' + (nx.art || '') },
+        h('p', { class: 'wo' }, 'Nächster Schritt'),
+        h('h1', {}, nx.titel), h('p', { class: 'ntext' }, nx.text),
+        h('div', { class: 'zeile' }, h('button', { class: 'btn primaer gross', onclick: nx.tun }, nx.knopf), nx.zweit ? h('button', { class: 'btn flach', onclick: nx.zweit[1] }, nx.zweit[0]) : null)),
+      h('section', { class: 'checkblock' },
+        h('div', { class: 'zeile' }, h('h2', {}, 'Vom Zeitraster zum fertigen Plan'), h('span', { class: 'muted klein rechts' }, fertig + ' von ' + z.schritte.length + ' erledigt')),
+        h('div', { class: 'fortschritt schmal', role: 'progressbar', 'aria-label': 'Erledigte Punkte', 'aria-valuemin': 0, 'aria-valuemax': z.schritte.length, 'aria-valuenow': fertig }, h('div', { style: { width: Math.round(fertig / z.schritte.length * 100) + '%' } })),
+        liste)),
+    h('div', { class: 'start-rechts' }, h('p', { class: 'startschule' }, h('b', {}, d.schule.name || 'Ohne Namen'), d.schule.schuljahr ? h('span', { class: 'muted' }, 'Schuljahr ' + d.schule.schuljahr) : null), planstatus, projekt, lokal, handbuch));
+};
+// Ausgeben › Projektdatei: Sichern und Laden an einem Ort (dieselben Befehle wie im Projektmenü der Kopfleiste)
+SEITEN_RENDER.projektdatei = () => {
+  const tage = exportTage();
+  const zeile = (titel, text, ...knoepfe) => h('div', { class: 'pd-zeile' }, h('div', {}, h('h2', {}, titel), h('p', { class: 'muted' }, text)), h('div', { class: 'zeile' }, ...knoepfe));
   return [
-    seitenkopf('Übersicht', d.schule.name + (d.schule.schuljahr ? ' · ' + d.schule.schuljahr : '') + ' – wo das Projekt steht und was als Nächstes zu tun ist.'),
-    h('div', { class: 'startgrid' },
-      h('div', { class: 'karte naechster ' + (nx.art || '') }, h('div', { class: 'eyebrow' }, 'Nächster Schritt'), h('h2', {}, nx.titel), h('p', {}, nx.text),
-        h('div', { class: 'zeile' }, h('button', { class: 'btn primaer gross', onclick: nx.tun }, nx.knopf, icon('pfeil-rechts')), nx.zweit ? h('button', { class: 'btn ghost', onclick: nx.zweit[1] }, nx.zweit[0]) : null)),
-      ampel),
-    h('div', { class: 'karte' },
-      h('div', { class: 'zeile', style: { marginBottom: '6px' } }, h('h2', { style: { margin: 0 } }, 'In sieben Schritten zum Plan'), h('span', { class: 'muted klein' }, fertig + ' von 7 erledigt')),
-      h('div', { class: 'fortschritt schmal', role: 'progressbar', 'aria-label': 'Erledigte Schritte', 'aria-valuemin': 0, 'aria-valuemax': 7, 'aria-valuenow': fertig }, h('div', { style: { width: Math.round(fertig / 7 * 100) + '%' } })),
-      stepper),
-    lokal, handbuch
+    seitenkopf('Projektdatei', 'Das Projekt liegt nur in diesem Browser. Eine Projektdatei (JSON) sichert es, nimmt es auf einen anderen Rechner mit oder gibt es weiter. Beim Löschen des Browserverlaufs gehen nicht gesicherte Daten verloren; deshalb erinnert der Punkt am Projektnamen nach sieben Tagen ohne Export.'),
+    h('div', { class: 'pd' },
+      zeile('Exportieren', (APP.meta.letzterExport ? 'Zuletzt exportiert am ' + datum(APP.meta.letzterExport) + (tage > 7 ? ', vor ' + tage + ' Tagen.' : '.') : 'Noch nie exportiert.') + ' Die Datei enthält alle Daten des Projekts und den berechneten Plan.',
+        h('button', { class: 'btn primaer', onclick: () => exportJson(false) }, 'Projekt exportieren')),
+      zeile('Anonymisiert exportieren', 'Namen von Personen werden durch Kürzel ersetzt – geeignet, um einen Fehler zu zeigen, ohne Personendaten weiterzugeben.',
+        h('button', { class: 'btn', onclick: () => exportJson(true) }, 'Anonymisiert exportieren')),
+      zeile('Importieren', 'Eine früher exportierte Projektdatei öffnen. Der jetzige Stand wird dabei ersetzt; vorher lässt er sich als Stand sichern.',
+        h('button', { class: 'btn', onclick: importDialog }, 'Projekt importieren …'), h('button', { class: 'btn flach', onclick: () => gehe('staende') }, 'Stände')),
+      zeile('Neu beginnen', 'Ein leeres Projekt anlegen oder die Beispielschule laden, um das Programm kennenzulernen.',
+        h('button', { class: 'btn', onclick: neuesProjekt }, 'Neues leeres Projekt …'), h('button', { class: 'btn flach', onclick: beispielLaden }, 'Beispieldaten laden')))
   ];
 };
 
