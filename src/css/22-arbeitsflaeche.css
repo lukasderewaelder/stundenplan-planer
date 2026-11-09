@@ -108,6 +108,7 @@ h1, h2 { text-wrap: balance; }
 .karte { box-shadow: none; padding: 14px 16px; border-color: var(--line); }
 .karte + .karte { margin-top: var(--a3); }
 .zwei > .karte + .karte { margin-top: 0; }
+.karte > .zeile:first-child > h2, .karte > .zeile:first-child > h3 { margin: 0; }
 .zwei { gap: var(--a3); }
 .md-links, .md-detail, .seitenleiste, .banner { box-shadow: none; }
 

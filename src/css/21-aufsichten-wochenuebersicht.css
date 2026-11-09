@@ -50,3 +50,32 @@ table.bedarfmatrix tbody.bm-gruppe tr:not(.erste) > td { border-top: 1px dashed 
 @media print { .bedarfmatrix-karte .bm-neu { display: none; } }
 .bedarfvorbereitung > summary::before { content: '▸'; color: var(--muted); width: 12px; display: inline-block; }
 .bedarfvorbereitung[open] > summary::before { content: '▾'; }
+
+/* ---------- Vorschule & Betreuung: oben Personal in Spalten, darunter Tagesbedarf und Wochenbilanz nebeneinander, solange beide Platz haben ---------- */
+.vs-personal .zeile .uebersicht-filter { margin: 0; }
+.vs-rollen { display: grid; grid-template-columns: max-content minmax(0, 80ch); gap: 2px 10px; margin: var(--a1) 0 var(--a2); }
+.vs-rollen dt { font-weight: 600; }
+.vs-rollen dd { margin: 0; }
+.vs-personen { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); column-gap: var(--a4); border-top: 1px solid var(--line); }
+.vs-person { display: flex; align-items: center; gap: var(--a2); padding: 6px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+.vs-person[hidden] { display: none; }
+.vs-person .vs-wer { flex: 1 1 auto; min-width: 0; line-height: 1.25; }
+.vs-person .vs-wer > div:not(.vs-hinweis) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vs-person .vs-hinweis { margin-top: 2px; }
+.vs-person .vs-hinweis .badge { white-space: normal; }
+.vs-person select { flex: none; width: 150px; }
+.vs-person.zugeteilt .vs-wer > div:first-child { font-weight: 600; }
+.vs-personal > p:last-child { margin-bottom: 0; }
+.vs-unten { display: flex; flex-wrap: wrap; gap: var(--a3); align-items: flex-start; margin-top: var(--a3); }
+.vs-unten > .karte, .vs-unten > .karte + .karte { margin-top: 0; min-width: 0; }
+.vs-bedarf { flex: 1 1 640px; }
+.vs-unten > .karte:last-child { flex: 1 1 780px; }
+.vs-unten > .karte:last-child > p { max-width: 80ch; }
+.vs-unten tbody td.zahl { white-space: nowrap; }
+.vs-bedarf .reiter { margin-bottom: 0; }
+.vs-bedarf .bedarfdetail { border: 0; border-radius: 0; padding: var(--a3) 0 0; margin: 0; background: none; }
+.vs-bedarf .bedarfdetail + .bedarfdetail { border-top: 1px solid var(--line); margin-top: var(--a3); }
+.vs-bedarf .bedarfdetail .bd-kopf { display: none; }
+.vs-bedarf .vs-leer { margin: var(--a3) 0 0; }
+.vs-bedarf .vs-fuss { margin-top: var(--a3); }
+.vs-unten > .karte:last-child thead th { white-space: normal; vertical-align: bottom; }

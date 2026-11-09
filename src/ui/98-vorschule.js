@@ -35,22 +35,29 @@ function vsEinrichten() {
 function vsBedarfErgaenzen(tag) {
   dienstAendern('Vorschulbedarf ergänzt', d => { const b = d.dienste.bereiche.find(x => x.vorschule); if (b) d.dienste.bedarfe.push(vsNeuerBedarf(d, b.id, tag)); });
 }
+// Personal als Liste in Spalten: füllt die Breite der Seite, je breiter der Bildschirm, desto weniger Zeilen
 function vsRollenKarte(d) {
-  const lehrer = lehrerAlphabetisch(d.lehrer);
+  const st = vsZustand(), lehrer = lehrerAlphabetisch(d.lehrer);
   const zaehl = r => d.lehrer.filter(l => l.vorschule === r).length;
   const unterrichtet = l => d.unterrichte.filter(u => !u.aufgabe && u.lehrkraefte.some(z => z.lehrer === l.id)).length;
-  const zeilen = lehrer.map(l => {
-    const n = vorschuleStamm(l) ? unterrichtet(l) : 0;
-    return h('tr', {}, h('td', {}, l.name || l.kuerzel || '?', l.kuerzel && l.name ? h('span', { class: 'muted klein' }, ' · ' + l.kuerzel) : null),
-      h('td', { class: 'muted klein' }, artText(l)),
-      h('td', {}, sel(VS_ROLLEN, l.vorschule, v => vsRolleSetzen(l.id, v), { 'aria-label': 'Rolle in der Vorschule: ' + (l.name || l.kuerzel), title: VS_ROLLEN_HILFE[l.vorschule] })),
-      h('td', {}, n ? h('span', { class: 'badge err', title: 'Stammkräfte unterrichten nie. Die Lehrkraft in der Unterrichtsversorgung austauschen.' }, 'unterrichtet in ' + n + ' Unterricht' + (n === 1 ? '' : 'en')) : null));
+  const eintraege = lehrer.map(l => {
+    const n = vorschuleStamm(l) ? unterrichtet(l) : 0, name = l.name || l.kuerzel || '?';
+    return h('li', { class: 'vs-person' + (l.vorschule !== 'nein' ? ' zugeteilt' : ''), 'data-suche': [name, l.kuerzel, artText(l), (VS_ROLLEN.find(r => r[0] === l.vorschule) || [])[1]].filter(Boolean).join(' ').toLocaleLowerCase('de') },
+      h('div', { class: 'vs-wer' }, h('div', {}, name, l.kuerzel && l.name ? h('span', { class: 'muted klein' }, ' · ' + l.kuerzel) : null), h('div', { class: 'muted klein' }, artText(l)),
+        n ? h('div', { class: 'vs-hinweis' }, h('span', { class: 'badge err', title: 'Stammkräfte unterrichten nie. Die Lehrkraft in der Unterrichtsversorgung austauschen.' }, 'unterrichtet in ' + n + ' Unterricht' + (n === 1 ? '' : 'en'))) : null),
+      sel(VS_ROLLEN, l.vorschule, v => vsRolleSetzen(l.id, v), { 'aria-label': 'Rolle in der Vorschule: ' + name, title: VS_ROLLEN_HILFE[l.vorschule] }));
   });
-  return h('div', { class: 'karte' },
-    h('div', { class: 'zeile' }, h('h2', {}, 'Personal'), h('span', { class: 'badge neutral' }, zaehl('stamm') + ' Stammkräfte'), h('span', { class: 'badge neutral' }, zaehl('reserve') + ' Reserve')),
-    h('p', { class: 'muted klein' }, VS_ROLLEN.filter(r => r[0] !== 'nein').map(r => r[1] + ': ' + VS_ROLLEN_HILFE[r[0]]).join(' ')),
-    d.lehrer.length ? h('div', { class: 'tabwrap', style: { maxHeight: '340px', overflow: 'auto' } }, h('table', { class: 'tab' },
-      h('thead', {}, h('tr', {}, ['Person', 'Art', 'Rolle in der Vorschule', ''].map(t => h('th', {}, t)))), h('tbody', {}, zeilen))) : h('p', { class: 'muted' }, 'Noch keine Mitarbeitenden angelegt.'),
+  const liste = h('ul', { class: 'vs-personen', 'aria-label': 'Rolle in der Vorschule je Person' }, eintraege);
+  const filtern = () => { const q = (st.filter || '').trim().toLocaleLowerCase('de'); let n = 0; eintraege.forEach(li => { li.hidden = !!q && !li.dataset.suche.includes(q); if (!li.hidden) n++; }); leer.hidden = n > 0; };
+  const leer = h('p', { class: 'muted klein', hidden: true }, 'Keine Person passt zum Filter.');
+  const filter = lehrer.length > 10 ? h('div', { class: 'uebersicht-filter' },
+    h('input', { type: 'search', placeholder: 'Personen filtern …', 'aria-label': 'Personen filtern', value: st.filter || '', oninput: ev => { st.filter = ev.target.value; filtern(); } }),
+    h('button', { class: 'btn icon klein', type: 'button', title: 'Filter löschen', 'aria-label': 'Filter löschen', onclick: () => { st.filter = ''; render(); } }, icon('x'))) : null;
+  if (st.filter) filtern();
+  return h('div', { class: 'karte vs-personal' },
+    h('div', { class: 'zeile' }, h('h2', {}, 'Personal'), h('span', { class: 'badge neutral' }, zaehl('stamm') + ' Stammkräfte'), h('span', { class: 'badge neutral' }, zaehl('reserve') + ' Reserve'), h('div', { class: 'rechts' }), filter),
+    h('dl', { class: 'vs-rollen klein' }, VS_ROLLEN.filter(r => r[0] !== 'nein').map(r => [h('dt', {}, r[1]), h('dd', { class: 'muted' }, VS_ROLLEN_HILFE[r[0]])])),
+    lehrer.length ? [liste, leer] : h('p', { class: 'muted' }, 'Noch keine Personen angelegt.'),
     h('p', { class: 'klein muted' }, 'Prüfe unter „Arbeitszeit & Deputat“ die Wochenarbeitszeit der Stammkräfte: Nur darüber weiß die Planung, wie viele Stunden sie füllen soll.'));
 }
 function vsBedarfKarte(d) {
@@ -62,12 +69,11 @@ function vsBedarfKarte(d) {
   const heute = vsBedarfe(d, st.tag);
   const karten = heute.map(b => bedarfDetailKarte(d, b, { eingebettet: true }));
   const mind = vorschuleMindestbedarf(d);
-  return h('div', {},
-    h('div', { class: 'karte' }, h('div', { class: 'zeile' }, h('h2', {}, 'Bedarf je Tag'), h('span', { class: 'badge neutral', title: 'Summe aus Minimum × Dauer über alle Tage, ohne Sollbesetzung sowie Früh-/Spätaufsicht' }, 'Mindestbedarf pro Woche: ' + dauerText(mind))),
+  return h('div', { class: 'karte vs-bedarf' }, h('div', { class: 'zeile' }, h('h2', {}, 'Bedarf je Tag'), h('span', { class: 'badge neutral', title: 'Summe aus Minimum × Dauer über alle Tage, ohne Sollbesetzung sowie Früh-/Spätaufsicht' }, 'Mindestbedarf pro Woche: ' + dauerText(mind))),
       h('p', { class: 'muted klein' }, 'Wie viele Personen werden wann gebraucht? „Minimum“ muss besetzt werden, „Soll“ ist der Wunsch – bei der Soll-Besetzung hilft die Reserve nicht. Über das Pfeilsymbol lässt sich ein Tag auf andere Tage übertragen.'),
-      tabs),
-    karten.length ? karten : h('div', { class: 'karte' }, h('p', { class: 'muted' }, 'Für ' + tagLang(st.tag) + ' ist noch kein Vorschulbedarf eingetragen.')),
-    h('div', { class: 'zeile' }, h('button', { class: 'btn klein', onclick: () => vsBedarfErgaenzen(st.tag) }, '+ Bedarf für ' + tagLang(st.tag))));
+    tabs,
+    karten.length ? karten : h('p', { class: 'muted vs-leer' }, 'Für ' + tagLang(st.tag) + ' ist noch kein Vorschulbedarf eingetragen.'),
+    h('div', { class: 'zeile vs-fuss' }, h('button', { class: 'btn klein', onclick: () => vsBedarfErgaenzen(st.tag) }, '+ Bedarf für ' + tagLang(st.tag))));
 }
 function vsBilanzKarte(d) {
   const liste = vorschuleBilanz(d);
@@ -80,7 +86,7 @@ function vsBilanzKarte(d) {
     h('p', { class: 'muted klein' }, 'Geplante Dienste, Wochenrhythmus und Rotation anteilig. „Gesamt“ und „Soll“ sind die Werte der Arbeitszeit (mit Unterricht und Aufgaben).'),
     warn,
     h('div', { class: 'tabwrap' }, h('table', { class: 'tab' },
-      h('thead', {}, h('tr', {}, ['Person', 'Rolle', 'Vorschule', 'Früh-/Spätaufsicht, Betreuung', 'Sonstige Dienste', 'Gesamt', 'Soll', 'Differenz'].map((x, i) => h('th', { class: i > 1 ? 'zahl' : '' }, x)))),
+      h('thead', {}, h('tr', {}, ['Person', 'Rolle', 'Vorschule', 'Früh/Spät, Betreuung', 'Sonstige', 'Gesamt', 'Soll', 'Differenz'].map((x, i) => h('th', { class: i > 1 ? 'zahl' : '' }, x)))),
       h('tbody', {}, liste.map(x => {
         const diff = x.ist - x.soll;
         return h('tr', {}, h('td', {}, x.name || x.kuerzel), h('td', {}, x.rolle === 'stamm' ? 'Stammkraft' : 'Reserve'), h('td', { class: 'zahl' }, t(x.vorschule)), h('td', { class: 'zahl' }, t(x.betreuung)),
@@ -95,5 +101,6 @@ SEITEN_RENDER.vorschule = () => {
     h('button', { class: 'btn', onclick: () => dienstePlanenStarten(true), title: 'Behält alle vorhandenen Aufsichtseinsätze und besetzt nur, was fehlt.' }, 'Nur offene besetzen'),
     h('button', { class: 'btn primaer', onclick: () => dienstePlanenStarten(false), title: 'Plant alle automatischen Aufsichten der Schule neu, nicht nur die Vorschule. Nur von Hand gesetzte und fixierte Einsätze bleiben.' }, 'Alle Aufsichten neu planen'));
   if (!hat) return [kopf, vsRollenKarte(d), h('div', { class: 'karte' }, h('h2', {}, 'Vorschule einrichten'), h('p', {}, 'Legt den Bereich „Vorschule“ mit einem Bedarf je Schultag an (ein Abschnitt über die Schulzeit, mindestens eine Person). Zeiten und Anzahl passt du danach an. Die bestehende Planung bleibt unverändert.'), h('button', { class: 'btn primaer', onclick: vsEinrichten }, 'Vorschule anlegen'))];
-  return [kopf, vsRollenKarte(d), vsBedarfKarte(d), vsBilanzKarte(d)];
+  // Oben das Personal über die ganze Breite, darunter Tagesbedarf und Wochenbilanz – nebeneinander, solange beide Platz haben
+  return [kopf, vsRollenKarte(d), h('div', { class: 'vs-unten' }, vsBedarfKarte(d), vsBilanzKarte(d))];
 };
