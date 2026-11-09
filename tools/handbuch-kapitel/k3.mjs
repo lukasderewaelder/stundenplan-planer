@@ -5,8 +5,9 @@ const person = kz => `APP.daten.lehrer.find(l => l.kuerzel === '${kz}')`;
 const sp = (c, y = 0) => c.js(`document.querySelector('#inhalt').scrollTop = ${y}`);
 
 export default { bilder: async c => {
-  const { A, INHALT } = c;
+  const { A, INHALT, EXPL } = c;
   const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
+  const MIT_LISTE = (h, y = INHALT.y) => A(EXPL.x, y, EXPL.w + INHALT.w, h);
 
   // 3.1 Schule & Zeitraster
   await c.gehe('schule');
@@ -36,7 +37,7 @@ export default { bilder: async c => {
   await c.gehe('faecher');
   await c.js("(() => { const k = [...document.querySelectorAll('#inhalt input[type=checkbox]')]; if (k[2]) k[2].click(); if (k[3]) k[3].click(); })()"); await c.ruhe(500);
   await c.marke2(1, { text: '+ Neue Zeile', sel: 'button' }); await c.marke2(2, { text: 'Aus Excel einfügen', sel: 'button' }); await c.marke2(3, { text: 'Standardfächer einfügen', sel: 'button' });
-  await c.marke2(4, { sel: '#inhalt input[type=search], #inhalt input[placeholder^=Suchen]', hoch: false }); await c.marke2(5, { text: 'ausgewählt', teil: true, sel: '#inhalt *', hoch: false }, { pos: 'links' });
+  await c.marke2(4, { sel: '#inhalt input[type=search], #inhalt input[placeholder^=Suchen]', hoch: false }); await c.marke2(5, { text: 'ausgewählt', teil: true, sel: '#inhalt *, .massenleiste *', hoch: false }, { pos: 'links' });
   await c.bild('k03-tabelle', SEITE(560));
   await c.klicke2({ text: 'Aus Excel einfügen', sel: 'button' }); await c.ruhe(600);
   await c.js("(() => { const t = document.querySelector('dialog[open] textarea'); if (t) t.focus(); })()");
@@ -56,12 +57,12 @@ export default { bilder: async c => {
 
   // 3.6 Klassen & Gruppen
   await c.gehe('klassen');
-  await c.marke2(1, { text: 'Massenanlage über Muster', sel: '#inhalt *', hoch: '.karte' }); await c.marke2(2, { text: 'Klasse 5a', teil: true, sel: '#inhalt [data-id]', hoch: false, nth: 0 });
+  await c.marke2(1, { text: 'Massenanlage über Muster', sel: '#inhalt *', hoch: '.karte' }); await c.marke2(2, { sel: '#nav .md-links [data-id]', hoch: false, nth: 0 }, { pos: 'rechts' });
   await c.marke2(3, { text: 'Klassenleitung', sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' }); await c.marke2(4, { text: 'Liste mit Details', sel: 'button' });
-  await c.bild('k03-klassen', SEITE(700));
+  await c.bild('k03-klassen', MIT_LISTE(700));
   await sp(c, 650); await c.ruhe(400);
   await c.marke2(1, { text: 'Gruppen & Klassenteam', teil: true, sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' }); await c.marke2(2, { text: 'Zeitprofil', sel: '#inhalt *', hoch: false });
-  await c.bild('k03-klasse-details', SEITE(700));
+  await c.bild('k03-klasse-details', MIT_LISTE(700));
   await c.js(`void gruppenDialog(${klasse('6a')})`); await c.ruhe(700); await c.bildDialog('k03-gruppen'); await c.schliesseDialog();
   await c.js(`void teamDialog(${klasse('5a')})`); await c.ruhe(700); await c.bildDialog('k03-klassenteam'); await c.schliesseDialog();
 
@@ -78,10 +79,10 @@ export default { bilder: async c => {
 
   // 3.8 Mitarbeitende
   await c.gehe('lehrer');
-  await c.marke2(1, { sel: '#inhalt [data-id]', nth: 0, hoch: false }); await c.marke2(2, { text: 'Art', sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' }); await c.marke2(3, { text: 'Wochenarbeitszeit (h)', sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' });
+  await c.marke2(1, { sel: '#nav .md-links [data-id]', nth: 0, hoch: false }, { pos: 'rechts' }); await c.marke2(2, { text: 'Art', sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' }); await c.marke2(3, { text: 'Wochenarbeitszeit (h)', sel: '#inhalt *', hoch: false }, { rahmen: false, pos: 'links' });
   await c.marke2(4, { text: 'Fächer', sel: '#inhalt h3, #inhalt h4, #inhalt strong, #inhalt div, #inhalt span', hoch: false }, { rahmen: false, pos: 'links' }); await c.marke2(5, { text: 'Liste mit Details', sel: 'button' });
-  await c.bild('k03-mitarbeitende', SEITE(720));
-  await sp(c, 700); await c.ruhe(400); await c.bild('k03-mitarbeitende-unten', SEITE(700));
+  await c.bild('k03-mitarbeitende', MIT_LISTE(720));
+  await sp(c, 700); await c.ruhe(400); await c.bild('k03-mitarbeitende-unten', MIT_LISTE(700));
   await c.js(`void faecherDialog(${person('Mü')})`); await c.ruhe(700); await c.bildDialog('k03-lehrer-faecher'); await c.schliesseDialog();
   for (const [r, n] of [['verf', 'k03-verfuegbarkeit'], ['grenzen', 'k03-grenzen'], ['dienste', 'k03-dienste-person']]) {
     await c.js(`void personDialog(${person('Mü')}, '${r}')`); await c.ruhe(900); await c.bildDialog(n); await c.schliesseDialog();
@@ -116,10 +117,13 @@ export default { bilder: async c => {
 
   // 3.12 Prüfung
   await c.gehe('pruefung');
-  await c.marke2(1, { text: 'keine Fehler', teil: true, sel: '#inhalt *', hoch: false }); await c.marke2(2, { text: 'Plan berechnen', sel: '#inhalt button' });
+  await c.marke2(1, { sel: '#inhalt .ansichtwahl', hoch: false }); await c.marke2(2, { text: 'keine Fehler', teil: true, sel: '#inhalt *', hoch: false }); await c.marke2(3, { text: 'Plan berechnen', teil: true, sel: '#inhalt button' });
   await c.bild('k03-pruefung', SEITE(420));
   // ein Beispiel mit Fehlern: zwei Personen mit demselben Kürzel
   await c.js("aendern('Fehlerbeispiel', d => { d.lehrer[1].kuerzel = d.lehrer[0].kuerzel; })"); await c.gehe('pruefung');
   await c.marke2(1, { text: 'Fehler', teil: true, sel: '#inhalt *', hoch: false });
   await c.bild('k03-pruefung-fehler', SEITE(560));
+  // dieselben Meldungen im Inspektor einer Stammdatenseite
+  await c.gehe('lehrer'); await c.js("inspektorZeigen('probleme')"); await c.ruhe(600);
+  await c.bild('k03-inspektor-fehler', A(c.INSP.x - 16, c.INSP.y, c.INSP.w + 16, Math.min(c.INSP.h, 460)));
 } };

@@ -5,13 +5,13 @@
   <h2 id="k1-1">Was der Stundenplaner kann</h2>
   <div class="spalten2">
     <ul>
-      <li><b>Stammdaten verwalten:</b> Schule und Zeitraster, Fächer, Räume, Klassen mit Gruppen und Klassenteams, Mitarbeitende (Lehrkräfte, Co-Kräfte, weiteres Personal) mit Verfügbarkeiten, Aufgaben.</li>
+      <li><b>Stammdaten verwalten:</b> Schule und Zeitraster, Fächer, Räume, Klassen mit Gruppen und Klassenteams, Personen (Lehrkräfte, Co-Kräfte, weiteres Personal) mit Verfügbarkeiten, Aufgaben.</li>
       <li><b>Unterricht verteilen:</b> aus Stundentafeln automatisch erzeugen, Fachlehrkräfte zuordnen lassen oder von Hand festlegen, Co-Lehrkräfte automatisch ergänzen.</li>
       <li><b>Plan berechnen:</b> 16 Pflichtregeln und 18 Wünsche mit einstellbaren Gewichten; Berechnung im Hintergrund, reproduzierbar über einen Startwert (Seed).</li>
       <li><b>Plan bearbeiten:</b> Stunden per Ziehen und Ablegen verschieben oder tauschen – mit sofortiger Anzeige, ob das Ziel regelkonform ist.</li>
     </ul>
     <ul>
-      <li><b>Aufsichten planen:</b> Bedarf je Pause und Bereich, Früh- und Spätaufsichten, Springer; die Verteilung füllt die Wochenarbeitszeit der Mitarbeitenden auf.</li>
+      <li><b>Aufsichten planen:</b> Bedarf je Pause und Bereich, Früh- und Spätaufsichten, Springer; die Verteilung füllt die Wochenarbeitszeit der Personen auf.</li>
       <li><b>Arbeitszeit:</b> Unterricht, Vorbereitung, Co-Einsätze, Klassenleitung, Aufgaben, Aufsichten und GTAs werden je Person gegen die Wochenarbeitszeit gerechnet.</li>
       <li><b>A/B-Wochen und Teilungen:</b> 14-tägiger Rhythmus, Doppelstunden im Wechsel, Halbgruppen parallel oder im Wechsel.</li>
       <li><b>Ausgabe:</b> Klassen-, Lehrer-, Raum-, Gesamt- und Aufsichtspläne als PDF; Export als Projektdatei, CSV und HTML.</li>
@@ -23,74 +23,106 @@
   <div class="kasten tipp"><p><span class="titel">Tipp:</span> Die Datei an einem festen Ort ablegen (z. B. im Ordner „Stundenplan“) und immer von dort öffnen. Die Arbeitsdaten hängen am Browser und am Speicherort der Datei: Wer die Datei verschiebt oder einen anderen Browser nutzt, sieht zunächst einen leeren Stand. Mit „Projekt exportieren“ und „Projekt importieren“ lässt sich ein Projekt jederzeit mitnehmen (siehe <a data-ref="k12-2"></a>).</p></div>
 
   <h2 id="k1-3">Datenschutz und Speicherung</h2>
-  <p>Alle Eingaben bleiben lokal im Browser. Das Programm sendet nichts an einen Server und lädt nichts nach. Gespeichert wird automatisch etwa eine Sekunde nach jeder Änderung im Speicher des Browsers (localStorage, bei sehr großen Datenständen IndexedDB). Es gibt deshalb keinen „Speichern“-Knopf; ein Punkt hinter dem Schulnamen in der Kopfleiste zeigt, dass gespeichert wurde.</p>
-  <div class="kasten wichtig"><p><span class="titel">Wichtig:</span> Beim Löschen des Browserverlaufs („Websitedaten löschen“) gehen die gespeicherten Daten verloren. Deshalb regelmäßig über <span class="ui">Menü → Projekt exportieren</span> eine Projektdatei sichern. Nach sieben Tagen ohne Export erscheint ein Hinweis. Lehrernamen und Verfügbarkeiten sind personenbezogene Daten – die Projektdatei bitte entsprechend sicher aufbewahren und für die Weitergabe von Beispielen den anonymisierten Export verwenden.</p></div>
+  <p>Alle Eingaben bleiben lokal im Browser. Das Programm sendet nichts an einen Server und lädt nichts nach. Gespeichert wird automatisch etwa eine Sekunde nach jeder Änderung im Speicher des Browsers (localStorage, bei sehr großen Datenständen IndexedDB). Es gibt deshalb keinen „Speichern“-Knopf; ein Punkt hinter dem Schulnamen links in der Kopfleiste zeigt, dass gespeichert wurde.</p>
+  <div class="kasten wichtig"><p><span class="titel">Wichtig:</span> Beim Löschen des Browserverlaufs („Websitedaten löschen“) gehen die gespeicherten Daten verloren. Deshalb regelmäßig eine Projektdatei sichern: Klick auf den Schulnamen in der Kopfleiste und <span class="ui">Projekt exportieren</span>, oder unter Ausgeben › Projektdatei. Nach sieben Tagen ohne Export erscheint ein Hinweis. Lehrernamen und Verfügbarkeiten sind personenbezogene Daten – die Projektdatei bitte entsprechend sicher aufbewahren und für die Weitergabe von Beispielen den anonymisierten Export verwenden.</p></div>
 
   <h2 id="k1-4">Die Oberfläche</h2>
-  <p>Das Fenster besteht aus drei Bereichen: der <b>Kopfleiste</b> oben, der <b>Seitenleiste</b> links und der <b>Arbeitsfläche</b> in der Mitte. Die Arbeitsfläche zeigt immer die gewählte Seite; ihre Reiter (z. B. „Allgemein“ und „Zeitraster &amp; Pausen“) stehen oben auf der Seite.</p>
+  <p>Das Fenster hat vier Teile: oben die <b>Kopfleiste</b>, links den <b>Explorer</b>, in der Mitte die <b>Arbeitsfläche</b> und rechts den <b>Inspektor</b>. In der Kopfleiste wählen Sie einen von vier <b>Modi</b>. Der Explorer zeigt die Bereiche dieses Modus und, wo es passt, die Liste der Klassen, Personen oder Räume. Die Arbeitsfläche zeigt die gewählte Seite, der Inspektor die Probleme, die Hilfe und je nach Seite weitere Details.</p>
+  <table>
+    <thead><tr><th style="width:16%">Modus</th><th>Bereiche im Explorer</th></tr></thead>
+    <tr><td><b>Start</b></td><td>Nächster Schritt, Checkliste vom Zeitraster bis zum fertigen Plan, Planstatus und Sicherung (siehe unten).</td></tr>
+    <tr><td><b>Einrichten</b></td><td>Schule &amp; Zeiten, Fächer, Räume, Personen (mit den Ansichten Stammdaten, Arbeitszeit &amp; Deputat und Aufgaben), Klassen, Aufsichten, Vorschule &amp; Betreuung; im Expertenmodus zusätzlich Unterricht und Regeln.</td></tr>
+    <tr><td><b>Planen</b></td><td>Stundenplan, Aufsichten (Zeitleiste und Auswertung), GTA, Auswertung (Ergebnis und Prüfung der Daten) und Berechnung.</td></tr>
+    <tr><td><b>Ausgeben</b></td><td>Drucken &amp; Export, Stände und Projektdatei.</td></tr>
+  </table>
+  <p>Hat ein Bereich mehrere Ansichten, stehen sie als Schalter rechts neben dem Seitentitel, zum Beispiel „Stammdaten · Arbeitszeit &amp; Deputat · Aufgaben“ bei den Personen. Innerhalb einer Seite gibt es teilweise Reiter, etwa „Allgemein“ und „Zeitraster &amp; Pausen“ bei Schule &amp; Zeiten.</p>
   <h3>Die Kopfleiste</h3>
-  <figure id="abb-kopfleiste"><div class="rahmen"><img src="../bilder/k01-kopfleiste.jpg" alt="Kopfleiste"></div><figcaption>Die Kopfleiste mit Projektname, Rückgängig/Wiederholen, Suche, Plan-Status, „Plan berechnen“ und Menü.</figcaption></figure>
+  <figure id="abb-kopfleiste"><div class="rahmen"><img src="../bilder/k01-kopfleiste.jpg" alt="Kopfleiste"></div><figcaption>Die Kopfleiste: Projekt, Modi, Suche, Rückgängig, Planstatus, „Plan berechnen“ und Menü.</figcaption></figure>
   <ol class="legende zwei">
-    <li><b>Schulname und Schuljahr</b> aus „Schule &amp; Zeiten“; sie erscheinen auch auf allen Ausdrucken. Der Punkt dahinter zeigt den Speicherstatus (grün = gespeichert; der Tooltip nennt die Uhrzeit).</li>
+    <li><b>Explorer ein- und ausblenden.</b> Unter 900 Pixeln Fensterbreite öffnet der Knopf den Explorer als Schublade.</li>
+    <li><b>Projekt:</b> Schulname und Schuljahr aus „Schule &amp; Zeiten“, dahinter der Speicherpunkt (grün = gespeichert; der Tooltip nennt die Uhrzeit). Ein Klick öffnet das Projektmenü (siehe unten). Ein gelber Punkt am Zeichen erinnert daran, dass seit mehr als sieben Tagen nicht exportiert wurde.</li>
+    <li><b>Modi</b> Start, Einrichten, Planen und Ausgeben, auch mit <kbd>Alt</kbd>+<kbd>1</kbd> bis <kbd>Alt</kbd>+<kbd>4</kbd>. Jeder Modus merkt sich die Seite, die zuletzt offen war.</li>
+    <li><b>Suchen und springen</b> (<kbd>Strg</kbd>+<kbd>K</kbd>): findet Seiten, Klassen, Personen, Räume und die wichtigsten Aktionen (siehe unten).</li>
     <li><b>Rückgängig / Wiederholen:</b> bis zu 60 Schritte, auch mit <kbd>Strg</kbd>+<kbd>Z</kbd> und <kbd>Strg</kbd>+<kbd>Y</kbd>. Der Tooltip nennt den jeweiligen Schritt.</li>
-    <li><b>Suchen und springen</b> (<kbd>Strg</kbd>+<kbd>K</kbd>): findet Seiten, Klassen, Lehrkräfte, Räume und die wichtigsten Aktionen (siehe unten).</li>
-    <li><b>Plan-Status:</b> „Noch kein Plan“, „n Fehler in den Daten“, „Plan vollständig“, „Plan in Ordnung“, „n offene Punkte“ oder „n Probleme“. Ein Klick führt zur Auswertung.</li>
-    <li><b>Plan berechnen</b> startet die Berechnung mit den Einstellungen der Seite „Plan berechnen“. Meldet die Prüfung Fehler, springt der Knopf stattdessen zur Prüfung. Während der Berechnung zeigt die Kopfleiste Phase, Fortschritt und einen Stopp-Knopf.</li>
-    <li><b>Menü:</b> Projektdatei, Beispieldaten, Suche, Einstellungen, Hilfe und Handbuch.</li>
+    <li><b>Planstatus:</b> „Noch kein Plan“, „n Fehler in den Daten“, „Plan vollständig“, „Plan in Ordnung“, „n offene Punkte“ oder „n Probleme“. Ein Klick öffnet im Inspektor den Reiter „Probleme“.</li>
+    <li><b>Plan berechnen</b> startet die Berechnung und öffnet Planen › Berechnung. Der Pfeil daneben öffnet die Einstellungen der Berechnung (siehe <a data-ref="k5-1"></a>). Meldet die Prüfung Fehler, startet nichts; stattdessen öffnet sich die Prüfung der Daten. Während der Berechnung zeigt die Kopfleiste Phase, Fortschritt und einen Stopp-Knopf.</li>
+    <li><b>Menü:</b> Suche, Einstellungen, Hilfe und Handbuch; im Expertenmodus auch der Selbsttest.</li>
+    <li><b>Inspektor ein- und ausblenden.</b> Unter 1280 Pixeln Breite liegt der Inspektor über der Arbeitsfläche und ist zunächst geschlossen.</li>
   </ol>
-  <h3>Das Menü</h3>
-  <figure id="abb-menue" class="klein"><div class="rahmen"><img src="../bilder/k01-menue.jpg" alt="Geöffnetes Menü"></div><figcaption>Das geöffnete Menü. Die Nummern stehen links vor den Einträgen.</figcaption></figure>
-  <ol class="legende zwei">
-    <li><span class="ui">Projekt importieren …</span> lädt eine zuvor exportierte Projektdatei (siehe <a data-ref="k12-2"></a>).</li>
-    <li><span class="ui">Projekt exportieren</span> speichert alle Daten in eine Datei. Rechts steht, wann zuletzt exportiert wurde.</li>
-    <li><span class="ui">Anonymisiert exportieren</span> ersetzt Namen durch Kürzel und leert Notizen – für Beispiele und Rückfragen.</li>
-    <li><span class="ui">Beispieldaten laden</span> füllt das Programm mit der Beispielschule (siehe <a data-ref="k2-2"></a>).</li>
-    <li><span class="ui">Neues leeres Projekt …</span> beginnt von vorn (rückgängig mit <kbd>Strg</kbd>+<kbd>Z</kbd>; vorher am besten exportieren).</li>
-    <li><span class="ui">Suchen und springen …</span> öffnet die Suche (<kbd>Strg</kbd>+<kbd>K</kbd>).</li>
-    <li><span class="ui">Einstellungen …</span>: Darstellung, Größe der Plankacheln, Expertenmodus.</li>
-    <li><span class="ui">Hilfe und Datenschutz</span> öffnet die Kurzhilfe im Programm (siehe <a data-ref="k14-3"></a>).</li>
-    <li><span class="ui">Handbuch (PDF)</span> lädt dieses Handbuch herunter. Es wird nur auf Klick geöffnet.</li>
-  </ol>
-  <h3>Die Seitenleiste</h3>
+  <h3>Projektmenü und Menü</h3>
+  <div class="paar">
+    <figure id="abb-projektmenue"><div class="rahmen"><img src="../bilder/k01-projektmenue.jpg" alt="Geöffnetes Projektmenü"></div><figcaption>Das Projektmenü (Klick auf den Schulnamen).</figcaption></figure>
+    <figure id="abb-menue"><div class="rahmen"><img src="../bilder/k01-menue.jpg" alt="Geöffnetes Menü"></div><figcaption>Das Menü rechts in der Kopfleiste.</figcaption></figure>
+  </div>
+  <table>
+    <thead><tr><th style="width:32%">Eintrag</th><th>Wirkung</th></tr></thead>
+    <tr><td colspan="2"><b>Projektmenü</b></td></tr>
+    <tr><td><span class="ui">Projekt importieren …</span></td><td>Lädt eine zuvor exportierte Projektdatei (siehe <a data-ref="k12-2"></a>).</td></tr>
+    <tr><td><span class="ui">Projekt exportieren</span></td><td>Speichert alle Daten in eine Datei. Rechts steht, wann zuletzt exportiert wurde.</td></tr>
+    <tr><td><span class="ui">Anonymisiert exportieren</span></td><td>Ersetzt Namen durch Kürzel und leert Notizen, für Beispiele und Rückfragen.</td></tr>
+    <tr><td><span class="ui">Beispieldaten laden</span></td><td>Füllt das Programm mit der Beispielschule (siehe <a data-ref="k2-2"></a>).</td></tr>
+    <tr><td><span class="ui">Neues leeres Projekt …</span></td><td>Beginnt von vorn (rückgängig mit <kbd>Strg</kbd>+<kbd>Z</kbd>; vorher am besten exportieren).</td></tr>
+    <tr><td><span class="ui">Stände …</span></td><td>Öffnet Ausgeben › Stände (<a data-ref="kap-staende"></a>).</td></tr>
+    <tr><td colspan="2"><b>Menü</b></td></tr>
+    <tr><td><span class="ui">Suchen und springen …</span></td><td>Öffnet die Suche (<kbd>Strg</kbd>+<kbd>K</kbd>).</td></tr>
+    <tr><td><span class="ui">Einstellungen …</span></td><td>Darstellung, Größe der Plankacheln, Expertenmodus.</td></tr>
+    <tr><td><span class="ui">Hilfe und Datenschutz</span></td><td>Öffnet die Kurzhilfe im Programm (siehe <a data-ref="k14-3"></a>).</td></tr>
+    <tr><td><span class="ui">Handbuch (PDF)</span></td><td>Lädt dieses Handbuch herunter. Es wird nur auf Klick geöffnet.</td></tr>
+    <tr><td><span class="ui">Selbsttest des Programms</span></td><td>Nur im Expertenmodus (<a data-ref="kap-selbsttest"></a>).</td></tr>
+  </table>
+  <p>Dieselben Befehle zur Projektdatei stehen auch unter Ausgeben › Projektdatei (<a data-ref="k12-2"></a>).</p>
+  <h3>Der Explorer</h3>
   <div class="seitlich">
-    <figure id="abb-seitenleiste"><div class="rahmen"><img src="../bilder/k01-seitenleiste.jpg" alt="Seitenleiste"></div><figcaption>Die Seitenleiste.</figcaption></figure>
+    <figure id="abb-explorer"><div class="rahmen"><img src="../bilder/k01-explorer.jpg" alt="Explorer"></div><figcaption>Der Explorer im Modus Einrichten, Bereich Personen.</figcaption></figure>
     <div>
-      <p>Die Seitenleiste ist nach Arbeitsschritten gegliedert. Ab 1280 Pixel Fensterbreite ist sie ausgeklappt; darunter zeigt sie nur Symbole, unter 900 Pixeln öffnet der Menü-Knopf oben links eine Schublade.</p>
       <ol class="legende">
-        <li><span class="ui">Einklappen</span> macht die Leiste schmal; die Wahl bleibt gespeichert.</li>
-        <li><span class="ui">Übersicht</span>: Stand der sieben Schritte und der nächste Schritt (siehe unten).</li>
-        <li><span class="ui">In neun Schritten</span>: Schritte 1 bis 7 führen zum fertigen Plan.</li>
-        <li>Kleine Marken zeigen den Zustand: ein Haken (✓) bedeutet in Ordnung, eine Zahl zählt Warnungen oder offene Punkte (gelb) bzw. Fehler (rot).</li>
-        <li><span class="ui">8. GTA-Planer</span> und <span class="ui">9. Gesamtansicht</span> sind Zusätze für Ganztagsangebote und den Überblick über alle Personen eines Tages.</li>
+        <li><b>Bereiche</b> des gewählten Modus. Der aktive Bereich ist hervorgehoben. Ein Mittelklick (oder <kbd>Strg</kbd>+Klick) öffnet einen Bereich in einem neuen Browser-Tab.</li>
+        <li><b>Zahlen und Marken:</b> grau die Anzahl der Einträge (z. B. Fächer, Räume, Personen), gelb Warnungen oder offene Punkte, rot Fehler.</li>
+        <li><b>Objekte:</b> Bei Personen und Klassen steht hier die Liste mit Suchfeld; die Mitte zeigt die Details des gewählten Eintrags. Im Stundenplan stehen hier Klassen, Personen und Räume (<a data-ref="k6-1"></a>), beim Drucken die Planarten (<a data-ref="k12-1"></a>).</li>
       </ol>
+      <p>Die Bereiche Unterricht und Regeln stehen nur im Expertenmodus im Explorer. Der Knopf links in der Kopfleiste blendet den Explorer aus und wieder ein; die Wahl bleibt gespeichert.</p>
     </div>
   </div>
-  <p>Mehrere Seiten gehören zu einem Schritt und sind als Reiter erreichbar: Schritt 1 enthält „Schule &amp; Zeiten“, „Fächer“ und „Räume“; Schritt 2 „Mitarbeitende“, „Arbeitszeit &amp; Deputat“ und „Aufgaben“; Schritt 3 „Klassen“ und „Stundentafeln“; Schritt 7 „Plan bearbeiten“, „Ergebnis &amp; Auswertung“, „Druck &amp; Export“ und „Stände“.</p>
-  <h3>Die Übersicht</h3>
-  <figure id="abb-uebersicht"><div class="rahmen"><img src="../bilder/k01-uebersicht.jpg" alt="Übersicht"></div><figcaption>Die Übersicht der Beispielschule nach der Berechnung.</figcaption></figure>
+  <h3>Der Inspektor</h3>
+  <div class="paar">
+    <figure id="abb-inspektor"><div class="rahmen"><img src="../bilder/k01-inspektor.jpg" alt="Inspektor mit Reiter Probleme"></div><figcaption>Inspektor, Reiter „Probleme“.</figcaption></figure>
+    <figure id="abb-inspektor-hilfe"><div class="rahmen"><img src="../bilder/k01-inspektor-hilfe.jpg" alt="Inspektor mit Reiter Hilfe"></div><figcaption>Inspektor, Reiter „Hilfe“.</figcaption></figure>
+  </div>
+  <p>Der Inspektor rechts hat auf jeder Seite die Reiter <span class="ui">Probleme</span> und <span class="ui">Hilfe</span>:</p>
+  <ul>
+    <li><b>Probleme</b> zeigt den Planstatus, die offenen Punkte, die Meldungen der Prüfung, die zur aktuellen Seite gehören, und Meldungen zu den Aufsichten. Ein Klick auf eine Meldung springt an die Stelle. <span class="ui">Alle Meldungen</span> öffnet die vollständige Prüfung der Daten (<a data-ref="k3-14"></a>).</li>
+    <li><b>Hilfe</b> erklärt die Seite ausführlich. Im Seitenkopf steht nur der erste Satz; <span class="ui">Mehr in der Hilfe</span> öffnet diesen Reiter.</li>
+    <li>Einige Seiten legen vorn einen weiteren Reiter ab: im Stundenplan <span class="ui">Details</span> und <span class="ui">Zuordnen</span> (<a data-ref="k6-4"></a>), beim Drucken <span class="ui">Optionen</span> (<a data-ref="k12-1"></a>), in der Zeitleiste der Aufsichten <span class="ui">Besetzung</span> (<a data-ref="k8-2"></a>).</li>
+  </ul>
+  <p>Ab 1280 Pixeln Fensterbreite steht der Inspektor fest rechts, darunter öffnet er sich bei Bedarf über der Arbeitsfläche. Der Knopf rechts in der Kopfleiste blendet ihn aus und ein.</p>
+  <h3>Start</h3>
+  <figure id="abb-uebersicht"><div class="rahmen"><img src="../bilder/k01-start.jpg" alt="Startseite mit Checkliste"></div><figcaption>Start in der Beispielschule nach der Berechnung.</figcaption></figure>
   <ol class="legende">
-    <li><b>Nächster Schritt:</b> Das Programm sagt, was als Nächstes zu tun ist, und bietet den passenden Knopf an. Bei einem neuen Projekt sind das nacheinander: Fächer anlegen, Räume anlegen, Mitarbeitende anlegen, Klassen anlegen, Stundentafel ausfüllen, Fehler beheben, Plan berechnen, offene Punkte klären, Pläne drucken und weitergeben.</li>
-    <li><b>Plan-Ampel:</b> zeigt nach der Berechnung die Qualität des Plans – grün, gelb oder rot (siehe <a data-ref="k10-1"></a>).</li>
-    <li><b>In sieben Schritten zum Plan:</b> jede Zeile zeigt, ob ein Bereich <i>fertig</i>, <i>offen</i> oder fehlerhaft ist. Ein Klick springt dorthin.</li>
+    <li><b>Nächster Schritt:</b> Das Programm sagt, was als Nächstes zu tun ist, und bietet den passenden Knopf an. Bei einem neuen Projekt sind das nacheinander: Fächer anlegen, Räume anlegen, Personen anlegen, Klassen anlegen, Stundentafel ausfüllen, Fehler beheben, Plan berechnen, offene Punkte klären, Pläne drucken und weitergeben.</li>
+    <li><b>Vom Zeitraster zum fertigen Plan:</b> die Checkliste mit sieben Punkten (Schule, Fächer und Räume · Personen · Klassen und Stundentafel · Aufsichten · Daten prüfen · Plan berechnen · Plan nachbessern). Jede Zeile zeigt „erledigt“, „offen“, „Fehler“, „optional“ oder „noch leer“; der Knopf rechts nennt den Ort, zum Beispiel „Einrichten › Personen“, und springt dorthin.</li>
+    <li><b>Planstatus:</b> die Plan-Ampel nach der Berechnung, grün, gelb oder rot (siehe <a data-ref="k10-1"></a>), mit der Zahl der offenen Punkte.</li>
+    <li><b>Projektdatei:</b> wann zuletzt exportiert wurde, mit <span class="ui">Projekt exportieren</span> und <span class="ui">Stände</span>.</li>
   </ol>
+  <h3>Adressen und Zurück-Taste</h3>
+  <p>Jede Ansicht hat eine eigene Adresse hinter dem Zeichen #, zum Beispiel <code>index.html#/planen/stundenplan</code> oder <code>#/einrichten/personen</code>. Die Zurück-Taste des Browsers führt deshalb zur vorigen Ansicht, und eine Ansicht lässt sich als Lesezeichen speichern. Die Adresse enthält keine Daten des Projekts.</p>
   <h3>Einstellungen</h3>
   <figure id="abb-einstellungen" class="klein"><div class="rahmen"><img src="../bilder/k01-einstellungen.jpg" alt="Dialog Einstellungen"></div><figcaption>Der Dialog „Einstellungen“ (Menü → Einstellungen …).</figcaption></figure>
   <ol class="legende">
     <li><b>Darstellung:</b> „Wie das System“, „Hell“ oder „Dunkel“. Gedruckt wird immer hell.</li>
-    <li><b>Plan-Editor: Größe der Kacheln:</b> „Kompakt“, „Normal“ (Standard) oder „Groß“.</li>
-    <li><b>Expertenmodus:</b> blendet drei zusätzliche Bereiche ein – „Unterrichtsversorgung“ (<a data-ref="k3-10"></a>), „Regeln &amp; Gewichte“ (<a data-ref="kap-regeln"></a>) und den „Selbsttest“ (<a data-ref="kap-selbsttest"></a>). Auch „Nach der Berechnung: Offene Punkte zusätzlich als Fenster öffnen“ steht hier. Die Einstellungen gelten nur für diesen Browser und stehen nicht in der Projektdatei.</li>
+    <li><b>Stundenplan: Größe der Kacheln:</b> „Kompakt“, „Normal“ (Standard) oder „Groß“.</li>
+    <li><b>Expertenmodus:</b> blendet die Bereiche „Unterricht“ (<a data-ref="k3-10"></a>) und „Regeln“ (<a data-ref="kap-regeln"></a>) sowie den „Selbsttest“ (<a data-ref="kap-selbsttest"></a>) ein. Auch „Nach der Berechnung: Offene Punkte zusätzlich als Fenster öffnen“ steht hier. Die Einstellungen gelten nur für diesen Browser und stehen nicht in der Projektdatei.</li>
   </ol>
   <h3>Suchen und springen</h3>
   <figure id="abb-suche" class="klein"><div class="rahmen"><img src="../bilder/k01-suche.jpg" alt="Suchfenster mit Treffern"></div><figcaption>Die Suche (<kbd>Strg</kbd>+<kbd>K</kbd>) mit der Eingabe „5a“.</figcaption></figure>
-  <p>Mit <kbd>Strg</kbd>+<kbd>K</kbd> (auf dem Mac <kbd>Cmd</kbd>+<kbd>K</kbd>) öffnet sich eine Suche über Seiten, Klassen, Lehrkräfte, Räume und Aktionen (z. B. „Plan berechnen“, „Beispieldaten laden“, „Expertenmodus einschalten“). Mit <kbd>↑</kbd> <kbd>↓</kbd> wählen Sie, <kbd>Enter</kbd> springt – bei Klassen, Lehrkräften und Räumen zum Plan, mit <kbd>Umschalt</kbd>+<kbd>Enter</kbd> zu den Stammdaten. <kbd>Esc</kbd> schließt.</p>
+  <p>Mit <kbd>Strg</kbd>+<kbd>K</kbd> (auf dem Mac <kbd>Cmd</kbd>+<kbd>K</kbd>) öffnet sich eine Suche über Seiten, Klassen, Personen, Räume und Aktionen (z. B. „Plan berechnen“, „Beispieldaten laden“, „Expertenmodus einschalten“, „Inspektor ein- oder ausblenden“). Mit <kbd>↑</kbd> <kbd>↓</kbd> wählen Sie, <kbd>Enter</kbd> springt – bei Klassen, Personen und Räumen zum Stundenplan, mit <kbd>Umschalt</kbd>+<kbd>Enter</kbd> zu den Stammdaten. <kbd>Esc</kbd> schließt.</p>
   <div class="kasten tipp"><p><span class="titel">Tipp:</span> Die meisten Felder haben Hilfetexte: Ein Klick auf das kleine <b>ⓘ</b> neben einer Beschriftung oder <kbd>F1</kbd> in einem Eingabefeld erklärt das Feld.</p></div>
 
   <h2 id="k1-5">Der typische Ablauf</h2>
   <div class="ablauf">
     <div class="schritt"><div class="n">1</div><b>Einrichten</b><span>Stammdaten und Unterricht</span></div><div class="pfeil">→</div>
-    <div class="schritt"><div class="n">2</div><b>Prüfen</b><span>Vorprüfung: Fehler beheben</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">2</div><b>Prüfen</b><span>Prüfung der Daten: Fehler beheben</span></div><div class="pfeil">→</div>
     <div class="schritt"><div class="n">3</div><b>Berechnen</b><span>Rechner im Hintergrund</span></div><div class="pfeil">→</div>
-    <div class="schritt"><div class="n">4</div><b>Nachbearbeiten</b><span>Plan-Editor: Ziehen &amp; Ablegen</span></div><div class="pfeil">→</div>
+    <div class="schritt"><div class="n">4</div><b>Nachbearbeiten</b><span>Stundenplan: Ziehen &amp; Ablegen</span></div><div class="pfeil">→</div>
     <div class="schritt"><div class="n">5</div><b>Aufsichten</b><span>verteilen, prüfen</span></div><div class="pfeil">→</div>
     <div class="schritt"><div class="n">6</div><b>Ausgeben</b><span>Drucken, PDF, Export</span></div>
   </div>

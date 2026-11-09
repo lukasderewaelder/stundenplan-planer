@@ -30,6 +30,10 @@ export const k10 = { bilder: async c => {
   await c.bild('k10-regelverstoesse', SEITE(804));
   await c.klicke2({ text: 'Auslastung', sel: '[role=tab], button', in: '#inhalt' }); await c.ruhe(700);
   await c.bild('k10-auslastung', SEITE(804));
+  // Inspektor › Probleme mit berechnetem Plan
+  await c.gehe('auswertung');
+  await c.js("inspektorZeigen('probleme')"); await c.ruhe(600);
+  await c.bild('k10-inspektor', A(c.INSP.x - 16, c.INSP.y, c.INSP.w + 16, Math.min(c.INSP.h, 720)));
 } };
 
 export const k11 = { bilder: async c => {
@@ -46,22 +50,23 @@ export const k11 = { bilder: async c => {
 } };
 
 export const k12 = { bilder: async c => {
-  const { A, INHALT } = c;
+  const { A, INHALT, INSP, BREITE, HOEHE } = c;
   const SEITE = (h, y = INHALT.y) => A(INHALT.x, y, INHALT.w, h);
+  const art = async t => { await c.klicke2({ text: t, teil: true, sel: '#nav .ex-eintrag' }); await c.ruhe(900); };
   await c.gehe('ausgabe');
-  await c.marke2(1, { sel: '#inhalt select', nth: 0, hoch: false }); await c.marke2(2, { text: 'Drucken / als PDF', sel: 'button' }); await c.marke2(3, { text: 'Schwarzweiß', teil: true, sel: '#inhalt label', hoch: 'label' });
-  await c.marke2(4, { text: 'Uhrzeiten anzeigen', teil: true, sel: '#inhalt label', hoch: 'label' }); await c.marke2(5, { text: 'Plan als CSV', teil: true, sel: '#inhalt button' }); await c.marke2(6, { text: 'HTML-Datei mit allen Plänen', teil: true, sel: '#inhalt button' });
-  await c.bild('k12-druck', SEITE(804));
-  await c.js("(() => { const i = document.querySelector('#inhalt'); i.scrollTop = i.scrollHeight; })()"); await c.ruhe(500);
-  await c.bild('k12-vorschau', SEITE(804));
-  // Auswahl: Lehrerpläne
-  await c.js("(() => { const s = document.querySelector('#inhalt select'); const o = [...s.options].find(x => /Lehrerpläne/.test(x.textContent)); if (o) { s.value = o.value; s.dispatchEvent(new Event('change', { bubbles: true })); } })()"); await c.ruhe(900);
-  await c.js("(() => { const i = document.querySelector('#inhalt'); i.scrollTop = i.scrollHeight; })()"); await c.ruhe(500);
-  await c.bild('k12-vorschau-lehrer', SEITE(804));
-  // Auswahl: Aufsichtsplan
-  await c.js("(() => { const s = document.querySelector('#inhalt select'); const o = [...s.options].find(x => /Aufsichtsplan/.test(x.textContent)); if (o) { s.value = o.value; s.dispatchEvent(new Event('change', { bubbles: true })); } })()"); await c.ruhe(900);
-  await c.js("(() => { const i = document.querySelector('#inhalt'); i.scrollTop = i.scrollHeight; })()"); await c.ruhe(500);
-  await c.bild('k12-vorschau-aufsicht', SEITE(804));
+  await c.marke2(1, { sel: '#nav .ex-eintrag[aria-current]', hoch: false }, { pos: 'rechts' }); await c.marke2(2, { sel: '#inhalt .druckbuehne', hoch: false }, { pos: 'links' });
+  await c.marke2(3, { sel: '#inspektor select', nth: 0, hoch: false }); await c.marke2(4, { text: 'Drucken / als PDF', sel: '#inspektor button' });
+  await c.marke2(5, { text: 'Uhrzeiten anzeigen', teil: true, sel: '#inspektor label', hoch: 'label' }); await c.marke2(6, { text: 'Schwarzweiß', teil: true, sel: '#inspektor label', hoch: 'label' });
+  await c.marke2(7, { text: 'Weitere Formate', sel: '#inspektor h3', hoch: 'section' }, { pos: 'links' });
+  await c.bild('k12-druck', A(0, 0, BREITE, HOEHE));
+  await c.bild('k12-vorschau', SEITE(840));
+  await art('Lehrerpläne');
+  await c.bild('k12-vorschau-lehrer', SEITE(840));
+  await art('Aufsichtsplan');
+  await c.bild('k12-vorschau-aufsicht', SEITE(840));
+  // Projektdatei (Ausgeben › Projektdatei)
+  await c.gehe('projektdatei');
+  await c.bild('k12-projektdatei', SEITE(520));
   // Import-Dialog mit Beispieldatei
   await c.js("(() => { const j = JSON.stringify(APP.daten); void importText(j, 'stundenplan_beispielschule.json'); })()"); await c.ruhe(1200);
   if (await c.js("!!document.querySelector('dialog[open]')")) { await c.bildDialog('k12-import'); await c.schliesseDialog(); }

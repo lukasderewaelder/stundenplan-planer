@@ -1,14 +1,14 @@
-  <h2 id="k3-8">Mitarbeitende</h2>
-  <p>Hier erfassen Sie alle Personen, die unterrichten, als Co-Kraft im Unterricht helfen, Aufgaben oder Aufsichten übernehmen. Die Seite gehört zu Schritt 2 und hat die Reiter <span class="ui">Mitarbeitende</span> (Seitenkopf „Lehrkräfte“), <span class="ui">Arbeitszeit &amp; Deputat</span> und <span class="ui">Aufgaben</span>. Oben steht eine Karte zur Arbeitszeit mit dem Knopf <span class="ui">Arbeitszeit &amp; Deputat →</span> und der Legende der Verfügbarkeit.</p>
-  <figure id="abb-mitarbeitende"><div class="rahmen"><img src="../bilder/k03-mitarbeitende.jpg" alt="Mitarbeitende: Liste und Details"></div><figcaption>Mitarbeitende als „Liste mit Details“: links die Liste, rechts die Felder der gewählten Person.</figcaption></figure>
+  <h2 id="k3-8">Personen</h2>
+  <p>Hier erfassen Sie alle Personen, die unterrichten, als Co-Kraft im Unterricht helfen, Aufgaben oder Aufsichten übernehmen. Der Bereich Einrichten › Personen hat drei Ansichten, umschaltbar rechts neben dem Seitentitel: <span class="ui">Stammdaten</span>, <span class="ui">Arbeitszeit &amp; Deputat</span> und <span class="ui">Aufgaben</span>. Oben steht eine Karte zur Arbeitszeit mit dem Knopf <span class="ui">Arbeitszeit &amp; Deputat →</span> und der Legende der Verfügbarkeit.</p>
+  <figure id="abb-mitarbeitende"><div class="rahmen"><img src="../bilder/k03-mitarbeitende.jpg" alt="Personen: Liste und Details"></div><figcaption>Personen als „Liste mit Details“: links im Explorer die Liste, in der Mitte die Felder der gewählten Person.</figcaption></figure>
   <ol class="legende">
-    <li><b>Liste:</b> Name, Kürzel, Art, Klassenleitung; die gelbe Marke zeigt, wie viele Stunden der Wochenarbeitszeit noch nicht verplant sind (siehe <a data-ref="kap-arbeitszeit"></a>).</li>
+    <li><b>Liste</b> im Explorer: Name, Kürzel, Art, Klassenleitung; die gelbe Marke zeigt, wie viele Stunden der Wochenarbeitszeit noch nicht verplant sind (siehe <a data-ref="kap-arbeitszeit"></a>).</li>
     <li><b>Art:</b> Lehrkraft, Co-Kraft oder weiteres Personal (siehe unten).</li>
     <li><b>Wochenarbeitszeit (h):</b> harte Grenze (0 bis 80 in Schritten von 0,5; Standard aus dem Rechenmodell, 40). Daneben zeigt das Ist-Abzeichen „✓“, „↓“ oder „✕“ mit der Differenz.</li>
     <li><b>Fächer:</b> Chips mit „L“ (als Lehrkraft), „Co“ (als Co-Kraft) oder „L+Co“.</li>
     <li><b>Darstellung:</b> „Liste mit Details“ oder „Tabelle“ (siehe unten).</li>
   </ol>
-  <h3>Drei Arten von Mitarbeitenden</h3>
+  <h3>Drei Arten von Personen</h3>
   <table>
     <thead><tr><th style="width:24%">Art</th><th>Aufgabe im Programm</th></tr></thead>
     <tr><td><b>Lehrkraft</b></td><td>Unterrichtet als Fachlehrkraft. Als Co-Lehrkraft wird sie nur ergänzt, wenn keine Co-Kraft passt (siehe <a data-ref="k3-12"></a>). Kann Klassenleitung sein.</td></tr>
@@ -53,7 +53,7 @@
   <h3>Die Tabellenansicht</h3>
 
   <h2 id="k3-9">Aufgaben</h2>
-  <p>Aufgaben sind personengebundene Tätigkeiten ohne Klasse und ohne Fach – z. B. Schulleitung, Medienverantwortliche, SV-Beratung oder Teamsitzungen. Sie belegen Zeit im Plan der zugeordneten Personen und zählen zur Arbeitszeit, aber nicht zu „max. UStd. je Tag“. Sie stehen im Reiter <span class="ui">Aufgaben</span> der Mitarbeitenden-Seite.</p>
+  <p>Aufgaben sind personengebundene Tätigkeiten ohne Klasse und ohne Fach – z. B. Schulleitung, Medienverantwortliche, SV-Beratung oder Teamsitzungen. Sie belegen Zeit im Plan der zugeordneten Personen und zählen zur Arbeitszeit, aber nicht zu „max. UStd. je Tag“. Sie stehen unter Einrichten › Personen in der Ansicht <span class="ui">Aufgaben</span>.</p>
   <p>Die Liste zeigt Bezeichnung, Kürzel, Person(en), Umfang je Woche, Blöcke, Raum und ob die Aufgabe auf das Deputat zählt. <span class="ui">+ Neue Aufgabe</span> öffnet den Aufgabendialog.</p>
   <figure id="abb-aufgabe-dialog"><div class="rahmen"><img src="../bilder/k03-aufgabe-dialog.jpg" alt="Aufgabendialog"></div><figcaption>Der Aufgabendialog am Beispiel der Schulleitung.</figcaption></figure>
   <table>
@@ -67,10 +67,10 @@
     <tr><td>Pausen im Block zählen als Arbeitszeit</td><td>Standard an – sinnvoll für durchgehende Tätigkeiten wie die Schulleitung.</td></tr>
     <tr><td>auf das Unterrichtsdeputat anrechnen</td><td>Neue Aufgaben zählen standardmäßig nicht zum Deputat; mit Haken sind es Anrechnungsstunden.</td></tr>
   </table>
-  <p>Beim Speichern prüft der Dialog Bezeichnung, Person, Umfang oder Termin, Summe der Blöcke und gültige Uhrzeiten. Eine neue Aufgabe landet im Plan-Editor in der Ablage des Lehrerplans.</p>
+  <p>Beim Speichern prüft der Dialog Bezeichnung, Person, Umfang oder Termin, Summe der Blöcke und gültige Uhrzeiten. Eine neue Aufgabe landet im Stundenplan in der Ablage des Lehrerplans.</p>
 
-  <h2 id="k3-10">Unterrichtsversorgung (Expertenmodus)</h2>
-  <p>Im Normalbetrieb brauchen Sie diese Seite nicht: Aus Klassen und Stundentafel entstehen die Unterrichte von selbst, und die Berechnung teilt die Lehrkräfte zu. Wer die Zuordnung selbst steuern möchte, schaltet unter <span class="ui">Menü → Einstellungen → Expertenmodus</span> den Reiter <span class="ui">Unterrichtsversorgung</span> (Bereich „Klassen &amp; Stundentafel“) ein.</p>
+  <h2 id="k3-10">Unterricht (Expertenmodus)</h2>
+  <p>Im Normalbetrieb brauchen Sie diese Seite nicht: Aus Klassen und Stundentafel entstehen die Unterrichte von selbst, und die Berechnung teilt die Lehrkräfte zu. Wer die Zuordnung selbst steuern möchte, schaltet unter <span class="ui">Menü → Einstellungen → Expertenmodus</span> ein. Dann steht unter Einrichten der Bereich <span class="ui">Unterricht</span> mit der Seite „Unterrichtsversorgung“.</p>
   <figure id="abb-unterricht-matrix"><div class="rahmen"><img src="../bilder/k03-unterricht-matrix.jpg" alt="Unterrichtsversorgung: Matrix Klasse mal Fach"></div><figcaption>Die Matrix der Unterrichtsversorgung: Zeile = Klasse, Spalte = Fach.</figcaption></figure>
   <ol class="legende">
     <li><span class="ui">Mit Stundentafel abgleichen</span> gleicht die Unterrichte mit den Stundentafeln ab (Dialog „Stundenzahl anpassen“, „Neu anlegen“, „Nicht (mehr) in der Stundentafel“, „Von Hand prüfen“). Nur einfache Unterrichte (eine Klasse, ohne Gruppen und Kopplung) werden angepasst; Gruppen, Kopplungen und mehrere Kurse werden nur gemeldet. Zwingende Personalvorgaben bleiben, Platzierungen geänderter Unterrichte werden verworfen.</li>
@@ -112,7 +112,7 @@
 
   <h2 id="k3-13">A/B-Wochen und Teilung in Gruppen</h2>
   <h3>A/B-Wochen</h3>
-  <p>Mit dem A/B-Rhythmus (<span class="ui">Schule &amp; Zeiten → Wochenrhythmus</span>) wechseln sich zwei Wochenpläne ab. Ein A-Unterricht und ein B-Unterricht dürfen denselben Slot, dieselbe Lehrkraft und denselben Raum belegen, weil sie nie in derselben Woche stattfinden. In Plänen und Ausdrucken tragen solche Blöcke den Zusatz [A] bzw. [B]; für Arbeitszeit und Soll/Ist zählen A/B-Stunden halb. Im Plan-Editor zeigt ein Umschalter „Woche A + B“, „nur Woche A“ oder „nur Woche B“.</p>
+  <p>Mit dem A/B-Rhythmus (<span class="ui">Schule &amp; Zeiten → Wochenrhythmus</span>) wechseln sich zwei Wochenpläne ab. Ein A-Unterricht und ein B-Unterricht dürfen denselben Slot, dieselbe Lehrkraft und denselben Raum belegen, weil sie nie in derselben Woche stattfinden. In Plänen und Ausdrucken tragen solche Blöcke den Zusatz [A] bzw. [B]; für Arbeitszeit und Soll/Ist zählen A/B-Stunden halb. Im Stundenplan zeigt ein Umschalter „Woche A + B“, „nur Woche A“ oder „nur Woche B“.</p>
   <div class="kasten wichtig"><p><span class="titel">Ungerade Stundenzahl bei Doppelstundenpflicht:</span> Verlangt ein Fach Doppelstunden („pflicht“), hat aber eine ungerade Wochenstundenzahl (z. B. Chemie mit 3 Stunden), geht das nur mit A/B-Wochen: Eine Doppelstunde liegt jede Woche, die zweite im Wechsel in Woche A bzw. B (Anzeige „2+2A“). Im Durchschnitt ergibt das genau 3 Wochenstunden; die Zusatz-Doppelstunden werden zwischen den Klassen abwechselnd auf Woche A und B gelegt. Im Unterrichtsdialog erscheint dazu die Empfehlung; eine Einzelstunde erzwingt man über „Blöcke“ (z. B. <code>2,1</code>). Halbe Stunden in der Stundentafel (0,5) brauchen ebenfalls den A/B-Rhythmus.</p></div>
   <h3>Teilung in Gruppen A und B</h3>
   <p>Im Unterrichtsdialog eines gespeicherten Kurses mit genau einer Klasse und ohne Gruppen stehen drei Teilungsarten zur Wahl. Fehlen die Gruppen A und B, werden sie in der Klasse angelegt (je halbe Schülerzahl).</p>
@@ -124,8 +124,8 @@
   </table>
   <p>Halbgruppen sollen möglichst nebeneinander liegen (Wunsch „Halbgruppen nebeneinander“, siehe <a data-ref="k4-2"></a>).</p>
 
-  <h2 id="k3-14">Prüfung</h2>
-  <p>Der Schritt <span class="ui">5. Prüfung</span> (Seitenkopf „Prüfung &amp; Start“) zeigt die Vorprüfung, die nach jeder Änderung im Hintergrund läuft. Sie unterscheidet:</p>
+  <h2 id="k3-14">Prüfung der Daten</h2>
+  <p>Nach jeder Änderung läuft im Hintergrund eine Vorprüfung. Ihre Meldungen erscheinen an zwei Stellen: im <b>Inspektor</b> rechts (Reiter „Probleme“) jeweils die Meldungen, die zur geöffneten Seite gehören, und vollständig unter Planen › Auswertung in der Ansicht <span class="ui">Prüfung der Daten</span>. Der Knopf <span class="ui">Alle Meldungen</span> im Inspektor führt dorthin. Die Prüfung unterscheidet:</p>
   <ul>
     <li><b>✕ Fehler:</b> Die Aufgabe ist so nicht lösbar oder die Daten sind widersprüchlich. Fehler <b>blockieren</b> die Berechnung.</li>
     <li><b>! Warnungen:</b> mögliche Probleme, die die Berechnung nicht verhindern.</li>
@@ -133,10 +133,12 @@
   </ul>
   <figure id="abb-pruefung"><div class="rahmen"><img src="../bilder/k03-pruefung.jpg" alt="Prüfung ohne Fehler"></div><figcaption>Die Prüfung der Beispielschule: keine Fehler, der Knopf „Plan berechnen“ ist freigegeben.</figcaption></figure>
   <ol class="legende">
+    <li>Der Schalter zwischen den Ansichten <span class="ui">Ergebnis</span> und <span class="ui">Prüfung der Daten</span>; die Marke zählt Fehler (rot) oder Warnungen (gelb).</li>
     <li><b>Ergebnis:</b> „✓ keine Fehler“ heißt: Es kann losgehen. Darüber zählen sechs Kennzahlen Klassen, Lehrkräfte, Räume, Unterrichte, Blöcke und Unterrichtsstunden je Woche.</li>
-    <li><b>Plan berechnen:</b> bei Fehlern gesperrt (Tooltip „Erst die Fehler beheben“). Auch der Knopf in der Kopfleiste führt dann zu dieser Seite.</li>
+    <li><b>Plan berechnen:</b> bei Fehlern gesperrt (Tooltip „Erst die Fehler beheben“). Auch der Knopf in der Kopfleiste führt dann zu dieser Ansicht.</li>
   </ol>
   <figure id="abb-pruefung-fehler"><div class="rahmen"><img src="../bilder/k03-pruefung-fehler.jpg" alt="Prüfung mit Fehler"></div><figcaption>Dieselbe Seite mit einem Fehler (hier: ein Kürzel kommt doppelt vor). Jede Meldung führt mit einem Klick zur Stelle.</figcaption></figure>
+  <figure id="abb-inspektor-fehler" class="klein"><div class="rahmen"><img src="../bilder/k03-inspektor-fehler.jpg" alt="Inspektor mit Fehlermeldung"></div><figcaption>Derselbe Fehler im Inspektor der Seite „Personen“: Hier stehen die Meldungen, die zu dieser Seite gehören.</figcaption></figure>
   <h3>Typische Meldungen</h3>
   <table>
     <thead><tr><th style="width:16%">Stufe</th><th>Auslöser (Auswahl)</th></tr></thead>

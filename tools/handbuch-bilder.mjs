@@ -12,8 +12,9 @@ const wurzel = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const bilder = path.join(wurzel, 'handbuch', 'bilder');
 const zustandDatei = path.join(wurzel, 'handbuch', '_zustand.json');
 const warte = ms => new Promise(r => setTimeout(r, ms));
-export const BREITE = 1280, HOEHE = 860, FAKTOR = 1.5;
-const INHALT = { x: 240, y: 44, w: BREITE - 240, h: HOEHE - 44 }; // Arbeitsfläche ohne Kopfleiste und Seitenleiste
+export const BREITE = 1440, HOEHE = 900, FAKTOR = 1.5;
+// Bereiche des Fensters; sie werden nach dem Laden aus der Seite gemessen (Kopfleiste, Explorer links, Arbeitsfläche, Inspektor rechts)
+const INHALT = { x: 264, y: 44, w: BREITE - 264 - 340, h: HOEHE - 44 }, EXPL = { x: 0, y: 44, w: 264, h: HOEHE - 44 }, INSP = { x: BREITE - 340, y: 44, w: 340, h: HOEHE - 44 };
 const A = (x, y, w, h) => ({ x, y, w, h });
 
 // ---------- Hilfsfunktionen, die in der Seite laufen ----------
@@ -82,6 +83,8 @@ export async function nimmBilder({ kapitel = null, zeit = 20, format = 'png', ka
     await p.navigiere(url);
     await p.warteBis("typeof APP !== 'undefined' && !!document.querySelector('#inhalt h1')");
     await p.auswerten(SEITENHILFE);
+    const mass = async sel => p.auswerten(`(() => { const r = document.querySelector('${sel}').getBoundingClientRect(); return { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }; })()`);
+    Object.assign(INHALT, await mass('#inhalt')); Object.assign(EXPL, await mass('#nav')); Object.assign(INSP, await mass('#inspektor'));
     const js = x => p.auswerten(x);
     const ruhe = async (ms = 500) => { await warte(ms); await js('__A.ruhe()'); await warte(150); };
     const gehe = async (s, o) => { await js(`gehe(${JSON.stringify(s)}${o ? ', ' + JSON.stringify(o) : ''})`); await ruhe(700); };
@@ -103,6 +106,12 @@ export async function nimmBilder({ kapitel = null, zeit = 20, format = 'png', ka
       const r = await finde({ sel: 'dialog[open]', hoch: false });
       await bild(id, A(Math.max(0, r.x - rand), Math.max(0, r.y - rand), Math.min(BREITE, r.w + 2 * rand), Math.min(HOEHE, r.h + 2 * rand)));
     };
+    // Ausschnitt um ein Element (z. B. ein offenes Menü), mit Rand
+    const bildUm = async (id, spec, rand = 14) => {
+      const r = await finde(spec);
+      const x = Math.max(0, r.x - rand), y = Math.max(0, r.y - rand);
+      await bild(id, A(x, y, Math.min(BREITE - x, r.w + 2 * rand), Math.min(HOEHE - y, r.h + 2 * rand)));
+    };
     const schliesseDialog = async () => { await taste('Escape'); await warte(300); };
     const expert = async an => { await js(`(() => { APP.meta.experte = ${an ? 'true' : 'false'}; metaSpeichern(); navBauen(); render(); })()`); await ruhe(500); };
     const stopp = warte;
@@ -111,7 +120,7 @@ export async function nimmBilder({ kapitel = null, zeit = 20, format = 'png', ka
       await js(`(() => { const z = JSON.parse(${JSON.stringify(z)}); aendern('Zustand laden', d => { Object.keys(d).forEach(k => { delete d[k]; }); Object.assign(d, z); }); APP.editor.id = null; APP.editor.id2 = null; APP.banner = []; gehe('start'); })()`);
       await ruhe(1000);
     };
-    const ctx = { p, js, ruhe, gehe, finde, marke, marke2, klicke, klicke2, taste, bild, bildDialog, schliesseDialog, expert, stopp, zustandLaden, A, INHALT, BREITE, HOEHE, warnungen, zeit, warte };
+    const ctx = { p, js, ruhe, gehe, finde, marke, marke2, klicke, klicke2, taste, bild, bildDialog, bildUm, schliesseDialog, expert, stopp, zustandLaden, A, INHALT, EXPL, INSP, BREITE, HOEHE, warnungen, zeit, warte };
 
     // --- Vorbereitung: Beispielschule mit berechnetem Plan (einmal rechnen, dann zwischenspeichern) ---
     const brauchtRechnung = !nurTeil || !fs.existsSync(zustandDatei);

@@ -35,6 +35,9 @@ export const k5 = { bilder: async c => {
   await c.marke2(3, { text: 'Änderungen minimal halten', teil: true, sel: '#inhalt label', hoch: 'label' }); await c.marke2(4, { text: 'Teilneuplanung', teil: true, sel: '#inhalt label', hoch: 'label' });
   await c.marke2(5, { text: 'Plan berechnen', sel: '#inhalt button' });
   await c.bild('k05-einstellungen', SEITE(804));
+  await c.klicke2('#kRechenWahl'); await c.warte(600);
+  await c.bildUm('k05-popover', { sel: '#rechenpop', hoch: false });
+  await c.schliesseDialog();
   // Details für Fortgeschrittene
   await c.klicke2({ text: 'Details für Fortgeschrittene', teil: true, sel: 'summary' }); await c.ruhe(600);
   await c.js("(() => { const e = [...document.querySelectorAll('#inhalt summary')].find(s => /Details für Fortgeschrittene/.test(s.textContent)); if (e) e.scrollIntoView({ block: 'start' }); })()"); await c.ruhe(400);

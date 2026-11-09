@@ -1,16 +1,18 @@
 <section class="kapitel" id="kap-editor">
-  <h1>Der Plan-Editor</h1>
-  <p class="einstieg">Im Plan-Editor wird der berechnete Plan angesehen und von Hand angepasst. Jede Änderung wird sofort bewertet; die Seitenleiste zeigt, ob und warum ein Ziel regelkonform ist. Der Editor gehört zu Schritt 7 „Plan bearbeiten &amp; Ergebnis“ (Reiter <span class="ui">Plan bearbeiten</span>).</p>
+  <h1>Der Stundenplan</h1>
+  <p class="einstieg">Unter Planen › <b>Stundenplan</b> (dem Plan-Editor) wird der berechnete Plan angesehen und von Hand angepasst. Links im Explorer wählen Sie Klasse, Person oder Raum, in der Mitte steht der Wochenplan, rechts im Inspektor stehen Details, Probleme und Zuordnen. Jede Änderung wird sofort bewertet; der Inspektor zeigt, ob und warum ein Ziel regelkonform ist.</p>
 
   <h2 id="k6-1">Aufbau und Ansichten</h2>
-  <figure id="abb-editor"><div class="rahmen"><img src="../bilder/k06-editor.jpg" alt="Plan-Editor mit Klassenplan der 5a"></div><figcaption>Der Plan-Editor mit dem Klassenplan der 5a.</figcaption></figure>
-  <ol class="legende">
-    <li><b>Ansicht:</b> <i>Klassenplan</i>, <i>Lehrerplan</i> oder <i>Raumplan</i>; daneben wählen Sie Klasse, Person bzw. Raum und blättern mit den Pfeilen. Bei A/B-Wochen steht zusätzlich „Woche A + B“, „nur Woche A“ oder „nur Woche B“ zur Wahl.</li>
+  <figure id="abb-editor" class="hoch"><div class="rahmen"><img src="../bilder/k06-editor.jpg" alt="Stundenplan mit Klassenplan der 5a"></div><figcaption>Der Stundenplan mit dem Klassenplan der 5a: Explorer, Plan und Inspektor.</figcaption></figure>
+  <ol class="legende zwei">
+    <li><b>Klassen · Personen · Räume:</b> wählt, welche Pläne der Explorer auflistet. Darunter stehen ein Suchfeld und die Liste, gruppiert nach Jahrgang, Art der Person bzw. Raumtyp.</li>
+    <li><b>Eintrag:</b> Name, ein Mini-Wochenraster der belegten Stunden und rechts rot die Zahl der Pflichtverstöße. Ein Klick zeigt den Plan, <kbd>Strg</kbd>+Klick zeigt ihn als zweiten Plan daneben (<a data-ref="k6-6"></a>). <kbd>↑</kbd> <kbd>↓</kbd> wandern durch die Liste.</li>
+    <li><b>Titel des Plans</b> (z. B. „Klasse 5a“) mit Pfeilen zum vorigen und nächsten Eintrag. Bei A/B-Wochen steht daneben „Woche A + B“, „nur Woche A“ oder „nur Woche B“.</li>
     <li><b>Kachel:</b> eine Unterrichtsstunde mit Fach, Lehrkraft-Kürzel und Raum; „(+Sch)“ bedeutet: Co-Lehrkraft Sch ist dabei. Die Farbe entspricht dem Fach.</li>
-    <li><b>Seitenleiste</b> mit den Reitern <span class="ui">Details</span>, <span class="ui">Probleme</span> und <span class="ui">Zuordnen</span> (mit <kbd>←</kbd> <kbd>→</kbd> wechselbar). Auf schmalen Fenstern ist sie ein einklappbares Blatt unten.</li>
+    <li><b>Inspektor</b> mit den Reitern <span class="ui">Details</span>, <span class="ui">Probleme</span>, <span class="ui">Zuordnen</span> und <span class="ui">Hilfe</span> (mit <kbd>←</kbd> <kbd>→</kbd> wechselbar, siehe <a data-ref="k6-4"></a>).</li>
     <li><b>Ablage:</b> das Dock „nicht platzierte Stunden“. Hier liegen Stunden ohne Platz; Kacheln lassen sich hineinziehen und wieder herausholen. „alle zeigen“ zeigt auch Stunden, die nicht zur aktuellen Ansicht gehören.</li>
     <li><b>Offene Punkte</b> mit Zähler: Liste dessen, was noch zu klären ist (<a data-ref="k10-2"></a>).</li>
-    <li><b>⋯ Weitere Aktionen</b> (siehe unten).</li>
+    <li><b>⋯ Weitere Aktionen</b> (siehe unten); daneben „?“ für Tastatur und Legende.</li>
   </ol>
   <div class="paar">
     <figure id="abb-editor-menue"><div class="rahmen"><img src="../bilder/k06-menue.jpg" alt="Menü Weitere Aktionen"></div><figcaption>Das Menü „Weitere Aktionen“.</figcaption></figure>
@@ -52,21 +54,21 @@
     <tr><td><b>Verschieben nach …</b> (<kbd>V</kbd>)</td><td>Liste aller zulässigen Ziele, sortiert: ✓ regelkonform vor ~ mit Strafpunkten. <kbd>↑</kbd> <kbd>↓</kbd> oder <kbd>Tab</kbd> wählen, <kbd>Enter</kbd> übernimmt. Der Haken „auch Ziele mit hartem Verstoß zeigen (✕) – zum Erzwingen“ zeigt alle.</td></tr>
     <tr><td><b>Raum ändern …</b></td><td>Alle passenden Räume; belegte sind gekennzeichnet.</td></tr>
     <tr><td><b>Lehrkraft ändern …</b></td><td>Neue Fachlehrkraft für alle Blöcke des Kurses (nur ausgebildete). Die Liste zeigt Lehrbefähigung und ob die Person frei ist; Klassenteam steht oben. Außerdem: „Nur diese Stunde besetzen“, „aus allen Stunden entfernen“ (die Berechnung setzt sie dort nicht wieder ein) und „wieder automatisch einplanen lassen“.</td></tr>
-    <tr><td><b>Ersatz suchen</b> (Fachlehrkraft, Co-Lehrkraft, Raum)</td><td>Öffnet die Seitenleiste „Details“ und hebt die passende Gruppe hervor.</td></tr>
+    <tr><td><b>Ersatz suchen</b> (Fachlehrkraft, Co-Lehrkraft, Raum)</td><td>Öffnet im Inspektor den Reiter „Details“ und hebt die passende Gruppe hervor.</td></tr>
     <tr><td><b>In die Ablage legen</b> (<kbd>Entf</kbd>)</td><td>Nimmt den Block aus dem Plan.</td></tr>
     <tr><td><b>Harten Fehler akzeptieren …</b></td><td>Nimmt einen harten Fehler bewusst in Kauf (nach einer Warnung); siehe <a data-ref="k10-2"></a>.</td></tr>
     <tr><td><b>Details öffnen</b> (<kbd>Enter</kbd>)</td><td>Öffnet den Unterrichtsdialog (<a data-ref="k3-11"></a>).</td></tr>
   </table>
   <figure id="abb-verschieben" class="klein"><div class="rahmen"><img src="../bilder/k06-verschieben.jpg" alt="Dialog Verschieben nach"></div><figcaption>„Verschieben nach …“ bietet nur zulässige Ziele an; ✓ regelkonform, ~ mit Strafpunkten.</figcaption></figure>
 
-  <h2 id="k6-4">Details, Probleme und Zuordnen</h2>
-  <figure id="abb-editor-details"><div class="rahmen"><img src="../bilder/k06-details.jpg" alt="Details einer gewählten Stunde"></div><figcaption>Reiter „Details“ („Ressourcen für diesen Termin“) bei gewählter Stunde.</figcaption></figure>
+  <h2 id="k6-4">Der Inspektor: Details, Probleme und Zuordnen</h2>
+  <figure id="abb-editor-details"><div class="rahmen"><img src="../bilder/k06-details.jpg" alt="Details einer gewählten Stunde"></div><figcaption>Inspektor, Reiter „Details“ („Ressourcen für diesen Termin“) bei gewählter Stunde.</figcaption></figure>
   <p>Der Reiter <b>Details</b> zeigt für die gewählte Stunde die Gruppen „Fachlehrkräfte“, „Co-Lehrkräfte“ und „Räume“ mit den Zeichen ✓ (verfügbar), ⚠ (mit Nachteilen) und ✕ („Derzeit nicht verfügbar“, mit Grund). Ein Klick auf eine Person öffnet ein Menü („Nur diesen Termin übernehmen“, „… für alle Stunden einsetzen“); bei ✕ fragt das Programm „Trotzdem erzwingen?“. Ein leeres Feld anzuklicken zeigt, welche offenen Stunden dort liegen könnten.</p>
   <div class="paar">
     <figure id="abb-probleme"><div class="rahmen"><img src="../bilder/k06-probleme.jpg" alt="Reiter Probleme"></div><figcaption>Reiter „Probleme“.</figcaption></figure>
     <figure id="abb-zuordnen"><div class="rahmen"><img src="../bilder/k06-zuordnen.jpg" alt="Reiter Zuordnen"></div><figcaption>Reiter „Zuordnen“ („Ziehen &amp; zuordnen“).</figcaption></figure>
   </div>
-  <p>Der Reiter <b>Probleme</b> zeigt „✓ 0 harte Fehler“ bzw. „✕ n harte Fehler“ der Endvalidierung, die Strafpunkte und die „Verstöße in dieser Ansicht“ (✕ hart, ~ weich); ein Klick lässt die betroffenen Kacheln aufblinken. Im Reiter <b>Zuordnen</b> stehen Lehrkräfte und Räume mit einem Filterfeld; im Klassenplan steht das Klassenteam vorn.</p>
+  <p>Der Reiter <b>Probleme</b> zeigt „✓ 0 harte Fehler“ bzw. „✕ n harte Fehler“ der Endvalidierung, die Strafpunkte und die „Verstöße in dieser Ansicht“ (✕ hart, ~ weich); ein Klick lässt die betroffenen Kacheln aufblinken. Im Reiter <b>Zuordnen</b> stehen Lehrkräfte und Räume mit einem Filterfeld; im Klassenplan steht das Klassenteam vorn. Der Reiter <b>Hilfe</b> erklärt den Stundenplan in Kurzform.</p>
   <ul>
     <li><b>Lehrkraft auf eine Kachel ziehen:</b> Per Menü wählen Sie die Rolle: „Nur diese Stunde übernehmen“, „Als Fachlehrkraft einsetzen“, „Als Co-Lehrkraft hinzufügen“ oder – bei Co-Kräften – „Als Fachlehrkraft mit Zwang“. Bei Aufgaben gibt es „Aufgabe übernehmen“ und „Zusätzlich eintragen (gemeinsamer Termin)“.</li>
     <li><b>Person auf eine Stunde ziehen, in der sie schon steht</b> (auch automatisch geplant): Das Menü bietet an, sie für diese Stunde oder den ganzen Kurs herauszunehmen; die automatische Planung setzt sie dort nicht wieder ein.</li>
@@ -75,11 +77,15 @@
 
   <h2 id="k6-5">Lehrerplan mit Arbeitszeit und Aufsichten</h2>
   <figure id="abb-lehrerplan"><div class="rahmen"><img src="../bilder/k06-lehrerplan.jpg" alt="Lehrerplan"></div><figcaption>Der Lehrerplan: Abzeichen für Unterrichtsstunden und Arbeitszeit, darunter die Aufsichten der Person.</figcaption></figure>
-  <p>Im Lehrerplan zeigt ein Abzeichen neben der Auswahl die Unterrichtsstunden („x,x UStd.“) und die Wochenarbeitszeit als „Summe / Soll h“ (grün = passt, gelb = mehr als eine Stunde darunter, rot = darüber); ein Klick öffnet den Nachweis mit den Anteilen (<a data-ref="kap-arbeitszeit"></a>). Unter dem Raster stehen die Termine der Person und, solange die Druckoption „Aufsichten mitdrucken“ aktiv ist, der Block „Aufsichten &amp; Dienste“ mit Tag, Zeit, Aufsicht, Bereich und Hinweis. GTAs erscheinen als eigene Kacheln. Der Raumplan zeigt die Belegung eines Raums.</p>
+  <ol class="legende">
+    <li><b>Unterrichtsstunden</b> der Person („x,x UStd.“).</li>
+    <li><b>Wochenarbeitszeit</b> als „Summe / Soll h“ (grün = passt, gelb = mehr als eine Stunde darunter, rot = darüber); ein Klick öffnet den Nachweis mit den Anteilen (<a data-ref="kap-arbeitszeit"></a>).</li>
+  </ol>
+  <p>Beide Abzeichen stehen neben dem Namen über dem Raster. Unter dem Raster stehen die Termine der Person und, solange die Druckoption „Aufsichten mitdrucken“ aktiv ist, der Block „Aufsichten &amp; Dienste“ mit Tag, Zeit, Aufsicht, Bereich und Hinweis. GTAs erscheinen als eigene Kacheln. Der Raumplan zeigt die Belegung eines Raums.</p>
 
   <h2 id="k6-6">Parallelansicht und Teiloptimierung</h2>
-  <figure id="abb-parallel"><div class="rahmen"><img src="../bilder/k06-parallel.jpg" alt="Parallelansicht"></div><figcaption>Parallelansicht: Klassenplan links, Lehrerplan der Klassenleitung rechts.</figcaption></figure>
-  <p>In der Parallelansicht lassen sich Stunden zwischen beiden Plänen ziehen – praktisch zum Tauschen zwischen Klassenplan und Lehrerplan. Möchten Sie nur einen Teil neu rechnen lassen, ohne den Rest zu verändern, wählen Sie im Menü „⋯“ <span class="ui">Nur diese Klasse neu berechnen</span> (bzw. „Nur diese Lehrkraft …“); die Berechnung startet dann als Teilneuplanung mit dem aktuellen Plan als Ausgangspunkt (<a data-ref="k5-1"></a>).</p>
+  <figure id="abb-parallel" class="hoch"><div class="rahmen"><img src="../bilder/k06-parallel.jpg" alt="Parallelansicht"></div><figcaption>Parallelansicht: Klassenplan links, Lehrerplan der Klassenleitung rechts.</figcaption></figure>
+  <p>Die Parallelansicht öffnet sich über das Menü „⋯“ oder mit <kbd>Strg</kbd>+Klick auf einen Eintrag im Explorer; der zweite Plan ist dort mit „B“ markiert. Er hat eigene Auswahlfelder und schließt mit dem ✕ in seinem Kopf. In der Parallelansicht lassen sich Stunden zwischen beiden Plänen ziehen – praktisch zum Tauschen zwischen Klassenplan und Lehrerplan. Möchten Sie nur einen Teil neu rechnen lassen, ohne den Rest zu verändern, wählen Sie im Menü „⋯“ <span class="ui">Nur diese Klasse neu berechnen</span> (bzw. „Nur diese Lehrkraft …“); die Berechnung startet dann als Teilneuplanung mit dem aktuellen Plan als Ausgangspunkt (<a data-ref="k5-1"></a>).</p>
 
   <h2 id="k6-7">Bedienung mit der Tastatur</h2>
   <table>

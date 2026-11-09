@@ -1,16 +1,17 @@
 <section class="kapitel" id="kap-druck">
-  <h1>Druck &amp; Export</h1>
+  <h1>Drucken &amp; Export</h1>
   <p class="einstieg">Ein Plan, der nur am Bildschirm existiert, hilft niemandem. Dieses Kapitel zeigt, wie Sie Pläne ausgeben, Daten exportieren und Ihre Arbeit sichern.</p>
 
   <h2 id="k12-1">Drucken und PDF</h2>
-  <figure id="abb-druck"><div class="rahmen"><img src="../bilder/k12-druck.jpg" alt="Seite Druck und Export"></div><figcaption>Die Seite „Druck &amp; Export“ (Schritt 7, Reiter „Druck &amp; Export“).</figcaption></figure>
-  <ol class="legende">
-    <li><b>Pläne:</b> Auswahlfeld mit den Planarten (siehe Tabelle) und darunter der Auswahl „Alle … drucken“ oder einer einzelnen Klasse, Lehrkraft, eines Raums bzw. Tages.</li>
-    <li><span class="ui">Drucken / als PDF</span> öffnet den Druckdialog des Browsers (A4 quer, 10 mm Rand). Dort wählen Sie einen Drucker oder „Als PDF speichern“. Die Fußzeile zeigt „Stand: Datum“ und „Seite i von n“.</li>
+  <figure id="abb-druck" class="hoch"><div class="rahmen"><img src="../bilder/k12-druck.jpg" alt="Seite Drucken und Export"></div><figcaption>Ausgeben › Drucken &amp; Export: links die Planarten, in der Mitte die Vorschau, rechts die Optionen.</figcaption></figure>
+  <ol class="legende zwei">
+    <li><b>Was drucken?</b> Im Explorer stehen die Planarten (siehe Tabelle) in Gruppen, jeweils mit der Zahl der Seiten. Ein Klick wählt die Planart.</li>
+    <li><b>Vorschau</b> der ersten Seite (A4 quer) in der Mitte.</li>
+    <li><b>Auswahl</b> im Inspektor, Reiter „Optionen“: „Alle … drucken“ oder eine einzelne Klasse, Lehrkraft, ein Raum bzw. Tag.</li>
+    <li><span class="ui">Drucken / als PDF</span> öffnet den Druckdialog des Browsers (A4 quer, 10 mm Rand). Dort wählen Sie einen Drucker oder „Als PDF speichern“. Die Fußzeile zeigt „Stand: Datum“ und „Seite i von n“. Derselbe Knopf steht oben im Seitenkopf.</li>
+    <li><b>Darstellung</b> je nach Planart: „Uhrzeiten anzeigen“, „Räume anzeigen“, „Vollnamen statt Kürzel“, „Pausen anzeigen“, „Gruppenbezeichnung bei Halbgruppen anzeigen“ und – nur bei Lehrerplänen – „Aufsichten mitdrucken“.</li>
     <li><b>Farbe / Schwarzweiß (Muster je Fach):</b> Standard ist Farbe; Schwarzweiß unterscheidet die Fächer durch Muster.</li>
-    <li><b>Optionen</b> je nach Planart: „Uhrzeiten anzeigen“, „Räume anzeigen“, „Vollnamen statt Kürzel“, „Pausen anzeigen“, „Gruppenbezeichnung bei Halbgruppen anzeigen“ und – nur bei Lehrerplänen – „Aufsichten mitdrucken“.</li>
-    <li><span class="ui">Plan als CSV</span> (siehe <a data-ref="k12-3"></a>).</li>
-    <li><span class="ui">HTML-Datei mit allen Plänen</span> (siehe <a data-ref="k12-3"></a>).</li>
+    <li><b>Weitere Formate:</b> <span class="ui">Plan als CSV</span>, <span class="ui">Plan aus dem Stundenplan kopieren</span> und <span class="ui">HTML-Datei mit allen Plänen</span> (siehe <a data-ref="k12-3"></a>).</li>
   </ol>
   <table>
     <thead><tr><th style="width:30%">Planart</th><th>Inhalt</th></tr></thead>
@@ -22,7 +23,7 @@
     <tr><td><b>GTA-Plan</b></td><td>Ganztagsangebote.</td></tr>
     <tr><td><b>Arbeitszeitübersicht</b>, <b>Arbeitszeitnachweis je Person</b></td><td>Alle Personen in einer Tabelle bzw. die Rechnung je Person (siehe <a data-ref="kap-arbeitszeit"></a>).</td></tr>
   </table>
-  <p>Bei A/B-Wochen gibt es zusätzlich „A/B-Wochen“: „beide Wochen in einem Plan“, „nur Woche A“, „nur Woche B“ oder „Woche A und B je eine Seite“. Die Vorschau zeigt die erste Seite im Maßstab 90 %.</p>
+  <p>Bei A/B-Wochen gibt es zusätzlich „A/B-Wochen“: „beide Wochen in einem Plan“, „nur Woche A“, „nur Woche B“ oder „Woche A und B je eine Seite“. Bei „Gesamtplan je Tag“ wählen Sie im Inspektor außerdem „Personen je Seite“.</p>
   <figure id="abb-vorschau"><div class="rahmen"><img src="../bilder/k12-vorschau.jpg" alt="Vorschau eines Klassenplans"></div><figcaption>Vorschau der ersten Seite: Klassenplan der 5a (A4 quer).</figcaption></figure>
   <div class="paar">
     <figure id="abb-vorschau-lehrer"><div class="rahmen"><img src="../bilder/k12-vorschau-lehrer.jpg" alt="Vorschau Lehrerplan"></div><figcaption>Lehrerplan mit der Zeile der Aufsichten.</figcaption></figure>
@@ -32,9 +33,10 @@
 
   <h2 id="k12-2">Projektdatei: Export und Import</h2>
   <p>Die Projektdatei enthält alle Daten – Stammdaten, Unterricht, Plan, Aufsichten, GTAs, Stände, Regeln und Gewichte. Sie ist Ihre <b>Sicherung</b> und der Weg, ein Projekt auf einen anderen Rechner oder Browser mitzunehmen. Die Programmeinstellungen (Darstellung, Expertenmodus …) gehören nicht dazu.</p>
+  <figure id="abb-projektdatei"><div class="rahmen"><img src="../bilder/k12-projektdatei.jpg" alt="Seite Projektdatei"></div><figcaption>Ausgeben › Projektdatei. Dieselben Befehle stehen im Projektmenü (Klick auf den Schulnamen in der Kopfleiste).</figcaption></figure>
   <table>
-    <thead><tr><th style="width:28%">Menüpunkt</th><th>Wofür</th></tr></thead>
-    <tr><td><span class="ui">Projekt exportieren</span></td><td>Speichert alle Daten als Datei <code>stundenplan_schule_JJJJ-MM-TT.json</code>. Das Menü nennt dahinter „noch nie“, „zuletzt Datum“ oder „seit n Tagen nicht“. Bewahren Sie die Datei sicher auf – sie enthält personenbezogene Daten.</td></tr>
+    <thead><tr><th style="width:28%">Befehl</th><th>Wofür</th></tr></thead>
+    <tr><td><span class="ui">Projekt exportieren</span></td><td>Speichert alle Daten als Datei <code>stundenplan_schule_JJJJ-MM-TT.json</code>. Projektmenü und Projektdatei-Seite nennen, wann zuletzt exportiert wurde („noch nie“, „zuletzt Datum“ oder „seit n Tagen nicht“). Bewahren Sie die Datei sicher auf – sie enthält personenbezogene Daten.</td></tr>
     <tr><td><span class="ui">Anonymisiert exportieren</span></td><td>Wie Export (Dateiname endet auf <code>_anonym</code>), aber Namen der Lehrkräfte werden durch das Kürzel ersetzt und die Notizen der Aufsichten und Bedarfe geleert. Schulname, Klassennamen sowie GTA- und Aufgabennotizen bleiben unverändert.</td></tr>
     <tr><td><span class="ui">Projekt importieren …</span></td><td>Öffnet eine Projektdatei (Dialog „Import: Dateiname“).</td></tr>
   </table>
@@ -50,7 +52,7 @@
   <table>
     <thead><tr><th style="width:30%">Knopf</th><th>Ergebnis</th></tr></thead>
     <tr><td><span class="ui">Plan als CSV</span></td><td>Eine Zeile je Stunde: Klasse, Gruppe, Tag, Stunde, Beginn, Ende, Fach, Fachlehrkraft, Co-Lehrkraft, Raum. Trennzeichen Semikolon, UTF-8 mit BOM – öffnet direkt in Excel. Enthält auch Aufgaben und – bei „Aufsichten mitdrucken“ – die Aufsichten.</td></tr>
-    <tr><td><span class="ui">Aktuellen Editor-Plan kopieren</span></td><td>Kopiert den im Editor gewählten Plan als Tabelle in die Zwischenablage – zum Einfügen in Excel oder Word.</td></tr>
+    <tr><td><span class="ui">Plan aus dem Stundenplan kopieren</span></td><td>Kopiert den Plan, der gerade unter Planen › Stundenplan gewählt ist, als Tabelle (Tab-getrennt) in die Zwischenablage – zum Einfügen in Excel oder Word.</td></tr>
     <tr><td><span class="ui">HTML-Datei mit allen Plänen</span></td><td>Eine eigenständige Webseite <code>stundenplaene_schule_Datum.html</code> mit allen Klassen- und Lehrerplänen (inkl. Aufsichten), Aufsichtsplan, GTA-Plan und Gesamtplan, auswählbar über eine Liste. Geeignet zur Weitergabe, z. B. im Schulnetz.</td></tr>
   </table>
 </section>

@@ -1,17 +1,21 @@
 <section class="kapitel" id="kap-berechnen">
   <h1>Plan berechnen</h1>
-  <p class="einstieg">Die Berechnung legt Unterricht, Fachlehrkräfte, Räume, Co-Lehrkräfte und Aufsichten auf die Woche. Sie läuft im Hintergrund; die Oberfläche bleibt bedienbar. Gestartet wird sie mit dem Knopf <span class="ui">Plan berechnen</span> in der Kopfleiste oder auf dieser Seite (Schritt 6 der Seitenleiste). Voraussetzung ist eine Prüfung ohne Fehler (<a data-ref="k3-14"></a>).</p>
+  <p class="einstieg">Die Berechnung legt Unterricht, Fachlehrkräfte, Räume, Co-Lehrkräfte und Aufsichten auf die Woche. Sie läuft im Hintergrund; die Oberfläche bleibt bedienbar. Gestartet wird sie mit dem Knopf <span class="ui">Plan berechnen</span> in der Kopfleiste oder auf der Seite Planen › <span class="ui">Berechnung</span>. Voraussetzung ist eine Prüfung ohne Fehler (<a data-ref="k3-14"></a>).</p>
 
   <h2 id="k5-1">Einstellungen</h2>
-  <figure id="abb-berechnen-einstellungen"><div class="rahmen"><img src="../bilder/k05-einstellungen.jpg" alt="Seite Plan berechnen"></div><figcaption>Die Seite „Plan berechnen“ mit den Einstellungen.</figcaption></figure>
+  <figure id="abb-berechnen-einstellungen"><div class="rahmen"><img src="../bilder/k05-einstellungen.jpg" alt="Seite Berechnung"></div><figcaption>Die Seite „Berechnung“ (Planen › Berechnung) mit den Einstellungen.</figcaption></figure>
   <ol class="legende">
     <li><b>Rechenzeit:</b> 5, 15, 30 oder 60 Sekunden bzw. 2, 5, 10 oder 30 Minuten (Standard 60 Sekunden). Für einen ersten Blick genügen 30 bis 60 Sekunden; ein längerer Lauf lohnt sich meist nur für die endgültige Fassung. Die Berechnung kann früher enden, wenn keine Verbesserung mehr gefunden wird.</li>
     <li><b>Ausgangspunkt:</b> „leerer Plan“ (Standard) beginnt von vorn; „aktueller Plan (verbessern)“ übernimmt den bestehenden Plan und verbessert ihn – ideal nach kleinen Änderungen. Wird dabei mehr als vorher verletzt, rechnet das Programm zusätzlich einen vorsichtigen Vergleichslauf („Sicherheitsprüfung“) und nimmt den besseren Plan. Gibt es schon einen Plan und steht die Einstellung auf „leer“, erscheint ein Hinweis mit dem Knopf „Auf ‚verbessern‘ stellen“.</li>
     <li><b>Änderungen minimal halten:</b> Standard aus. Jede Verschiebung kostet Strafpunkte (Wunsch „Stabilität bei Neuberechnung“, siehe <a data-ref="k4-2"></a>).</li>
-    <li><b>Teilneuplanung:</b> „aus (ganzer Plan)“, „nur eine Klasse“, „nur eine Lehrkraft“ oder „nur ein Tag“, mit einem Feld „Auswahl“. Alles andere bleibt dabei vorübergehend fixiert. Ohne Auswahl ist der Start gesperrt. Im Plan-Editor setzt der Eintrag „Nur diese Klasse neu berechnen“ die Teilneuplanung automatisch.</li>
+    <li><b>Teilneuplanung:</b> „aus (ganzer Plan)“, „nur eine Klasse“, „nur eine Lehrkraft“ oder „nur ein Tag“, mit einem Feld „Auswahl“. Alles andere bleibt dabei vorübergehend fixiert. Ohne Auswahl ist der Start gesperrt. Im Stundenplan setzt der Eintrag „Nur diese Klasse neu berechnen“ die Teilneuplanung automatisch.</li>
     <li><span class="ui">Plan berechnen</span> bzw. nach einem Ergebnis <span class="ui">Erneut berechnen</span> startet den Lauf. Bei Fehlern in den Daten heißt der Knopf stattdessen „Fehler ansehen“.</li>
   </ol>
   <p>Alle Felder sind während der Berechnung gesperrt. Die Einstellungen gehören zu den Programmeinstellungen, nicht zum Projekt.</p>
+  <div class="seitlich">
+    <figure id="abb-rechenpop"><div class="rahmen"><img src="../bilder/k05-popover.jpg" alt="Einstellungen am Pfeil neben Plan berechnen"></div><figcaption>Die Einstellungen am Pfeil neben „Plan berechnen“.</figcaption></figure>
+    <div><p>Dieselben Einstellungen öffnet auch der <b>Pfeil</b> neben <span class="ui">Plan berechnen</span> in der Kopfleiste – von jeder Seite aus, ohne sie zu verlassen. <span class="ui">Plan berechnen</span> im Fenster startet den Lauf; <span class="ui">Verlauf und Diagnose</span> öffnet Planen › Berechnung. <kbd>Esc</kbd> oder ein Klick daneben schließt das Fenster.</p></div>
+  </div>
 
   <h2 id="k5-2">Ablauf der Berechnung</h2>
   <p>Die Berechnung geht in vier Schritten vor, und die Priorität ist strikt: <b>1.</b> Fachunterricht und Fachlehrkräfte werden gekoppelt optimiert; eine vollständige Kursbesetzung geht vor Klassenleitung und Klassenteam als Wunsch. Problematische automatische Zuteilungen werden verworfen und mit Alternativen neu berechnet. <b>2.</b> Auf dem fertigen Fachunterrichtsplan wird der konfigurierte Co-Bedarf anhand der tatsächlich freien Zeiten ergänzt. <b>3.</b> Erst gegen den fertigen Fach- und Co-Unterricht werden die Aufsichten geplant; freie Soll-Arbeitszeit wird damit aufgefüllt. <b>4.</b> Eine abschließende Prüfung bewertet den ganzen Plan.</p>
@@ -35,7 +39,7 @@
   <h2 id="k5-3">Ergebnis</h2>
   <figure id="abb-berechnung-ergebnis"><div class="rahmen"><img src="../bilder/k05-ergebnis.jpg" alt="Ergebniskarte"></div><figcaption>Ergebnis der Berechnung: Plan fertig, vier Schritte abgehakt.</figcaption></figure>
   <ol class="legende">
-    <li><span class="ui">Im Editor öffnen</span> bringt Sie zum Plan (<a data-ref="kap-editor"></a>).</li>
+    <li><span class="ui">Im Editor öffnen</span> bringt Sie zu Planen › Stundenplan (<a data-ref="kap-editor"></a>).</li>
     <li><span class="ui">Offene Punkte</span> (mit Zahl) springt zur Liste dessen, was noch zu klären ist (<a data-ref="k10-2"></a>).</li>
     <li><span class="ui">Erneut berechnen</span> startet einen neuen Lauf.</li>
   </ol>

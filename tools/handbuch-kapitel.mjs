@@ -19,27 +19,38 @@ K['0'] = { bilder: async c => {
 } };
 
 K['1'] = { bilder: async c => {
-  const { A, BREITE } = c;
+  const { A, BREITE, EXPL, INSP, INHALT } = c;
   await c.gehe('start');
   // 1.4 Kopfleiste
-  for (const [n, s] of [[1, '#kProjekt'], [2, '#kUndo'], [3, '#kSuche'], [4, '#kKosten'], [5, '#kBerechnen'], [6, '#kMenue']]) await c.marke2(n, s);
-  await c.bild('k01-kopfleiste', A(0, 0, BREITE, 64));
-  // Menü
-  await menueAuf(c);
-  const eintraege = ['Projekt importieren …', 'Projekt exportieren', 'Anonymisiert exportieren', 'Beispieldaten laden', 'Neues leeres Projekt …', 'Suchen und springen …', 'Einstellungen …', 'Hilfe und Datenschutz', 'Handbuch (PDF)'];
-  let n = 0;
-  for (const t of eintraege) { n++; await c.marke2(n, { text: t, teil: true, sel: '[role=menuitem], .menue button, button', hoch: false }, { rahmen: false, pos: 'links' }); }
-  await c.bild('k01-menue', A(780, 0, 500, 500));
+  for (const [n, s] of [[1, '#kNav'], [2, '#kProjektKnopf'], [3, '#kModi'], [4, '#kSuche'], [5, '#kUndo'], [6, '#kKosten'], [7, '#kBerechnenGruppe'], [8, '#kMenue'], [9, '#kInspektor']]) await c.marke2(n, s, { pos: 'unten' });
+  await c.bild('k01-kopfleiste', A(0, 0, BREITE, 76));
+  // Projektmenü (Klick auf den Schulnamen)
+  await c.klicke('#kProjektKnopf'); await c.warte(500);
+  await c.bildUm('k01-projektmenue', { sel: '#kontextmenue', hoch: false });
   await c.schliesseDialog();
-  // Seitenleiste
-  await c.marke2(1, 'Einklappen'); await c.marke2(2, { text: 'Übersicht', sel: '#nav button', hoch: false }); await c.marke2(3, { text: 'In neun Schritten', sel: '#nav *', hoch: false }, { rahmen: false, pos: 'links' });
-  await c.marke2(4, { text: '5. Prüfung', teil: true, sel: '#nav button' }); await c.marke2(5, { text: '8. GTA-Planer', teil: true, sel: '#nav button' });
-  await c.bild('k01-seitenleiste', A(0, 56, 290, 480));
-  // Übersicht
-  await c.marke2(1, { text: 'Nächster Schritt', teil: true, sel: '#inhalt *', hoch: '.karte' }, { pos: 'links' });
-  await c.marke2(2, { text: 'Plan-Ampel', teil: true, sel: '#inhalt *', hoch: '.karte' }, { pos: 'rechts' });
-  await c.marke2(3, { text: 'In sieben Schritten zum Plan', teil: true, sel: '#inhalt h2, #inhalt h3', hoch: false }, { pos: 'rechts' });
-  await c.bild('k01-uebersicht');
+  // Menü rechts
+  await menueAuf(c);
+  await c.bildUm('k01-menue', { sel: '#kontextmenue', hoch: false });
+  await c.schliesseDialog();
+  // Explorer im Modus Einrichten
+  await c.gehe('lehrer');
+  await c.marke2(1, { sel: '#nav .bereich.aktiv', hoch: false }, { pos: 'rechts' }); await c.marke2(2, { sel: '#nav .bereich .zahl', hoch: false, nth: 0 }, { pos: 'rechts' });
+  await c.marke2(3, { sel: '#nav .objekte', hoch: false }, { pos: 'rechts', pad: -4 });
+  await c.bild('k01-explorer', A(EXPL.x, EXPL.y, EXPL.w + 30, Math.min(EXPL.h, 640)));
+  // Inspektor: Probleme und Hilfe
+  await c.gehe('schule');
+  await c.marke2(1, { sel: '#inspektor [role=tab]', nth: 0, hoch: false }); await c.marke2(2, { sel: '#inspektor [role=tab]', nth: 1, hoch: false });
+  await c.bild('k01-inspektor', A(INSP.x - 20, INSP.y, INSP.w + 20, Math.min(INSP.h, 560)));
+  await c.klicke2({ sel: '#inspektor [role=tab]', nth: 1, hoch: false }); await c.ruhe(500);
+  await c.bild('k01-inspektor-hilfe', A(INSP.x - 20, INSP.y, INSP.w + 20, Math.min(INSP.h, 560)));
+  await c.klicke2({ sel: '#inspektor [role=tab]', nth: 0, hoch: false }); await c.ruhe(300);
+  // Startseite mit Checkliste
+  await c.gehe('start');
+  await c.marke2(1, { sel: '#inhalt .naechst', hoch: false }, { pos: 'links' });
+  await c.marke2(2, { sel: '#inhalt .checkblock', hoch: false }, { pos: 'links' });
+  await c.marke2(3, { sel: '#inhalt .startampel', hoch: false }, { pos: 'rechts' });
+  await c.marke2(4, { text: 'Projektdatei', sel: '#inhalt h2', hoch: 'section' }, { pos: 'rechts' });
+  await c.bild('k01-start');
   // Einstellungen
   await c.js('void einstellungenDialog()'); await c.ruhe(700);
   await c.marke2(1, { text: 'Hell', sel: 'dialog button, dialog label', hoch: 'label, button' }); await c.marke2(2, { text: 'Normal', sel: 'dialog button, dialog label', hoch: 'label, button' }); await c.marke2(3, { text: 'Expertenmodus', teil: true, sel: 'dialog label', hoch: 'label' });
@@ -48,20 +59,21 @@ K['1'] = { bilder: async c => {
   // Suchen und springen
   await c.js('paletteOeffnen()'); await c.ruhe(600);
   await c.p.sende('Input.insertText', { text: '5a' }); await c.warte(500);
-  await c.bild('k01-suche', A(300, 20, 680, 460));
+  await c.bildDialog('k01-suche', 10);
   await c.schliesseDialog();
 } };
 
 K['2'] = { bilder: async c => {
-  const { A, BREITE } = c;
+  const { A, BREITE, INHALT } = c;
   // Start des leeren Programms
   await c.js("aendern('leer', d => { const l = leererDatenstand(); Object.keys(d).forEach(k => { delete d[k]; }); Object.assign(d, l); })");
   await c.gehe('start');
-  await c.marke2(1, 'Einrichtung starten'); await c.marke2(2, 'Beispieldaten laden'); await c.marke2(3, 'Projektdatei wählen …'); await c.marke2(4, 'Handbuch als PDF herunterladen', { pos: 'rechts' });
-  await c.bild('k02-start', A(0, 0, BREITE, 520));
+  await c.marke2(1, 'Einrichtung starten'); await c.marke2(2, 'Beispieldaten laden', { pos: 'rechts' }); await c.marke2(3, 'Projektdatei wählen …', { pos: 'rechts' }); await c.marke2(4, 'Handbuch als PDF herunterladen', { pos: 'rechts' });
+  await c.bild('k02-start', A(INHALT.x, INHALT.y, INHALT.w, 560));
   // „Nächster Schritt“ in einem begonnenen Projekt (hier: ohne Fächer)
   await c.zustandLaden();
   await c.js("aendern('ohne Faecher', d => { d.faecher = []; d.plan = leererDatenstand().plan; })"); await c.gehe('start');
-  await c.marke2(1, { text: 'Nächster Schritt', teil: true, sel: '#inhalt *', hoch: '.karte' }, { pos: 'links' }); await c.marke2(2, { text: 'In sieben Schritten zum Plan', teil: true, sel: '#inhalt h2, #inhalt h3', hoch: false }, { pos: 'rechts' });
-  await c.bild('k02-naechster', A(284, 56, 996, 500));
+  await c.marke2(1, { sel: '#inhalt .naechst', hoch: false }, { pos: 'links' }); await c.marke2(2, { sel: '#inhalt .checkliste li', nth: 0, hoch: false }, { pos: 'links' });
+  await c.marke2(3, { sel: '#inhalt .checkliste .cl-ziel', nth: 0, hoch: false }, { pos: 'rechts' });
+  await c.bild('k02-naechster', A(INHALT.x, INHALT.y, INHALT.w, 620));
 } };
